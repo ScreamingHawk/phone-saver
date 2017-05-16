@@ -2,6 +2,8 @@
 *.apk
 *.ap_
 
+.externalNativeBuild
+
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -53,3 +55,7 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+# OS Files
+.DS_Store
+*.save
