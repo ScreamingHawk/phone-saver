@@ -12,7 +12,7 @@ class FolderListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_folder_list)
+        setContentView(R.layout.folder_list_activity)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
@@ -25,7 +25,7 @@ class FolderListActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_folder_list, menu)
+        menuInflater.inflate(R.menu.folder_list_menu, menu)
         return true
     }
 

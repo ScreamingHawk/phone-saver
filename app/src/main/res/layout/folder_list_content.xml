@@ -6,7 +6,7 @@
 	android:layout_height="match_parent"
 	app:layout_behavior="@string/appbar_scrolling_view_behavior"
 	tools:context="link.standen.michael.phonesaver.FolderListActivity"
-	tools:showIn="@layout/activity_folder_list">
+	tools:showIn="@layout/folder_list_activity">
 
 	<TextView
 		android:layout_width="wrap_content"
