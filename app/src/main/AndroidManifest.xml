@@ -10,7 +10,7 @@
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
 		<activity
-			android:name=".FolderListActivity"
+			android:name=".activity.FolderListActivity"
 			android:label="@string/app_name"
 			android:theme="@style/AppTheme.NoActionBar">
 			<intent-filter>
@@ -20,13 +20,13 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name=".FolderSelectActivity"
+			android:name=".activity.FolderSelectActivity"
 			android:label="@string/title_activity_folder_select"
-			android:parentActivityName=".FolderListActivity"
+			android:parentActivityName=".activity.FolderListActivity"
 			android:theme="@style/AppTheme">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
-				android:value="link.standen.michael.phonesaver.FolderListActivity" />
+				android:value="link.standen.michael.phonesaver.activity.FolderListActivity" />
 		</activity>
 	</application>
 

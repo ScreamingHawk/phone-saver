@@ -1,9 +1,10 @@
-package link.standen.michael.phonesaver
+package link.standen.michael.phonesaver.activity
 
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
+import link.standen.michael.phonesaver.R
 
 class FolderSelectActivity : AppCompatActivity() {
 
