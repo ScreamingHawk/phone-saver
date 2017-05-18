@@ -11,6 +11,9 @@ android {
 		targetSdkVersion 25
 		versionCode 1
 		versionName "0.1"
+
+
+		vectorDrawables.useSupportLibrary = true
 	}
 	buildTypes {
 		release {
@@ -18,6 +21,7 @@ android {
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
 	}
+
 }
 
 dependencies {
@@ -26,4 +30,5 @@ dependencies {
 	compile 'com.android.support:appcompat-v7:25.3.1'
 	compile 'com.android.support.constraint:constraint-layout:1.0.2'
 	compile 'com.android.support:design:25.3.1'
+	compile 'com.android.support:support-vector-drawable:25.3.1'
 }
