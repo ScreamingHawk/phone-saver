@@ -12,16 +12,8 @@ class FolderSelectActivity : AppCompatActivity() {
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_home -> {
-                mTextMessage!!.setText(R.string.title_home)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_dashboard -> {
-                mTextMessage!!.setText(R.string.title_dashboard)
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_notifications -> {
-                mTextMessage!!.setText(R.string.title_notifications)
+            R.id.navigation_here -> {
+                mTextMessage!!.setText(R.string.navigation_here)
                 return@OnNavigationItemSelectedListener true
             }
         }
