@@ -13,6 +13,7 @@ import android.widget.AdapterView
 import android.util.Log
 import java.io.File
 import android.os.Parcelable
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
@@ -47,7 +48,7 @@ class FolderSelectActivity : AppCompatActivity() {
 		// Init list view
 		listView = findViewById(android.R.id.list) as ListView
 		listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-			currentPath = (view as TextView).text.toString()
+			currentPath += (view as TextView).text.toString()
 			updateListView()
 		}
 
@@ -95,11 +96,13 @@ class FolderSelectActivity : AppCompatActivity() {
 	 * Update the folder list view
 	 */
 	private fun updateListView() {
+		Log.v(TAG, "Path is: "+currentPath)
+
 		folderList = File(currentPath).listFiles()
 				// Directories only
 				?.filter { it.isDirectory }
 				// Get the file path
-				?.map { removeRoot(it.absolutePath) }
+				?.map { removeCurrent(it.absolutePath) }
 				// Sort it
 				?.sorted()
 				// Default to empty
@@ -118,6 +121,25 @@ class FolderSelectActivity : AppCompatActivity() {
 	 */
 	private fun removeRoot(location: String): String {
 		return location.replace(rootLocation, "")
+	}
+
+	/**
+	 * Remove the current location from the given path.
+	 */
+	private fun removeCurrent(location: String): String {
+		return location.replace(currentPath, "")
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		when (item?.itemId){
+			android.R.id.home -> {
+				// Back button
+				onBackPressed()
+				return true;
+			}
+
+		}
+		return super.onOptionsItemSelected(item)
 	}
 
 	/**
