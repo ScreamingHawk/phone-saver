@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.BottomNavigationView
-import android.support.v7.app.AppCompatActivity
 import android.widget.ListView
 import link.standen.michael.phonesaver.R
 import android.content.pm.PackageManager
@@ -13,7 +12,6 @@ import android.os.Build
 import android.widget.AdapterView
 import android.util.Log
 import java.io.File
-import android.os.Parcelable
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -21,7 +19,7 @@ import android.widget.TextView
 /**
  * An activity for selecting a folder in the file system.
  */
-class FolderSelectActivity : AppCompatActivity() {
+class FolderSelectActivity : ListActivity() {
 
 	private val TAG = "FolderSelectActivity"
 
@@ -29,16 +27,12 @@ class FolderSelectActivity : AppCompatActivity() {
 		const val FOLDER_SELECTED = "FolderSelected"
 	}
 
-
 	private var rootLocation = Environment.getExternalStorageDirectory().absolutePath
 	private var currentPath = Environment.getExternalStorageDirectory().absolutePath
 
 	private lateinit var listView: ListView
 
 	private var folderList: List<String>? = ArrayList()
-
-	private val LIST_STATE = "listState"
-	private var listState: Parcelable? = null
 
 	private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 		when (item.itemId) {
@@ -78,31 +72,6 @@ class FolderSelectActivity : AppCompatActivity() {
 			updateListView()
 		}
 		// else wait for permission handler to continue
-	}
-
-	override fun onResume() {
-		super.onResume()
-
-		// Restore the list view scroll location
-		listState?.let { (findViewById(android.R.id.list) as ListView).onRestoreInstanceState(listState) }
-		listState = null
-	}
-
-	/**
-	 * Load list view scroll position
-	 */
-	override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-		super.onRestoreInstanceState(savedInstanceState)
-		listState = savedInstanceState.getParcelable(LIST_STATE)
-	}
-
-	/**
-	 * Save list view scroll position
-	 */
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		listState = (findViewById(android.R.id.list) as ListView).onSaveInstanceState()
-		outState.putParcelable(LIST_STATE, listState)
 	}
 
 	/**
