@@ -1,10 +1,22 @@
 package link.standen.michael.phonesaver.activity
 
+import android.R
 import android.content.Intent
+import android.os.Environment
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
+import android.widget.ListView
 
-class FolderListActivity : android.support.v7.app.AppCompatActivity() {
+class FolderListActivity : ListActivity() {
 
 	private val FOLDER_SELECT_REQUEST_CODE = 1
+
+	private lateinit var listView: ListView
+
+	private val folderList: MutableList<String> = ArrayList()
+
+	private var rootLocation = Environment.getExternalStorageDirectory().absolutePath
 
 	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -17,6 +29,14 @@ class FolderListActivity : android.support.v7.app.AppCompatActivity() {
 			val intent = android.content.Intent(this@FolderListActivity, FolderSelectActivity::class.java)
 			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
 		}
+
+		// Init list view
+		listView = findViewById(android.R.id.list) as ListView
+		listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
+			//TODO Do something with it?
+		}
+
+		listView.adapter = ArrayAdapter<String>(this, R.layout.simple_list_item_1, folderList)
 	}
 
 	override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
@@ -44,7 +64,19 @@ class FolderListActivity : android.support.v7.app.AppCompatActivity() {
 			if (requestCode == 1) {
 				val folder = data.getStringExtra(FolderSelectActivity.FOLDER_SELECTED)
 				//TODO Do something with this information
+				folderList.add(removeRoot(folder))
+				folderList.sort()
+				if (listView.adapter is BaseAdapter){
+					(listView.adapter as BaseAdapter).notifyDataSetChanged()
+				}
 			}
 		}
+	}
+
+	/**
+	 * Remove the root location from the given path.
+	 */
+	private fun removeRoot(location: String): String {
+		return location.replace(rootLocation, "")
 	}
 }
