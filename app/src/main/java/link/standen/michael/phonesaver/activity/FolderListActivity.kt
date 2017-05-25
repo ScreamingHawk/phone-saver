@@ -1,6 +1,10 @@
 package link.standen.michael.phonesaver.activity
 
+import android.content.Intent
+
 class FolderListActivity : android.support.v7.app.AppCompatActivity() {
+
+	private val FOLDER_SELECT_REQUEST_CODE = 1
 
 	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -11,7 +15,7 @@ class FolderListActivity : android.support.v7.app.AppCompatActivity() {
 		val fab = findViewById(link.standen.michael.phonesaver.R.id.fab) as android.support.design.widget.FloatingActionButton
 		fab.setOnClickListener { _ ->
 			val intent = android.content.Intent(this@FolderListActivity, FolderSelectActivity::class.java)
-			this@FolderListActivity.startActivity(intent)
+			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
 		}
 	}
 
@@ -32,5 +36,15 @@ class FolderListActivity : android.support.v7.app.AppCompatActivity() {
 		}
 
 		return super.onOptionsItemSelected(item)
+	}
+
+	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if (resultCode == RESULT_OK) {
+			if (requestCode == 1) {
+				val folder = data.getStringExtra(FolderSelectActivity.FOLDER_SELECTED)
+				//TODO Do something with this information
+			}
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package link.standen.michael.phonesaver.activity
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.BottomNavigationView
@@ -17,9 +18,17 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
+/**
+ * An activity for selecting a folder in the file system.
+ */
 class FolderSelectActivity : AppCompatActivity() {
 
 	private val TAG = "FolderSelectActivity"
+
+	companion object {
+		const val FOLDER_SELECTED = "FolderSelected"
+	}
+
 
 	private var rootLocation = Environment.getExternalStorageDirectory().absolutePath
 	private var currentPath = Environment.getExternalStorageDirectory().absolutePath
@@ -34,7 +43,11 @@ class FolderSelectActivity : AppCompatActivity() {
 	private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 		when (item.itemId) {
 			R.id.navigation_here -> {
-				//FIXME Call back to previous activity with the location somehow
+				// Call back to previous activity with the location
+				var intent = Intent()
+				intent.putExtra(FOLDER_SELECTED, currentPath)
+				setResult(RESULT_OK, intent)
+				finish()
 				return@OnNavigationItemSelectedListener true
 			}
 		}
