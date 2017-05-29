@@ -46,10 +46,11 @@ class SaverActivity : AppCompatActivity() {
 			}
 		}
 
+		// Notify user
 		if (done){
-			//TODO Toast success
+			Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
 		} else {
-			//TODO Toast failure
+			Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
 		}
 
 		// Kill everything
