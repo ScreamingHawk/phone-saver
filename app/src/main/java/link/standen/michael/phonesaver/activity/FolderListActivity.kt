@@ -62,10 +62,13 @@ class FolderListActivity : ListActivity() {
 		if (resultCode == RESULT_OK) {
 			if (requestCode == 1) {
 				val folder = data.getStringExtra(FolderSelectActivity.FOLDER_SELECTED)
-				folderList.add(removeRoot(folder))
-				folderList.sort()
-				if (listView.adapter is BaseAdapter){
-					(listView.adapter as BaseAdapter).notifyDataSetChanged()
+				// Don't add duplicates
+				if (!folderList.contains(removeRoot(folder))) {
+					folderList.add(removeRoot(folder))
+					folderList.sort()
+					if (listView.adapter is BaseAdapter) {
+						(listView.adapter as BaseAdapter).notifyDataSetChanged()
+					}
 				}
 				//TODO Save list
 			}
