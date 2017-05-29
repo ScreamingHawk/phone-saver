@@ -1,6 +1,5 @@
 package link.standen.michael.phonesaver.activity
 
-import android.R
 import android.content.Intent
 import android.os.Environment
 import android.widget.AdapterView
@@ -36,7 +35,7 @@ class FolderListActivity : ListActivity() {
 			//TODO Do something with it?
 		}
 
-		listView.adapter = ArrayAdapter<String>(this, R.layout.simple_list_item_1, folderList)
+		listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, folderList)
 	}
 
 	override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
@@ -63,12 +62,12 @@ class FolderListActivity : ListActivity() {
 		if (resultCode == RESULT_OK) {
 			if (requestCode == 1) {
 				val folder = data.getStringExtra(FolderSelectActivity.FOLDER_SELECTED)
-				//TODO Do something with this information
 				folderList.add(removeRoot(folder))
 				folderList.sort()
 				if (listView.adapter is BaseAdapter){
 					(listView.adapter as BaseAdapter).notifyDataSetChanged()
 				}
+				//TODO Save list
 			}
 		}
 	}

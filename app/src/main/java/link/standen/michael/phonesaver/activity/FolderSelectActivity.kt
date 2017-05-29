@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.BottomNavigationView
 import android.widget.ListView
-import link.standen.michael.phonesaver.R
 import android.content.pm.PackageManager
 import android.os.Build
 import android.widget.AdapterView
@@ -15,6 +14,7 @@ import java.io.File
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import link.standen.michael.phonesaver.R.*
 
 /**
  * An activity for selecting a folder in the file system.
@@ -36,9 +36,9 @@ class FolderSelectActivity : ListActivity() {
 
 	private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 		when (item.itemId) {
-			R.id.navigation_here -> {
+			id.navigation_here -> {
 				// Call back to previous activity with the location
-				var intent = Intent()
+				val intent = Intent()
 				intent.putExtra(FOLDER_SELECTED, currentPath)
 				setResult(RESULT_OK, intent)
 				finish()
@@ -50,7 +50,7 @@ class FolderSelectActivity : ListActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.folder_select_activity)
+		setContentView(layout.folder_select_activity)
 
 		// Init list view
 		listView = findViewById(android.R.id.list) as ListView
@@ -60,7 +60,7 @@ class FolderSelectActivity : ListActivity() {
 		}
 
 		// Init bottom buttons
-		val navigation = findViewById(R.id.navigation) as BottomNavigationView
+		val navigation = findViewById(id.navigation) as BottomNavigationView
 		navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 	}
 
@@ -117,7 +117,7 @@ class FolderSelectActivity : ListActivity() {
 			android.R.id.home -> {
 				// Back button
 				onBackPressed()
-				return true;
+				return true
 			}
 
 		}
