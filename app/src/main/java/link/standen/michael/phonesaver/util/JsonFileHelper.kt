@@ -3,8 +3,6 @@ package link.standen.michael.phonesaver.util
 import android.content.Context
 import android.util.Log
 
-import com.google.gson.Gson
-
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -60,13 +58,4 @@ object JsonFileHelper {
 
 		return json
 	}
-
-	/**
-	 * Deletes a file.
-	 * @return True if the delete was successful, false otherwise.
-	 */
-	fun deleteFile(context: Context, filename: String): Boolean {
-		return context.deleteFile(filename)
-	}
-
 }

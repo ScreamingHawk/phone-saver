@@ -9,13 +9,13 @@ import android.widget.ListView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import link.standen.michael.phonesaver.util.JsonFileHelper
+import link.standen.michael.phonesaver.util.LocationHelper
 
 class FolderListActivity : ListActivity() {
 
 	private val TAG = "FolderListActivity"
 
 	private val FOLDER_SELECT_REQUEST_CODE = 1
-	private val FOLDER_LIST_STORE = "FOLDER_STORE"
 
 	private lateinit var listView: ListView
 
@@ -78,7 +78,7 @@ class FolderListActivity : ListActivity() {
 						(listView.adapter as BaseAdapter).notifyDataSetChanged()
 					}
 				}
-				saveFolderList()
+				LocationHelper.saveFolderList(this, folderList)
 			}
 		}
 	}
@@ -95,22 +95,9 @@ class FolderListActivity : ListActivity() {
 	 */
 	private fun loadFolderList(){
 		folderList.clear()
-		val type = object : TypeToken<MutableList<String>>() {}.type
 
-		val fileFolderList: MutableList<String>? = Gson().fromJson<MutableList<String>>(JsonFileHelper.getJsonFromFile(this, FOLDER_LIST_STORE), type)
-		fileFolderList?.let {
-			folderList.addAll(fileFolderList)
-		}
-	}
-
-	/**
-	 * Save the list of folder paths.
-	 */
-	private fun saveFolderList(){
-		if (JsonFileHelper.saveJsonToFile(this, Gson().toJson(folderList), FOLDER_LIST_STORE)){
-			// Success
-		} else {
-			//TODO Toast an error?
+		LocationHelper.loadFolderList(this)?.let {
+			folderList.addAll(it)
 		}
 	}
 }
