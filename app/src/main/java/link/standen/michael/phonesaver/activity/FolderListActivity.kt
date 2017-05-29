@@ -6,10 +6,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ListView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import link.standen.michael.phonesaver.util.JsonFileHelper
 
 class FolderListActivity : ListActivity() {
 
+	private val TAG = "FolderListActivity"
+
 	private val FOLDER_SELECT_REQUEST_CODE = 1
+	private val FOLDER_LIST_STORE = "FOLDER_STORE"
 
 	private lateinit var listView: ListView
 
@@ -34,6 +40,8 @@ class FolderListActivity : ListActivity() {
 		listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
 			//TODO Do something with it?
 		}
+
+		loadFolderList()
 
 		listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, folderList)
 	}
@@ -70,7 +78,7 @@ class FolderListActivity : ListActivity() {
 						(listView.adapter as BaseAdapter).notifyDataSetChanged()
 					}
 				}
-				//TODO Save list
+				saveFolderList()
 			}
 		}
 	}
@@ -80,5 +88,29 @@ class FolderListActivity : ListActivity() {
 	 */
 	private fun removeRoot(location: String): String {
 		return location.replace(rootLocation, "")
+	}
+
+	/**
+	 * Loads the list of folder paths.
+	 */
+	private fun loadFolderList(){
+		folderList.clear()
+		val type = object : TypeToken<MutableList<String>>() {}.type
+
+		val fileFolderList: MutableList<String>? = Gson().fromJson<MutableList<String>>(JsonFileHelper.getJsonFromFile(this, FOLDER_LIST_STORE), type)
+		fileFolderList?.let {
+			folderList.addAll(fileFolderList)
+		}
+	}
+
+	/**
+	 * Save the list of folder paths.
+	 */
+	private fun saveFolderList(){
+		if (JsonFileHelper.saveJsonToFile(this, Gson().toJson(folderList), FOLDER_LIST_STORE)){
+			// Success
+		} else {
+			//TODO Toast an error?
+		}
 	}
 }
