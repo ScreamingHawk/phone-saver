@@ -1,6 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+	<!ENTITY appname "Phone Saver">
+	<!ENTITY author "Michael Standen">
+	]>
+
 <resources>
-	<string name="app_name">Phone Saver</string>
+	<string name="app_name">&appname;</string>
+
+	<!-- Menu -->
 	<string name="action_settings">Settings</string>
+	<string name="action_credits">Credits</string>
 
 	<!-- Folder list -->
 	<string name="delete_button">Delete</string>
@@ -13,4 +22,20 @@
 	<string name="toast_save_successful">Saved successfully</string>
 	<string name="toast_save_failed">Save failed</string>
 	<string name="toast_save_init_error">Error loading save locations</string>
+
+	<!-- Credits -->
+	<string name="credits_version">v%1$s</string>
+	<string name="title_activity_credits">About &appname;</string>
+	<string name="logo_description">Logo</string>
+	<string name="credits_creator">by <a href="https://michael.standen.link">&author;</a></string>
+	<string name="credits_content1">Phone Saver is a simple application for saving files to your
+		phone through the share feature.
+	</string>
+	<string name="credits_content2">You can view the source code, log bugs or request features on
+		<a href="https://github.com/ScreamingHawk/phone-saver">Github</a>.
+	</string>
+	<string name="credits_content3">This application is completely open source; licensed under the
+		<a href="https://tldrlegal.com/license/mit-license">MIT license</a>.
+	</string>
+
 </resources>

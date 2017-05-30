@@ -5,4 +5,6 @@
 	<dimen name="activity_vertical_margin">16dp</dimen>
 
 	<dimen name="description_padding">5dp</dimen>
+
+	<dimen name="credits_padding">16dp</dimen>
 </resources>

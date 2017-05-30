@@ -49,7 +49,8 @@ class FolderListActivity : ListActivity() {
 		// as you specify a parent activity in AndroidManifest.xml.
 		val id = item.itemId
 
-		if (id == link.standen.michael.phonesaver.R.id.action_settings) {
+		if (id == link.standen.michael.phonesaver.R.id.action_credits) {
+			startActivity(Intent(this, CreditsActivity::class.java))
 			return true
 		}
 
