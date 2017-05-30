@@ -1,7 +1,6 @@
 package link.standen.michael.phonesaver.activity
 
 import android.content.Intent
-import android.widget.BaseAdapter
 import android.widget.ListView
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.adapter.DeletableStringArrayAdapter
@@ -9,9 +8,10 @@ import link.standen.michael.phonesaver.util.LocationHelper
 
 class FolderListActivity : ListActivity() {
 
-	private val TAG = "FolderListActivity"
-
-	private val FOLDER_SELECT_REQUEST_CODE = 1
+	companion object {
+		const val TAG = "FolderListActivity"
+		const val FOLDER_SELECT_REQUEST_CODE = 1
+	}
 
 	private lateinit var adapter: DeletableStringArrayAdapter
 

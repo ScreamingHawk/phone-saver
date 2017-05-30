@@ -22,9 +22,8 @@ import link.standen.michael.phonesaver.util.LocationHelper
  */
 class FolderSelectActivity : ListActivity() {
 
-	private val TAG = "FolderSelectActivity"
-
 	companion object {
+		const val TAG = "FolderSelectActivity"
 		const val FOLDER_SELECTED = "FolderSelected"
 	}
 
