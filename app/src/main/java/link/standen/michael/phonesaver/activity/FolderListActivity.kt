@@ -1,6 +1,8 @@
 package link.standen.michael.phonesaver.activity
 
 import android.content.Intent
+import android.database.DataSetObserver
+import android.view.View
 import android.widget.ListView
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.adapter.DeletableStringArrayAdapter
@@ -34,6 +36,11 @@ class FolderListActivity : ListActivity() {
 
 		// Init list view
 		adapter = DeletableStringArrayAdapter(this, R.layout.folder_list_item, folderList)
+		adapter.registerDataSetObserver(object: DataSetObserver() {
+			override fun onChanged() {
+				checkEmptyCharacterList()
+			}
+		})
 		(findViewById(android.R.id.list) as ListView).adapter = adapter
 	}
 
@@ -81,6 +88,18 @@ class FolderListActivity : ListActivity() {
 
 		LocationHelper.loadFolderList(this)?.let {
 			folderList.addAll(it)
+		}
+		checkEmptyCharacterList()
+	}
+
+	/**
+	 * Shows or hides the empty list layout as required.
+	 */
+	fun checkEmptyCharacterList() {
+		if (folderList.isEmpty()) {
+			findViewById(android.R.id.empty).visibility = View.VISIBLE
+		} else {
+			findViewById(android.R.id.empty).visibility = View.GONE
 		}
 	}
 }

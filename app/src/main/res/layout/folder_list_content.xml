@@ -16,4 +16,28 @@
 		android:layout_alignParentTop="true"
 		android:layout_marginBottom="@dimen/fab_margin"/>
 
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:id="@android:id/empty"
+		android:visibility="gone">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/folder_list_empty_title"
+			android:textAppearance="@style/TextAppearance.AppCompat.Large"
+			android:gravity="center_horizontal"
+			android:padding="@dimen/empty_padding"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/folder_list_empty_body"
+			android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+			android:gravity="center_horizontal"
+			android:padding="@dimen/empty_padding"/>
+	</LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
