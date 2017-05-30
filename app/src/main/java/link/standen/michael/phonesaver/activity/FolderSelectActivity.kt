@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import link.standen.michael.phonesaver.R.*
+import link.standen.michael.phonesaver.util.LocationHelper
 
 /**
  * An activity for selecting a folder in the file system.
@@ -27,7 +28,6 @@ class FolderSelectActivity : ListActivity() {
 		const val FOLDER_SELECTED = "FolderSelected"
 	}
 
-	private var rootLocation = Environment.getExternalStorageDirectory().absolutePath
 	private var currentPath = Environment.getExternalStorageDirectory().absolutePath
 
 	private lateinit var listView: ListView
@@ -93,16 +93,9 @@ class FolderSelectActivity : ListActivity() {
 		Log.d(TAG, "Length: "+folderList?.size)
 
 		// Set title
-		this.title = removeRoot(currentPath) + File.separatorChar
+		this.title = LocationHelper.removeRoot(currentPath) + File.separatorChar
 
 		listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, folderList)
-	}
-
-	/**
-	 * Remove the root location from the given path.
-	 */
-	private fun removeRoot(location: String): String {
-		return location.replace(rootLocation, "")
 	}
 
 	/**
@@ -128,7 +121,7 @@ class FolderSelectActivity : ListActivity() {
 	 * Goes up a directory, unless at the top, then exits
 	 */
 	override fun onBackPressed() {
-		if (currentPath == rootLocation) {
+		if (currentPath == LocationHelper.rootLocation) {
 			super.onBackPressed()
 		} else {
 			currentPath = currentPath.substring(0, currentPath.lastIndexOf(File.separatorChar))
