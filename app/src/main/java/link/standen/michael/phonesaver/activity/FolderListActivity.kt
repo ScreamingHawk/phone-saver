@@ -1,10 +1,10 @@
 package link.standen.michael.phonesaver.activity
 
 import android.content.Intent
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ListView
+import link.standen.michael.phonesaver.R
+import link.standen.michael.phonesaver.adapter.DeletableStringArrayAdapter
 import link.standen.michael.phonesaver.util.LocationHelper
 
 class FolderListActivity : ListActivity() {
@@ -13,7 +13,7 @@ class FolderListActivity : ListActivity() {
 
 	private val FOLDER_SELECT_REQUEST_CODE = 1
 
-	private lateinit var listView: ListView
+	private lateinit var adapter: DeletableStringArrayAdapter
 
 	private val folderList: MutableList<String> = ArrayList()
 
@@ -29,15 +29,12 @@ class FolderListActivity : ListActivity() {
 			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
 		}
 
-		// Init list view
-		listView = findViewById(android.R.id.list) as ListView
-		listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-			//TODO Do something with it?
-		}
-
+		// Init list items
 		loadFolderList()
 
-		listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, folderList)
+		// Init list view
+		adapter = DeletableStringArrayAdapter(this, R.layout.folder_list_item, folderList)
+		(findViewById(android.R.id.list) as ListView).adapter = adapter
 	}
 
 	override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
@@ -68,11 +65,9 @@ class FolderListActivity : ListActivity() {
 				if (!folderList.contains(folder)) {
 					folderList.add(folder)
 					folderList.sort()
-					if (listView.adapter is BaseAdapter) {
-						(listView.adapter as BaseAdapter).notifyDataSetChanged()
-					}
+					adapter.notifyDataSetChanged()
+					LocationHelper.saveFolderList(this, folderList)
 				}
-				LocationHelper.saveFolderList(this, folderList)
 			}
 		}
 	}

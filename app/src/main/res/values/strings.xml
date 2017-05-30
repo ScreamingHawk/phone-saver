@@ -2,6 +2,9 @@
 	<string name="app_name">Phone Saver</string>
 	<string name="action_settings">Settings</string>
 
+	<!-- Folder list -->
+	<string name="delete_button">Delete</string>
+
 	<!-- Folder select -->
 	<string name="title_activity_folder_select">Select Folder</string>
 	<string name="navigation_here">Here</string>
