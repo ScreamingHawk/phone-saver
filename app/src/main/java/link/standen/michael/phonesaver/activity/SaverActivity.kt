@@ -3,31 +3,50 @@ package link.standen.michael.phonesaver.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
 import android.provider.OpenableColumns
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.IOException
+import android.widget.*
+import java.io.*
 
 /**
  * An activity to handle saving files.
  * https://developer.android.com/training/sharing/receive.html
  */
-class SaverActivity : AppCompatActivity() {
+class SaverActivity : ListActivity() {
 
 	private val TAG = "SaverActivity"
+
+	private var location: String? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
 
+		LocationHelper.loadFolderList(this)?.let {
+			if (it.size > 1) {
+				// Init list view
+				val listView = findViewById(android.R.id.list) as ListView
+				listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
+					location = LocationHelper.addRoot((view as TextView).text.toString())
+					useIntent()
+				}
+				listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, it)
+				return // await selection
+			} else if (it.size == 1) {
+				// Only one location, just use it
+				location = it[0]
+				useIntent()
+				return // activity dead
+			}
+		}
+
+		Toast.makeText(this, R.string.toast_save_init_error, Toast.LENGTH_LONG).show()
+	}
+
+	fun useIntent() {
 		// Get intent, action and MIME type
 		val action: String? = intent.action
 		val type: String? = intent.type
@@ -69,7 +88,7 @@ class SaverActivity : AppCompatActivity() {
 
 	fun handleSendImage(): Boolean {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			return saveUri(it, getFilename(it), getLocation())
+			return saveUri(it, getFilename(it))
 		}
 		return false
 	}
@@ -77,10 +96,9 @@ class SaverActivity : AppCompatActivity() {
 	fun handleSendMultipleImages(): Boolean {
 		val imageUris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
 		imageUris?.let {
-			val location = getLocation()
 			var success = true
 			imageUris.forEach {
-				success = success && saveUri(it, getFilename(it), location)
+				success = success && saveUri(it, getFilename(it))
 			}
 			return success
 		}
@@ -88,20 +106,9 @@ class SaverActivity : AppCompatActivity() {
 	}
 
 	/**
-	 * Get the location to save the file at
-	 */
-	fun getLocation(): String? {
-		LocationHelper.loadFolderList(this)?.let {
-			//FIXME User select from the list
-			return LocationHelper.addRoot(it[0])
-		}
-		return null
-	}
-
-	/**
 	 * Save the given uri to file
 	 */
-	fun saveUri(uri: Uri, filename: String, location: String?): Boolean {
+	fun saveUri(uri: Uri, filename: String): Boolean {
 		var success = false
 
 		location?.let {
@@ -144,7 +151,10 @@ class SaverActivity : AppCompatActivity() {
 	}
 
 	private fun getFilename(uri: Uri): String {
-		var result: String? = null
+		// Default to last path if null
+		var result: String = uri.lastPathSegment
+
+		// Find the actual filename
 		if (uri.scheme == "content") {
 			contentResolver.query(uri, null, null, null, null)?.use {
 				if (it.moveToFirst()) {
@@ -153,9 +163,6 @@ class SaverActivity : AppCompatActivity() {
 			}
 		}
 
-		// Default to last path if null
-		result = result?: uri.lastPathSegment
-
-		return result!!
+		return result
 	}
 }

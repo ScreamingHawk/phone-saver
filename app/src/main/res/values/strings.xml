@@ -9,4 +9,5 @@
 	<!-- Saving messages -->
 	<string name="toast_save_successful">Saved successfully</string>
 	<string name="toast_save_failed">Save failed</string>
+	<string name="toast_save_init_error">Error loading save locations</string>
 </resources>
