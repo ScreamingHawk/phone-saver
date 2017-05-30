@@ -1,6 +1,7 @@
 package link.standen.michael.phonesaver.util
 
 import android.content.Context
+import android.os.Environment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -9,9 +10,10 @@ import com.google.gson.reflect.TypeToken
  */
 object LocationHelper {
 
-	private val TAG = "LocationHelper"
+	const private val TAG = "LocationHelper"
+	const private val FOLDER_LIST_STORE = "FOLDER_STORE"
 
-	private val FOLDER_LIST_STORE = "FOLDER_STORE"
+	val rootLocation = Environment.getExternalStorageDirectory().absolutePath!!
 
 	/**
 	 * Loads the list of folder paths.
@@ -30,6 +32,20 @@ object LocationHelper {
 		} else {
 			//TODO Toast an error? Or pass it up
 		}
+	}
+
+	/**
+	 * Remove the root location from the given path.
+	 */
+	fun removeRoot(location: String): String {
+		return location.replace(rootLocation, "")
+	}
+
+	/**
+	 * Add the root location to the given path.
+	 */
+	fun addRoot(location: String): String {
+		return rootLocation + location
 	}
 
 }

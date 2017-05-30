@@ -1,14 +1,10 @@
 package link.standen.michael.phonesaver.activity
 
 import android.content.Intent
-import android.os.Environment
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ListView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import link.standen.michael.phonesaver.util.JsonFileHelper
 import link.standen.michael.phonesaver.util.LocationHelper
 
 class FolderListActivity : ListActivity() {
@@ -20,8 +16,6 @@ class FolderListActivity : ListActivity() {
 	private lateinit var listView: ListView
 
 	private val folderList: MutableList<String> = ArrayList()
-
-	private var rootLocation = Environment.getExternalStorageDirectory().absolutePath
 
 	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -69,10 +63,10 @@ class FolderListActivity : ListActivity() {
 		super.onActivityResult(requestCode, resultCode, data)
 		if (resultCode == RESULT_OK) {
 			if (requestCode == 1) {
-				val folder = data.getStringExtra(FolderSelectActivity.FOLDER_SELECTED)
+				val folder = LocationHelper.removeRoot(data.getStringExtra(FolderSelectActivity.FOLDER_SELECTED))
 				// Don't add duplicates
-				if (!folderList.contains(removeRoot(folder))) {
-					folderList.add(removeRoot(folder))
+				if (!folderList.contains(folder)) {
+					folderList.add(folder)
 					folderList.sort()
 					if (listView.adapter is BaseAdapter) {
 						(listView.adapter as BaseAdapter).notifyDataSetChanged()
@@ -81,13 +75,6 @@ class FolderListActivity : ListActivity() {
 				LocationHelper.saveFolderList(this, folderList)
 			}
 		}
-	}
-
-	/**
-	 * Remove the root location from the given path.
-	 */
-	private fun removeRoot(location: String): String {
-		return location.replace(rootLocation, "")
 	}
 
 	/**
