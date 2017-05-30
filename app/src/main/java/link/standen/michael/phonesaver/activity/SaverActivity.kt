@@ -130,7 +130,6 @@ class SaverActivity : AppCompatActivity() {
 				success = true
 			} catch (e: IOException) {
 				Log.e(TAG, "Unable to save file", e)
-				Toast.makeText(this, "$e", Toast.LENGTH_LONG).show()
 			} finally {
 				try {
 					bis?.close()
