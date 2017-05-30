@@ -37,7 +37,7 @@ class SaverActivity : ListActivity() {
 				return // await selection
 			} else if (it.size == 1) {
 				// Only one location, just use it
-				location = it[0]
+				location = LocationHelper.addRoot(it[0])
 				useIntent()
 				return // activity dead
 			}
