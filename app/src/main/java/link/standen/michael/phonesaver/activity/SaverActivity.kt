@@ -40,6 +40,10 @@ class SaverActivity : ListActivity() {
 				location = LocationHelper.addRoot(it[0])
 				useIntent()
 				return // activity dead
+			} else {
+				Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
+				exitApplication()
+				return // activity dead
 			}
 		}
 
@@ -76,7 +80,13 @@ class SaverActivity : ListActivity() {
 			Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
 		}
 
-		// Kill everything
+		exitApplication()
+	}
+
+	/**
+	 * Exists the application is the best way available for the Android version
+	 */
+	fun exitApplication() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			finishAndRemoveTask()
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
