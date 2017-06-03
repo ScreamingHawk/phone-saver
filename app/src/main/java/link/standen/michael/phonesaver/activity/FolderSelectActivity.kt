@@ -121,7 +121,10 @@ class FolderSelectActivity : ListActivity() {
 	 */
 	override fun onBackPressed() {
 		if (currentPath == LocationHelper.rootLocation) {
-			super.onBackPressed()
+			val intent = Intent()
+			intent.putExtra(FOLDER_SELECTED, currentPath)
+			setResult(RESULT_CANCELED, intent)
+			finish()
 		} else {
 			currentPath = currentPath.substring(0, currentPath.lastIndexOf(File.separatorChar))
 			updateListView()
