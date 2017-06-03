@@ -85,7 +85,7 @@ class FolderSelectActivity : ListActivity() {
 				// Get the file path
 				?.map { removeCurrent(it.absolutePath) }
 				// Sort it
-				?.sorted()
+				?.sortedBy { it.toLowerCase() }
 				// Default to empty
 				?: ArrayList<String>()
 

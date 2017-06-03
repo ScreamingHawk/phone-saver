@@ -72,7 +72,7 @@ class FolderListActivity : ListActivity() {
 				// Don't add duplicates
 				if (!folderList.contains(folder)) {
 					folderList.add(folder)
-					folderList.sort()
+					folderList.sortBy { it.toLowerCase() }
 					adapter.notifyDataSetChanged()
 					LocationHelper.saveFolderList(this, folderList)
 				}
