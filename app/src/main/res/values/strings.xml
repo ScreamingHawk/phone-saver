@@ -29,9 +29,8 @@
 
 	<!-- Debug / Error -->
 	<string name="not_supported1">Unsupported Content Type</string>
-	<string name="not_supported2">Please
-		&lt;a href="https://github.com/ScreamingHawk/phone-saver/issues/new?title=%1$s&amp;body=Unsupported">raise a feature request&lt;/a>
-		with this content type so &author; can add support.</string>
+	<string name="not_supported2">Please &lt;a href="%1$s">raise a feature request&lt;/a> with this
+		content type so &author; can add support.</string>
 
 	<!-- Credits -->
 	<string name="credits_version">v%1$s</string>

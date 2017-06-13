@@ -118,7 +118,15 @@ class SaverActivity : ListActivity() {
 		findViewById(android.R.id.list).visibility = View.GONE
 		// Build and show unsupported message
 		val supportView = findViewById(R.id.not_supported2) as TextView
-		supportView.text = Html.fromHtml(resources.getString(R.string.not_supported2, type))
+		// Generate issue text here as should always be English and does not need to be in strings.xml
+		val issueLink = String.format(
+				"https://github.com/ScreamingHawk/phone-saver/issues/new?title=%s%s&body=%s%s",
+				"Unsupported Content Type - ",
+				type,
+				type,
+				" is not supported. Please add support for this type.%0D%0A%0D%0AIssue via Phone Saver")
+				.replace(" ", "%20")
+		supportView.text = Html.fromHtml(resources.getString(R.string.not_supported2, issueLink))
 		supportView.movementMethod = LinkMovementMethod.getInstance()
 		findViewById(R.id.not_supported).visibility = View.VISIBLE
 	}
