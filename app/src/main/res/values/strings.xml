@@ -27,6 +27,12 @@
 	<string name="toast_save_init_error">Error loading save locations</string>
 	<string name="toast_save_init_no_locations">Please open the app to add save locations</string>
 
+	<!-- Debug / Error -->
+	<string name="not_supported1">Unsupported Content Type</string>
+	<string name="not_supported2">Please
+		&lt;a href="https://github.com/ScreamingHawk/phone-saver/issues/new?title=Unsupported&amp;body=%1$s">raise a feature request&lt;/a>
+		with this content type so &author; can add support.</string>
+
 	<!-- Credits -->
 	<string name="credits_version">v%1$s</string>
 	<string name="title_activity_credits">About &appname;</string>

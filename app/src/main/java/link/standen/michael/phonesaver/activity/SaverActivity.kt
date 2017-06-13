@@ -8,6 +8,9 @@ import android.util.Log
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
 import android.provider.OpenableColumns
+import android.text.Html
+import android.text.method.LinkMovementMethod
+import android.view.View
 import android.widget.*
 import java.io.*
 
@@ -25,29 +28,52 @@ class SaverActivity : ListActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
 
-		LocationHelper.loadFolderList(this)?.let {
-			if (it.size > 1) {
-				// Init list view
-				val listView = findViewById(android.R.id.list) as ListView
-				listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-					location = LocationHelper.addRoot((view as TextView).text.toString())
+		if (testSupported()) {
+			LocationHelper.loadFolderList(this)?.let {
+				if (it.size > 1) {
+					// Init list view
+					val listView = findViewById(android.R.id.list) as ListView
+					listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
+						location = LocationHelper.addRoot((view as TextView).text.toString())
+						useIntent()
+					}
+					listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, it)
+					return // await selection
+				} else if (it.size == 1) {
+					// Only one location, just use it
+					location = LocationHelper.addRoot(it[0])
 					useIntent()
+					return // activity dead
+				} else {
+					Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
+					exitApplication()
+					return // activity dead
 				}
-				listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, it)
-				return // await selection
-			} else if (it.size == 1) {
-				// Only one location, just use it
-				location = LocationHelper.addRoot(it[0])
-				useIntent()
-				return // activity dead
-			} else {
-				Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
-				exitApplication()
-				return // activity dead
+			}
+
+			Toast.makeText(this, R.string.toast_save_init_error, Toast.LENGTH_LONG).show()
+		} else {
+			showNotSupported()
+		}
+	}
+
+	fun testSupported(): Boolean {
+		// Get intent, action and MIME type
+		val action: String? = intent.action
+		val type: String? = intent.type
+
+		type?.let {
+			if (Intent.ACTION_SEND == action) {
+				if (type.startsWith("image/")) {
+					return true
+				}
+			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
+				if (type.startsWith("image/")) {
+					return true
+				}
 			}
 		}
-
-		Toast.makeText(this, R.string.toast_save_init_error, Toast.LENGTH_LONG).show()
+		return false
 	}
 
 	fun useIntent() {
@@ -81,6 +107,20 @@ class SaverActivity : ListActivity() {
 		}
 
 		exitApplication()
+	}
+
+	/**
+	 * Show the not supported information.
+	 */
+	fun showNotSupported() {
+		val type: String? = intent.type
+		// Hide list
+		findViewById(android.R.id.list).visibility = View.GONE
+		// Build and show unsupported message
+		val supportView = findViewById(R.id.not_supported2) as TextView
+		supportView.text = Html.fromHtml(resources.getString(R.string.not_supported2, type))
+		supportView.movementMethod = LinkMovementMethod.getInstance()
+		findViewById(R.id.not_supported).visibility = View.VISIBLE
 	}
 
 	/**
