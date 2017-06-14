@@ -87,12 +87,12 @@ class SaverActivity : ListActivity() {
 			if (Intent.ACTION_SEND == action) {
 				if (type.startsWith("image/")) {
 					// Handle single image being sent
-					done = handleSendImage()
+					done = handleImage()
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
 				if (type.startsWith("image/")) {
 					// Handle multiple images being sent
-					done = handleSendMultipleImages()
+					done = handleMultipleImages()
 				}
 			} else {
 				// Handle other intents, such as being started from the home screen
@@ -144,14 +144,14 @@ class SaverActivity : ListActivity() {
 		}
 	}
 
-	fun handleSendImage(): Boolean {
+	fun handleImage(): Boolean {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			return saveUri(it, getFilename(it))
 		}
 		return false
 	}
 
-	fun handleSendMultipleImages(): Boolean {
+	fun handleMultipleImages(): Boolean {
 		val imageUris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
 		imageUris?.let {
 			var success = true
