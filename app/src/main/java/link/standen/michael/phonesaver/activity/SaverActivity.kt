@@ -1,7 +1,10 @@
 package link.standen.michael.phonesaver.activity
 
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +16,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.*
 import java.io.*
+import java.net.URL
 
 /**
  * An activity to handle saving files.
@@ -64,7 +68,7 @@ class SaverActivity : ListActivity() {
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
-				if (type.startsWith("image/")) {
+				if (type.startsWith("image/") || type == "text/plain") {
 					return true
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
@@ -88,6 +92,9 @@ class SaverActivity : ListActivity() {
 				if (type.startsWith("image/")) {
 					// Handle single image being sent
 					done = handleImage()
+				} else if (type == "text/plain") {
+					handleText()
+					return // HandleText is async
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
 				if (type.startsWith("image/")) {
@@ -99,14 +106,7 @@ class SaverActivity : ListActivity() {
 			}
 		}
 
-		// Notify user
-		if (done){
-			Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
-		} else {
-			Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
-		}
-
-		exitApplication()
+		finishIntent(done)
 	}
 
 	/**
@@ -152,6 +152,22 @@ class SaverActivity : ListActivity() {
 	}
 
 	/**
+	 * Call when the intent is finished
+	 */
+	fun finishIntent(success: Boolean?) {
+		// Notify user
+		if (success == null){
+			Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
+		} else if (success!!){
+			Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
+		} else {
+			Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
+		}
+
+		exitApplication()
+	}
+
+	/**
 	 * Exists the application is the best way available for the Android version
 	 */
 	fun exitApplication() {
@@ -169,6 +185,29 @@ class SaverActivity : ListActivity() {
 			return saveUri(it, getFilename(it))
 		}
 		return false
+	}
+
+	fun handleText() {
+		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+			object: AsyncTask<Unit, Unit, Unit>(){
+				var success: Boolean? = false
+
+				override fun doInBackground(vararg params: Unit?) {
+					val url = URL(it)
+					val connection = url.openConnection()
+					val contentType = connection.getHeaderField("Content-Type")
+					val filename = intent.getStringExtra(Intent.EXTRA_SUBJECT)?: Uri.parse(it).lastPathSegment
+					if (contentType.startsWith("image/")){
+						success = saveUrl(Uri.parse(it), filename)
+					}
+				}
+
+				override fun onPostExecute(result: Unit?) {
+					super.onPostExecute(result)
+					finishIntent(success)
+				}
+			}.execute()
+		}
 	}
 
 	fun handleMultipleImages(): Boolean {
@@ -191,40 +230,78 @@ class SaverActivity : ListActivity() {
 
 		location?.let {
 			val sourceFilename = uri.path
-			val destinationFilename = location + File.separatorChar + filename
+			val destinationFilename = it + File.separatorChar + filename
 
 			Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
 
-			var bis: InputStream? = null
-			var bos: BufferedOutputStream? = null
-
-			try {
-				val fout = File(destinationFilename)
-				if (!fout.exists()){
-					fout.createNewFile()
-				}
-				bis = contentResolver.openInputStream(uri)
-				bos = BufferedOutputStream(FileOutputStream(fout, false))
-				val buf = ByteArray(1024)
-				bis.read(buf)
-				do {
-					bos.write(buf)
-				} while (bis.read(buf) != -1)
-
-				// Done
-				success = true
-			} catch (e: IOException) {
-				Log.e(TAG, "Unable to save file", e)
-			} finally {
-				try {
-					bis?.close()
-					bos?.close()
-				} catch (e: IOException) {
-					Log.e(TAG, "Unable to close stream", e)
-				}
+			contentResolver.openInputStream(uri)?.use { bis ->
+				success = saveStream(bis, destinationFilename)
 			}
 		}
 
+		return success
+	}
+
+	/**
+	 * Save the given url to file
+	 */
+	fun saveUrl(uri: Uri, filename: String): Boolean? {
+		var success: Boolean? = false
+
+		location?.let {
+			val sourceFilename = uri.toString()
+			val destinationFilename = it + File.separatorChar + filename
+
+			Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
+
+			Log.d(TAG, "remove root: "+LocationHelper.removeRoot(it))
+
+			val fout = File(destinationFilename)
+			if (!fout.exists()){
+				fout.createNewFile()
+			}
+
+			val downloader = DownloadManager.Request(uri)
+			downloader.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+					.setAllowedOverRoaming(true)
+					.setTitle(filename)
+					.setDescription(resources.getString(R.string.downloader_description, sourceFilename))
+					.setDestinationInExternalPublicDir(LocationHelper.removeRoot(it), filename)
+
+			(getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(downloader)
+
+			success = null
+		}
+
+		return success
+	}
+
+	private fun saveStream(bis: InputStream, destinationFilename: String): Boolean{
+		var success = false
+		var bos: OutputStream? = null
+		try {
+			val fout = File(destinationFilename)
+			if (!fout.exists()){
+				fout.createNewFile()
+			}
+			bos = BufferedOutputStream(FileOutputStream(fout, false))
+			val buf = ByteArray(1024)
+			bis.read(buf)
+			do {
+				bos.write(buf)
+			} while (bis.read(buf) != -1)
+
+			// Done
+			success = true
+		} catch (e: IOException) {
+			Log.e(TAG, "Unable to save file", e)
+		} finally {
+			try {
+				bos?.close()
+			} catch (e: IOException) {
+				Log.e(TAG, "Unable to close stream", e)
+			}
+		}
 		return success
 	}
 
@@ -240,6 +317,13 @@ class SaverActivity : ListActivity() {
 				}
 			}
 		}
+
+		// Do some validation
+		if (result.contains(" ")){
+			// Take first section before a space
+			result = result.split(" ")[0]
+		}
+		//TODO More validation
 
 		return result
 	}

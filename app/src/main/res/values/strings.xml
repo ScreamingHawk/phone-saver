@@ -23,9 +23,11 @@
 
 	<!-- Saving messages -->
 	<string name="toast_save_successful">Saved successfully</string>
+	<string name="toast_save_in_progress">Save in progress</string>
 	<string name="toast_save_failed">Save failed</string>
 	<string name="toast_save_init_error">Error loading save locations</string>
 	<string name="toast_save_init_no_locations">Please open the app to add save locations</string>
+	<string name="downloader_description">Saving %1$s</string>
 
 	<!-- Debug / Error -->
 	<string name="not_supported1">Unsupported Content Type</string>
