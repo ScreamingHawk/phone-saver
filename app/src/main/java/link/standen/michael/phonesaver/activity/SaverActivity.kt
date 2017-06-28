@@ -70,7 +70,7 @@ class SaverActivity : ListActivity() {
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
-				if (type.startsWith("image/") || type == "text/plain") {
+				if (type.startsWith("image/") || type.startsWith("video/") || type == "text/plain") {
 					return true
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
@@ -91,9 +91,9 @@ class SaverActivity : ListActivity() {
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
-				if (type.startsWith("image/")) {
-					// Handle single image being sent
-					done = handleImage()
+				if (type.startsWith("image/") || type.startsWith("video/")) {
+					// Handle single image/video being sent
+					done = handleImageVideo()
 				} else if (type == "text/plain") {
 					handleText()
 					return // HandleText is async
@@ -182,7 +182,7 @@ class SaverActivity : ListActivity() {
 		}
 	}
 
-	fun handleImage(): Boolean {
+	fun handleImageVideo(): Boolean {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			return saveUri(it, getFilename(it))
 		}
@@ -200,7 +200,7 @@ class SaverActivity : ListActivity() {
 					val contentType = connection.getHeaderField("Content-Type")
 					Log.d(TAG, "ContentType: $contentType")
 					val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT)?: Uri.parse(it).lastPathSegment)
-					if (contentType.startsWith("image/")){
+					if (contentType.startsWith("image/") || contentType.startsWith("video/")){
 						success = saveUrl(Uri.parse(it), filename)
 					}
 				}
