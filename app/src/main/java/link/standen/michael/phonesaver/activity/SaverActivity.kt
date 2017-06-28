@@ -65,6 +65,8 @@ class SaverActivity : ListActivity() {
 		// Get intent, action and MIME type
 		val action: String? = intent.action
 		val type: String? = intent.type
+		Log.d(TAG, "Action: $action")
+		Log.d(TAG, "Type: $type")
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
@@ -158,7 +160,7 @@ class SaverActivity : ListActivity() {
 		// Notify user
 		if (success == null){
 			Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
-		} else if (success!!){
+		} else if (success){
 			Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
 		} else {
 			Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
@@ -196,7 +198,8 @@ class SaverActivity : ListActivity() {
 					val url = URL(it)
 					val connection = url.openConnection()
 					val contentType = connection.getHeaderField("Content-Type")
-					val filename = intent.getStringExtra(Intent.EXTRA_SUBJECT)?: Uri.parse(it).lastPathSegment
+					Log.d(TAG, "ContentType: $contentType")
+					val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT)?: Uri.parse(it).lastPathSegment)
 					if (contentType.startsWith("image/")){
 						success = saveUrl(Uri.parse(it), filename)
 					}
@@ -306,24 +309,36 @@ class SaverActivity : ListActivity() {
 	}
 
 	private fun getFilename(uri: Uri): String {
-		// Default to last path if null
-		var result: String = uri.lastPathSegment
-
 		// Find the actual filename
 		if (uri.scheme == "content") {
 			contentResolver.query(uri, null, null, null, null)?.use {
 				if (it.moveToFirst()) {
-					result = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+					return getFilename(it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)))
 				}
 			}
 		}
+		return getFilename(uri.lastPathSegment)
+	}
+
+	private fun getFilename(s: String): String {
+		// Default to last path if null
+		var result: String = s
+
+		Log.d(TAG, "Converting to filename: $result")
 
 		// Do some validation
+		if (result.contains("/")){
+			// Take last section after a slash
+			val results = result.split("/")
+			result = results[results.size - 1]
+		}
 		if (result.contains(" ")){
 			// Take first section before a space
 			result = result.split(" ")[0]
 		}
 		//TODO More validation
+
+		Log.d(TAG, "Converted filename: $result")
 
 		return result
 	}
