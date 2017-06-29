@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+	<!ENTITY appname "Phone Saver">
+	<!ENTITY author "Michael Standen">
+	]>
+
+<resources>
+	<string name="app_name">&appname;</string>
+
+	<!-- Menu -->
+	<string name="action_settings">設定</string>
+	<string name="action_credits">クレジット</string>
+
+	<!-- Folder list -->
+	<string name="delete_button">削除</string>
+
+	<string name="folder_list_empty_title">Phone Saver へようこそ!</string>
+	<string name="folder_list_empty_body">下のボタンで保存する場所を追加してください。</string>
+
+	<!-- Folder select -->
+	<string name="title_activity_folder_select">フォルダーの選択</string>
+	<string name="navigation_here">ここ</string>
+
+	<!-- Saving messages -->
+	<string name="toast_save_successful">正常に保存しました</string>
+	<string name="toast_save_in_progress">保存しています</string>
+	<string name="toast_save_failed">保存に失敗しました</string>
+	<string name="toast_save_init_error">保存場所の読み込み時にエラーが発生しました</string>
+	<string name="toast_save_init_no_locations">アプリを開いて保存場所を追加してください</string>
+	<string name="downloader_description">%1$s を保存中</string>
+
+	<!-- Debug / Error -->
+	<string name="not_supported1">サポートしていないコンテンツタイプ</string>
+	<string name="not_supported2">このコンテンツタイプの &lt;a href="%1$s">機能リクエスト&lt;/a>
+		をすると、&author; がサポートできます。</string>
+
+	<!-- Credits -->
+	<string name="credits_version">v%1$s</string>
+	<string name="title_activity_credits">&appname; について</string>
+	<string name="logo_description">ロゴ</string>
+	<string name="credits_creator">by <a href="https://michael.standen.link">&author;</a></string>
+	<string name="credits_content1">Phone Saver は共有機能を通じてファイルを電話に保存する
+		シンプルなアプリケーションです。
+	</string>
+	<string name="credits_content2"><a href="https://github.com/ScreamingHawk/phone-saver">Github</a>
+		で、ソースコードの参照、バグの記録、機能のリクエストができます。
+	</string>
+	<string name="credits_content3">このアプリケーションは完全にオープンソースです。
+		<a href="https://tldrlegal.com/license/mit-license">MIT ライセンス</a> でライセンスされます。
+	</string>
+
+</resources>
