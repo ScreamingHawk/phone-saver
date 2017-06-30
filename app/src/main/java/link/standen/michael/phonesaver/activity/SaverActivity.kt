@@ -3,6 +3,7 @@ package link.standen.michael.phonesaver.activity
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
@@ -143,6 +144,14 @@ class SaverActivity : ListActivity() {
                 bob.append("%0D%0AHTML Text: ")
                 bob.append(it)
             }
+		}
+		// Version
+		try {
+			val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+			bob.append("%0D%0AApplication Version: ")
+			bob.append(versionName)
+		} catch (e: PackageManager.NameNotFoundException) {
+			Log.e(TAG, "Unable to get package version", e)
 		}
 		bob.append("%0D%0A%0D%0AMore information: TYPE_ADDITIONAL_INFORMATION_HERE")
 		bob.append("%0D%0A%0D%0AThank you")
