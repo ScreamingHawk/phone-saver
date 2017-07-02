@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.*
 import java.io.*
 import java.net.URL
+import java.util.regex.Pattern
 
 /**
  * An activity to handle saving files.
@@ -26,6 +27,8 @@ import java.net.URL
 class SaverActivity : ListActivity() {
 
 	private val TAG = "SaverActivity"
+
+	private val FILENAME_REGEX = "[^a-zA-Z0-9æøåÆØÅ_ -]"
 
 	private var location: String? = null
 
@@ -344,6 +347,11 @@ class SaverActivity : ListActivity() {
 		if (result.contains(" ")){
 			// Take first section before a space
 			result = result.split(" ")[0]
+		}
+		// Remove non-filename characters
+		val matcher = Pattern.compile(FILENAME_REGEX).matcher(result)
+		if (matcher.matches()){
+			result = matcher.replaceAll("")
 		}
 		//TODO More validation
 
