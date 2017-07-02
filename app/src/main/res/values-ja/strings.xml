@@ -13,6 +13,7 @@
 
 	<!-- Folder list -->
 	<string name="delete_button">削除</string>
+	<string name="back_folder">\u2191 戻る</string>
 
 	<string name="folder_list_empty_title">Phone Saver へようこそ!</string>
 	<string name="folder_list_empty_body">下のボタンで保存する場所を追加してください。</string>
