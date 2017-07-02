@@ -13,6 +13,7 @@
 
 	<!-- Folder list -->
 	<string name="delete_button">Delete</string>
+	<string name="back_folder">\u2191 Back</string>
 
 	<string name="folder_list_empty_title">Welcome to Phone Saver!</string>
 	<string name="folder_list_empty_body">Please add a save location with the button below.</string>

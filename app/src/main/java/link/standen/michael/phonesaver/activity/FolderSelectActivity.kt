@@ -27,7 +27,7 @@ class FolderSelectActivity : ListActivity() {
 		const val FOLDER_SELECTED = "FolderSelected"
 	}
 
-	private var currentPath = Environment.getExternalStorageDirectory().absolutePath
+	private var currentPath: String = Environment.getExternalStorageDirectory().absolutePath
 
 	private lateinit var listView: ListView
 
@@ -54,8 +54,19 @@ class FolderSelectActivity : ListActivity() {
 		// Init list view
 		listView = findViewById(android.R.id.list) as ListView
 		listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-			currentPath += (view as TextView).text.toString()
-			updateListView()
+			with(view as TextView){
+				if (view.text.toString() == resources.getString(string.back_folder)) {
+					val back = getBackLocation()
+					if (back == null) {
+						cancelIntent()
+					} else {
+						currentPath = back
+					}
+				} else {
+					currentPath += view.text.toString()
+				}
+				updateListView()
+			}
 		}
 
 		// Init bottom buttons
@@ -79,16 +90,22 @@ class FolderSelectActivity : ListActivity() {
 	private fun updateListView() {
 		Log.v(TAG, "Path is: "+currentPath)
 
-		folderList = File(currentPath).listFiles()
+		val fList = File(currentPath).listFiles()
 				// Directories only
 				?.filter { it.isDirectory }
 				// Get the file path
 				?.map { removeCurrent(it.absolutePath) }
 				// Sort it
 				?.sortedBy { it.toLowerCase() }
+				// Convert to mutable
+				?.toMutableList()
 				// Default to empty
 				?: ArrayList<String>()
 
+		// Add back button as first item
+		fList.add(0, resources.getString(string.back_folder))
+		
+		folderList = fList.toList()
 		Log.d(TAG, "Length: "+folderList?.size)
 
 		// Set title
@@ -120,14 +137,33 @@ class FolderSelectActivity : ListActivity() {
 	 * Goes up a directory, unless at the top, then exits
 	 */
 	override fun onBackPressed() {
-		if (currentPath == LocationHelper.rootLocation) {
-			val intent = Intent()
-			intent.putExtra(FOLDER_SELECTED, currentPath)
-			setResult(RESULT_CANCELED, intent)
-			finish()
+		val back = getBackLocation()
+		if (back == null || currentPath == LocationHelper.rootLocation) {
+			cancelIntent()
 		} else {
-			currentPath = currentPath.substring(0, currentPath.lastIndexOf(File.separatorChar))
+			currentPath = back
 			updateListView()
+		}
+	}
+
+	/**
+	 * Cancels the current activity
+	 */
+	private fun cancelIntent() {
+		val intent = Intent()
+		intent.putExtra(FOLDER_SELECTED, currentPath)
+		setResult(RESULT_CANCELED, intent)
+		finish()
+	}
+
+	/**
+	 * Returns the back location for the current path
+	 */
+	private fun getBackLocation(): String? {
+		if (currentPath.contains(File.separatorChar)) {
+			return currentPath.substring(0, currentPath.lastIndexOf(File.separatorChar))
+		} else {
+			return null
 		}
 	}
 
