@@ -29,6 +29,7 @@ class SaverActivity : ListActivity() {
 	private val TAG = "SaverActivity"
 
 	private val FILENAME_REGEX = "[^a-zA-Z0-9æøåÆØÅ_ -]"
+	private val FILENAME_LENGTH_LIMIT = 100
 
 	private var location: String? = null
 
@@ -336,7 +337,7 @@ class SaverActivity : ListActivity() {
 		// Default to last path if null
 		var result: String = s
 
-		Log.d(TAG, "Converting to filename: $result")
+		Log.d(TAG, "Converting filename: $result")
 
 		// Do some validation
 		if (result.contains("/")){
@@ -353,7 +354,10 @@ class SaverActivity : ListActivity() {
 		if (matcher.matches()){
 			result = matcher.replaceAll("")
 		}
-		//TODO More validation
+		if (result.length > FILENAME_LENGTH_LIMIT){
+			// Do not go over the filename length limit
+			result = result.substring(0, FILENAME_LENGTH_LIMIT)
+		}
 
 		Log.d(TAG, "Converted filename: $result")
 
