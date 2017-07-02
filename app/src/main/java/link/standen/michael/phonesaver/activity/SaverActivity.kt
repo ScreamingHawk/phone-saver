@@ -381,8 +381,10 @@ class SaverActivity : ListActivity() {
 				.replaceAfter(" ", "")
 				// Remove non-filename characters
 				.replace(Regex(FILENAME_REGEX), "")
-				// Do not go over the filename length limit
-				.substring(0, FILENAME_LENGTH_LIMIT)
+		if (result.length > FILENAME_LENGTH_LIMIT) {
+			// Do not go over the filename length limit
+			result = result.substring(0, FILENAME_LENGTH_LIMIT)
+		}
 
 		Log.d(TAG, "Converted filename: $result")
 
