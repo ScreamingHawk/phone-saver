@@ -93,7 +93,7 @@ class SaverActivity : ListActivity() {
 		val action: String? = intent.action
 		val type: String? = intent.type
 
-		var done = false
+		var done: Boolean? = false
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
@@ -101,8 +101,10 @@ class SaverActivity : ListActivity() {
 					// Handle single image/video being sent
 					done = handleImageVideo()
 				} else if (type == "text/plain") {
-					handleText()
-					return // HandleText is async
+					done = handleText()
+					if (done == null) {
+						return // HandleText is handled async
+					}
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
 				if (type.startsWith("image/")) {
@@ -203,7 +205,14 @@ class SaverActivity : ListActivity() {
 		return false
 	}
 
-	fun handleText() {
+	fun handleText(): Boolean? {
+		// Try save stream first
+		val uri: Uri? = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+		if (uri != null){
+			return saveUri(uri, getFilename(uri))
+		}
+
+		// Save the text
 		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
 			object: AsyncTask<Unit, Unit, Unit>(){
 				var success: Boolean? = false
@@ -232,6 +241,7 @@ class SaverActivity : ListActivity() {
 				}
 			}.execute()
 		}
+		return null
 	}
 
 	fun handleMultipleImages(): Boolean {
