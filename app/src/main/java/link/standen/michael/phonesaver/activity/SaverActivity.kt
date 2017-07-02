@@ -340,24 +340,16 @@ class SaverActivity : ListActivity() {
 		Log.d(TAG, "Converting filename: $result")
 
 		// Do some validation
-		if (result.contains("/")){
-			// Take last section after a slash
-			val results = result.split("/")
-			result = results[results.size - 1]
-		}
-		if (result.contains(" ")){
-			// Take first section before a space
-			result = result.split(" ")[0]
-		}
-		// Remove non-filename characters
-		val matcher = Pattern.compile(FILENAME_REGEX).matcher(result)
-		if (matcher.matches()){
-			result = matcher.replaceAll("")
-		}
-		if (result.length > FILENAME_LENGTH_LIMIT){
-			// Do not go over the filename length limit
-			result = result.substring(0, FILENAME_LENGTH_LIMIT)
-		}
+
+		result = result
+				// Take last section after a slash
+				.replaceBeforeLast("/", "")
+				// Take first section before a space
+				.replaceAfter(" ", "")
+				// Remove non-filename characters
+				.replace(Regex(FILENAME_REGEX), "")
+				// Do not go over the filename length limit
+				.substring(0, FILENAME_LENGTH_LIMIT)
 
 		Log.d(TAG, "Converted filename: $result")
 
