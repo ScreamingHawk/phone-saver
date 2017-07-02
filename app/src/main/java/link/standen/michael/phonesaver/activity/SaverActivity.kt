@@ -17,6 +17,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.*
 import java.io.*
+import java.net.MalformedURLException
 import java.net.URL
 import java.util.regex.Pattern
 
@@ -208,13 +209,20 @@ class SaverActivity : ListActivity() {
 				var success: Boolean? = false
 
 				override fun doInBackground(vararg params: Unit?) {
-					val url = URL(it)
-					val connection = url.openConnection()
-					val contentType = connection.getHeaderField("Content-Type")
-					Log.d(TAG, "ContentType: $contentType")
-					val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT)?: Uri.parse(it).lastPathSegment)
-					if (contentType.startsWith("image/") || contentType.startsWith("video/")){
-						success = saveUrl(Uri.parse(it), filename)
+					try {
+						// It's a URL
+						val url = URL(it)
+						val connection = url.openConnection()
+						val contentType = connection.getHeaderField("Content-Type")
+						Log.d(TAG, "ContentType: $contentType")
+						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
+						if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
+							success = saveUrl(Uri.parse(it), filename)
+						}
+					} catch (e: MalformedURLException){
+						// It's just some text
+						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it)
+						success = saveString(it, filename)
 					}
 				}
 
@@ -244,15 +252,13 @@ class SaverActivity : ListActivity() {
 	fun saveUri(uri: Uri, filename: String): Boolean {
 		var success = false
 
-		location?.let {
-			val sourceFilename = uri.path
-			val destinationFilename = it + File.separatorChar + filename
+		val sourceFilename = uri.path
+		val destinationFilename = safeAddPath(filename)
 
-			Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
+		Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
 
-			contentResolver.openInputStream(uri)?.use { bis ->
-				success = saveStream(bis, destinationFilename)
-			}
+		contentResolver.openInputStream(uri)?.use { bis ->
+			success = saveStream(bis, destinationFilename)
 		}
 
 		return success
@@ -266,7 +272,7 @@ class SaverActivity : ListActivity() {
 
 		location?.let {
 			val sourceFilename = uri.toString()
-			val destinationFilename = it + File.separatorChar + filename
+			val destinationFilename = safeAddPath(filename)
 
 			Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
 
@@ -292,7 +298,7 @@ class SaverActivity : ListActivity() {
 		return success
 	}
 
-	private fun saveStream(bis: InputStream, destinationFilename: String): Boolean{
+	private fun saveStream(bis: InputStream, destinationFilename: String): Boolean {
 		var success = false
 		var bos: OutputStream? = null
 		try {
@@ -314,6 +320,33 @@ class SaverActivity : ListActivity() {
 		} finally {
 			try {
 				bos?.close()
+			} catch (e: IOException) {
+				Log.e(TAG, "Unable to close stream", e)
+			}
+		}
+		return success
+	}
+
+	private fun saveString(s: String, filename: String): Boolean {
+		val destinationFilename = safeAddPath(filename)
+		var success = false
+		var bw: BufferedWriter? = null
+
+		try {
+			val fout = File(destinationFilename)
+			if (!fout.exists()){
+				fout.createNewFile()
+			}
+			bw = BufferedWriter(FileWriter(destinationFilename))
+			bw.write(s)
+
+			// Done
+			success = true
+		} catch (e: IOException) {
+			Log.e(TAG, "Unable to save file", e)
+		} finally {
+			try {
+				bw?.close()
 			} catch (e: IOException) {
 				Log.e(TAG, "Unable to close stream", e)
 			}
@@ -354,5 +387,14 @@ class SaverActivity : ListActivity() {
 		Log.d(TAG, "Converted filename: $result")
 
 		return result
+	}
+
+	private fun safeAddPath(filename: String): String {
+		location?.let {
+			if (!filename.startsWith(it)){
+				return it + File.separatorChar + filename
+			}
+		}
+		return filename
 	}
 }
