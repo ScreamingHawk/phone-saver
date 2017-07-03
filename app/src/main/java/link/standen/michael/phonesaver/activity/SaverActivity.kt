@@ -226,6 +226,8 @@ class SaverActivity : ListActivity() {
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
 						if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
 							saveUrl(Uri.parse(it), filename, callback, dryRun)
+						} else {
+							callback(false)
 						}
 					} catch (e: MalformedURLException){
 						// It's just some text
@@ -256,7 +258,7 @@ class SaverActivity : ListActivity() {
 					}
 				}, dryRun)
 			}
-		}
+		} ?: callback(false)
 	}
 
 	/**
