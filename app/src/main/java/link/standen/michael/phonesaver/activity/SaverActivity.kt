@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
@@ -162,6 +163,7 @@ class SaverActivity : ListActivity() {
 	 */
 	fun finishIntent(success: Boolean?) {
 		// Notify user
+		Looper.prepare()
 		if (success == null){
 			Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
 		} else if (success){
@@ -207,8 +209,6 @@ class SaverActivity : ListActivity() {
 		// Save the text
 		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
 			object: AsyncTask<Unit, Unit, Unit>(){
-				var completeSuccess: Boolean? = false
-
 				override fun doInBackground(vararg params: Unit?) {
 					try {
 						// It's a URL
@@ -219,23 +219,13 @@ class SaverActivity : ListActivity() {
 						debugInfo.add(Pair("URL Content-Type", contentType))
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
 						if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
-							saveUrl(Uri.parse(it), filename, { success ->
-								completeSuccess = success
-							}, dryRun)
+							saveUrl(Uri.parse(it), filename, callback, dryRun)
 						}
 					} catch (e: MalformedURLException){
 						// It's just some text
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it)
-						saveString(it, filename, { success ->
-							completeSuccess = success
-						}, dryRun)
+						saveString(it, filename, callback, dryRun)
 					}
-				}
-
-				override fun onPostExecute(result: Unit?) {
-					//TODO Callback?
-					super.onPostExecute(result)
-					callback(completeSuccess)
 				}
 			}.execute()
 		} ?: callback(false)
@@ -283,7 +273,7 @@ class SaverActivity : ListActivity() {
 	fun saveUrl(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
-			callback(true)
+			return callback(true)
 		}
 
 		var success: Boolean? = false
@@ -316,7 +306,7 @@ class SaverActivity : ListActivity() {
 						   callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
-			callback(true)
+			return callback(true)
 		}
 
 		var success = false
@@ -355,7 +345,7 @@ class SaverActivity : ListActivity() {
 						   dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
-			callback(true)
+			return callback(true)
 		}
 
 		val destinationFilename = safeAddPath(filename)
