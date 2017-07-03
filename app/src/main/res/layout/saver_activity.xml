@@ -35,4 +35,26 @@
 			android:textAlignment="center" />
 	</LinearLayout>
 
+	<LinearLayout
+		android:id="@+id/loading"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:layout_margin="@dimen/activity_horizontal_margin">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="@style/TextAppearance.AppCompat.Large"
+			android:text="@string/loading_title"
+			android:textAlignment="center" />
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+			android:text="@string/loading_body"
+			android:textAlignment="center" />
+	</LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
