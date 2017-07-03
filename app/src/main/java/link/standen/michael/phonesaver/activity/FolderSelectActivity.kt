@@ -104,7 +104,7 @@ class FolderSelectActivity : ListActivity() {
 
 		// Add back button as first item
 		fList.add(0, resources.getString(string.back_folder))
-		
+
 		folderList = fList.toList()
 		Log.d(TAG, "Length: "+folderList?.size)
 

@@ -37,14 +37,14 @@ class SaverActivity : ListActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
 
-		useIntent { success ->
+		useIntent({ success ->
 			// Success should never be null on a dryRun
 			if (success!!){
 				loadList()
 			} else {
 				showNotSupported()
 			}
-		}
+		}, dryRun=true)
 	}
 
 	fun loadList() {
@@ -54,14 +54,14 @@ class SaverActivity : ListActivity() {
 				val listView = findViewById(android.R.id.list) as ListView
 				listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
 					location = LocationHelper.addRoot((view as TextView).text.toString())
-					useIntent { finishIntent(it) }
+					useIntent({ finishIntent(it) })
 				}
 				listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, it)
 				return // await selection
 			} else if (it.size == 1) {
 				// Only one location, just use it
 				location = LocationHelper.addRoot(it[0])
-				useIntent { finishIntent(it) }
+				useIntent({ finishIntent(it) })
 				return // activity dead
 			} else {
 				Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
@@ -75,7 +75,7 @@ class SaverActivity : ListActivity() {
 		return // activity dead
 	}
 
-	fun useIntent(callback: (success: Boolean?) -> Unit) {
+	fun useIntent(callback: (success: Boolean?) -> Unit, dryRun: Boolean = false) {
 		// Get intent action and MIME type
 		val action: String? = intent.action
 		val type: String? = intent.type
@@ -84,14 +84,14 @@ class SaverActivity : ListActivity() {
 			if (Intent.ACTION_SEND == action) {
 				if (type.startsWith("image/") || type.startsWith("video/")) {
 					// Handle single image/video being sent
-					return handleImageVideo(callback)
+					return handleImageVideo(callback, dryRun)
 				} else if (type == "text/plain") {
-					return handleText(callback)
+					return handleText(callback, dryRun)
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
 				if (type.startsWith("image/")) {
 					// Handle multiple images being sent
-					return handleMultipleImages(callback)
+					return handleMultipleImages(callback, dryRun)
 				}
 			}
 		}
@@ -182,19 +182,19 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Handle the saving of intents with images or videos.
 	 */
-	fun handleImageVideo(callback: (success: Boolean?) -> Unit) {
+	fun handleImageVideo(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			saveUri(it, getFilename(it), callback)
+			saveUri(it, getFilename(it), callback, dryRun)
 		} ?: callback(false)
 	}
 
 	/**
 	 * Handle the saving of text intents.
 	 */
-	fun handleText(callback: (success: Boolean?) -> Unit) {
+	fun handleText(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			return saveUri(it, getFilename(it), callback)
+			return saveUri(it, getFilename(it), callback, dryRun)
 		}
 
 		// Save the text
@@ -213,14 +213,14 @@ class SaverActivity : ListActivity() {
 						if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
 							saveUrl(Uri.parse(it), filename, { success ->
 								completeSuccess = success
-							})
+							}, dryRun)
 						}
 					} catch (e: MalformedURLException){
 						// It's just some text
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it)
 						saveString(it, filename, { success ->
 							completeSuccess = success
-						})
+						}, dryRun)
 					}
 				}
 
@@ -236,7 +236,7 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Handle the saving of multiple image files.
 	 */
-	fun handleMultipleImages(callback: (success: Boolean?) -> Unit) {
+	fun handleMultipleImages(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		val imageUris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
 		imageUris?.let {
 			var counter = 0
@@ -250,7 +250,7 @@ class SaverActivity : ListActivity() {
 					if (counter == imageUris.size){
 						callback(completeSuccess)
 					}
-				})
+				}, dryRun)
 			}
 		}
 	}
@@ -258,27 +258,25 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Save the given uri to filesystem.
 	 */
-	fun saveUri(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit) {
+	fun saveUri(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		val sourceFilename = uri.path
 		val destinationFilename = safeAddPath(filename)
 
 		Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
 
 		contentResolver.openInputStream(uri)?.use { bis ->
-			saveStream(bis, destinationFilename, callback)
+			saveStream(bis, destinationFilename, callback, dryRun)
 		} ?: callback(false)
 	}
 
 	/**
 	 * Save the given url to the filesystem.
 	 */
-	fun saveUrl(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit) {
-		/*
+	fun saveUrl(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
 			callback(true)
 		}
-		*/
 
 		var success: Boolean? = false
 
@@ -306,13 +304,12 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Save a stream to the filesystem.
 	 */
-	private fun saveStream(bis: InputStream, destinationFilename: String, callback: (success: Boolean?) -> Unit) {
-		/*
+	private fun saveStream(bis: InputStream, destinationFilename: String,
+						   callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
 			callback(true)
 		}
-		*/
 
 		var success = false
 		var bos: OutputStream? = null
@@ -346,13 +343,12 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Save a string to the filesystem.
 	 */
-	private fun saveString(s: String, filename: String, callback: (success: Boolean?) -> Unit) {
-		/*
+	private fun saveString(s: String, filename: String, callback: (success: Boolean?) -> Unit,
+						   dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
 			callback(true)
 		}
-		*/
 
 		val destinationFilename = safeAddPath(filename)
 		var success = false
