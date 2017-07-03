@@ -125,8 +125,6 @@ class SaverActivity : ListActivity() {
 	fun showNotSupported() {
 		// Hide list
 		findViewById(android.R.id.list).visibility = View.GONE
-		// Build and show unsupported message
-		val supportView = findViewById(R.id.not_supported2) as TextView
 		// Generate issue text here as should always be English and does not need to be in strings.xml
 		val bob = StringBuilder()
 		bob.append("https://github.com/ScreamingHawk/phone-saver/issues/new?title=")
@@ -164,9 +162,11 @@ class SaverActivity : ListActivity() {
 		bob.append("%0D%0A%0D%0AThank you")
 		val issueLink = bob.toString().replace(" ", "%20")
 
-		supportView.text = Html.fromHtml(resources.getString(R.string.not_supported2, issueLink))
+		// Build and show unsupported message
+		val supportView = findViewById(R.id.not_supported) as TextView
+		supportView.text = Html.fromHtml(resources.getString(R.string.not_supported, issueLink))
 		supportView.movementMethod = LinkMovementMethod.getInstance()
-		findViewById(R.id.not_supported).visibility = View.VISIBLE
+		findViewById(R.id.not_supported_wrapper).visibility = View.VISIBLE
 	}
 
 	/**

@@ -31,8 +31,8 @@
 	<string name="downloader_description">Saving %1$s</string>
 
 	<!-- Debug / Error -->
-	<string name="not_supported1">Unsupported Content Type</string>
-	<string name="not_supported2">Please &lt;a href="%1$s">raise a feature request&lt;/a> with this
+	<string name="not_supported_content_type">Unsupported Content Type</string>
+	<string name="not_supported">Please &lt;a href="%1$s">raise a feature request&lt;/a> with this
 		content type so &author; can add support.</string>
 
 	<!-- Credits -->

@@ -13,7 +13,7 @@
 		android:layout_alignParentTop="true"/>
 
 	<LinearLayout
-		android:id="@+id/not_supported"
+		android:id="@+id/not_supported_wrapper"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
@@ -21,15 +21,14 @@
 		android:layout_margin="@dimen/activity_horizontal_margin">
 
 		<TextView
-			android:id="@+id/not_supported1"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:textAppearance="@style/TextAppearance.AppCompat.Large"
-			android:text="@string/not_supported1"
+			android:text="@string/not_supported_content_type"
 			android:textAlignment="center" />
 
 		<TextView
-			android:id="@+id/not_supported2"
+			android:id="@+id/not_supported"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:textAppearance="@style/TextAppearance.AppCompat.Medium"
