@@ -19,7 +19,6 @@ import android.widget.*
 import java.io.*
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.regex.Pattern
 
 /**
  * An activity to handle saving files.
@@ -38,85 +37,67 @@ class SaverActivity : ListActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
 
-		if (testSupported()) {
-			LocationHelper.loadFolderList(this)?.let {
-				if (it.size > 1) {
-					// Init list view
-					val listView = findViewById(android.R.id.list) as ListView
-					listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-						location = LocationHelper.addRoot((view as TextView).text.toString())
-						useIntent()
-					}
-					listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, it)
-					return // await selection
-				} else if (it.size == 1) {
-					// Only one location, just use it
-					location = LocationHelper.addRoot(it[0])
-					useIntent()
-					return // activity dead
-				} else {
-					Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
-					exitApplication()
-					return // activity dead
-				}
+		useIntent { success ->
+			// Success should never be null on a dryRun
+			if (success!!){
+				loadList()
+			} else {
+				showNotSupported()
 			}
-
-			Toast.makeText(this, R.string.toast_save_init_error, Toast.LENGTH_LONG).show()
-		} else {
-			showNotSupported()
 		}
 	}
 
-	fun testSupported(): Boolean {
-		// Get intent, action and MIME type
-		val action: String? = intent.action
-		val type: String? = intent.type
-		Log.d(TAG, "Action: $action")
-		Log.d(TAG, "Type: $type")
-
-		type?.let {
-			if (Intent.ACTION_SEND == action) {
-				if (type.startsWith("image/") || type.startsWith("video/") || type == "text/plain") {
-					return true
+	fun loadList() {
+		LocationHelper.loadFolderList(this)?.let {
+			if (it.size > 1) {
+				// Init list view
+				val listView = findViewById(android.R.id.list) as ListView
+				listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
+					location = LocationHelper.addRoot((view as TextView).text.toString())
+					useIntent { finishIntent(it) }
 				}
-			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
-				if (type.startsWith("image/")) {
-					return true
-				}
+				listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, it)
+				return // await selection
+			} else if (it.size == 1) {
+				// Only one location, just use it
+				location = LocationHelper.addRoot(it[0])
+				useIntent { finishIntent(it) }
+				return // activity dead
+			} else {
+				Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
+				exitApplication()
+				return // activity dead
 			}
 		}
-		return false
+
+		Toast.makeText(this, R.string.toast_save_init_error, Toast.LENGTH_LONG).show()
+		exitApplication()
+		return // activity dead
 	}
 
-	fun useIntent() {
-		// Get intent, action and MIME type
+	fun useIntent(callback: (success: Boolean?) -> Unit) {
+		// Get intent action and MIME type
 		val action: String? = intent.action
 		val type: String? = intent.type
-
-		var done: Boolean? = false
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
 				if (type.startsWith("image/") || type.startsWith("video/")) {
 					// Handle single image/video being sent
-					done = handleImageVideo()
+					return handleImageVideo(callback)
 				} else if (type == "text/plain") {
-					done = handleText()
-					if (done == null) {
-						return // HandleText is handled async
-					}
+					return handleText(callback)
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
 				if (type.startsWith("image/")) {
 					// Handle multiple images being sent
-					done = handleMultipleImages()
+					return handleMultipleImages(callback)
 				}
-			} else {
-				// Handle other intents, such as being started from the home screen
 			}
 		}
 
-		finishIntent(done)
+		// Failed to reach callback
+		finishIntent(false)
 	}
 
 	/**
@@ -201,27 +182,25 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Handle the saving of intents with images or videos.
 	 */
-	fun handleImageVideo(): Boolean {
+	fun handleImageVideo(callback: (success: Boolean?) -> Unit) {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			return saveUri(it, getFilename(it))
-		}
-		return false
+			saveUri(it, getFilename(it), callback)
+		} ?: callback(false)
 	}
 
 	/**
 	 * Handle the saving of text intents.
 	 */
-	fun handleText(): Boolean? {
+	fun handleText(callback: (success: Boolean?) -> Unit) {
 		// Try save stream first
-		val uri: Uri? = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
-		if (uri != null){
-			return saveUri(uri, getFilename(uri))
+		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
+			return saveUri(it, getFilename(it), callback)
 		}
 
 		// Save the text
 		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
 			object: AsyncTask<Unit, Unit, Unit>(){
-				var success: Boolean? = false
+				var completeSuccess: Boolean? = false
 
 				override fun doInBackground(vararg params: Unit?) {
 					try {
@@ -232,61 +211,75 @@ class SaverActivity : ListActivity() {
 						Log.d(TAG, "ContentType: $contentType")
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
 						if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
-							success = saveUrl(Uri.parse(it), filename)
+							saveUrl(Uri.parse(it), filename, { success ->
+								completeSuccess = success
+							})
 						}
 					} catch (e: MalformedURLException){
 						// It's just some text
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it)
-						success = saveString(it, filename)
+						saveString(it, filename, { success ->
+							completeSuccess = success
+						})
 					}
 				}
 
 				override fun onPostExecute(result: Unit?) {
+					//TODO Callback?
 					super.onPostExecute(result)
-					finishIntent(success)
+					callback(completeSuccess)
 				}
 			}.execute()
-		}
-		return null
+		} ?: callback(false)
 	}
 
 	/**
 	 * Handle the saving of multiple image files.
 	 */
-	fun handleMultipleImages(): Boolean {
+	fun handleMultipleImages(callback: (success: Boolean?) -> Unit) {
 		val imageUris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
 		imageUris?.let {
-			var success = true
+			var counter = 0
+			var completeSuccess = true
 			imageUris.forEach {
-				success = success && saveUri(it, getFilename(it))
+				saveUri(it, getFilename(it), { success ->
+					counter++
+					success?.let {
+						completeSuccess = completeSuccess && it
+					}
+					if (counter == imageUris.size){
+						callback(completeSuccess)
+					}
+				})
 			}
-			return success
 		}
-		return false
 	}
 
 	/**
 	 * Save the given uri to filesystem.
 	 */
-	fun saveUri(uri: Uri, filename: String): Boolean {
-		var success = false
-
+	fun saveUri(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit) {
 		val sourceFilename = uri.path
 		val destinationFilename = safeAddPath(filename)
 
 		Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
 
 		contentResolver.openInputStream(uri)?.use { bis ->
-			success = saveStream(bis, destinationFilename)
-		}
-
-		return success
+			saveStream(bis, destinationFilename, callback)
+		} ?: callback(false)
 	}
 
 	/**
 	 * Save the given url to the filesystem.
 	 */
-	fun saveUrl(uri: Uri, filename: String): Boolean? {
+	fun saveUrl(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit) {
+		/*
+		if (dryRun){
+			// This entire method can be skipped when doing a dry run
+			callback(true)
+		}
+		*/
+
 		var success: Boolean? = false
 
 		location?.let {
@@ -294,13 +287,6 @@ class SaverActivity : ListActivity() {
 			val destinationFilename = safeAddPath(filename)
 
 			Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
-
-			Log.d(TAG, "remove root: "+LocationHelper.removeRoot(it))
-
-			val fout = File(destinationFilename)
-			if (!fout.exists()){
-				fout.createNewFile()
-			}
 
 			val downloader = DownloadManager.Request(uri)
 			downloader.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
@@ -314,15 +300,23 @@ class SaverActivity : ListActivity() {
 			success = null
 		}
 
-		return success
+		callback(success)
 	}
 
 	/**
 	 * Save a stream to the filesystem.
 	 */
-	private fun saveStream(bis: InputStream, destinationFilename: String): Boolean {
+	private fun saveStream(bis: InputStream, destinationFilename: String, callback: (success: Boolean?) -> Unit) {
+		/*
+		if (dryRun){
+			// This entire method can be skipped when doing a dry run
+			callback(true)
+		}
+		*/
+
 		var success = false
 		var bos: OutputStream? = null
+
 		try {
 			val fout = File(destinationFilename)
 			if (!fout.exists()){
@@ -346,13 +340,20 @@ class SaverActivity : ListActivity() {
 				Log.e(TAG, "Unable to close stream", e)
 			}
 		}
-		return success
+		callback(success)
 	}
 
 	/**
 	 * Save a string to the filesystem.
 	 */
-	private fun saveString(s: String, filename: String): Boolean {
+	private fun saveString(s: String, filename: String, callback: (success: Boolean?) -> Unit) {
+		/*
+		if (dryRun){
+			// This entire method can be skipped when doing a dry run
+			callback(true)
+		}
+		*/
+
 		val destinationFilename = safeAddPath(filename)
 		var success = false
 		var bw: BufferedWriter? = null
@@ -376,7 +377,7 @@ class SaverActivity : ListActivity() {
 				Log.e(TAG, "Unable to close stream", e)
 			}
 		}
-		return success
+		callback(success)
 	}
 
 	/**
