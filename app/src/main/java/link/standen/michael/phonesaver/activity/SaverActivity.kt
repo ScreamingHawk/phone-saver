@@ -33,6 +33,9 @@ class SaverActivity : ListActivity() {
 
 	private var location: String? = null
 
+	data class Pair(val key: String, val value: String)
+	private var debugInfo: MutableList<Pair> = mutableListOf()
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
@@ -125,6 +128,10 @@ class SaverActivity : ListActivity() {
 			bob.append("%0D%0ASubject: ")
 			bob.append(it)
 		}
+		debugInfo.forEach {
+			bob.append("%0D%0A${it.key}: ")
+			bob.append(it.value)
+		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			intent.getStringExtra(Intent.EXTRA_HTML_TEXT)?.let {
                 bob.append("%0D%0AHTML Text: ")
@@ -209,6 +216,7 @@ class SaverActivity : ListActivity() {
 						val connection = url.openConnection()
 						val contentType = connection.getHeaderField("Content-Type")
 						Log.d(TAG, "ContentType: $contentType")
+						debugInfo.add(Pair("URL Content-Type", contentType))
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
 						if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
 							saveUrl(Uri.parse(it), filename, { success ->
