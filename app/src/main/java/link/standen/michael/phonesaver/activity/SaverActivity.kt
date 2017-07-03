@@ -28,7 +28,7 @@ class SaverActivity : ListActivity() {
 
 	private val TAG = "SaverActivity"
 
-	private val FILENAME_REGEX = "[^a-zA-Z0-9æøåÆØÅ_ -]"
+	private val FILENAME_REGEX = "[^-_.A-Za-z0-9]"
 	private val FILENAME_LENGTH_LIMIT = 100
 
 	private var location: String? = null
