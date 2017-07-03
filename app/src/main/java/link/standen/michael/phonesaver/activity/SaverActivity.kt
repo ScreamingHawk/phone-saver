@@ -198,6 +198,9 @@ class SaverActivity : ListActivity() {
 		}
 	}
 
+	/**
+	 * Handle the saving of intents with images or videos.
+	 */
 	fun handleImageVideo(): Boolean {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			return saveUri(it, getFilename(it))
@@ -205,6 +208,9 @@ class SaverActivity : ListActivity() {
 		return false
 	}
 
+	/**
+	 * Handle the saving of text intents.
+	 */
 	fun handleText(): Boolean? {
 		// Try save stream first
 		val uri: Uri? = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
@@ -244,6 +250,9 @@ class SaverActivity : ListActivity() {
 		return null
 	}
 
+	/**
+	 * Handle the saving of multiple image files.
+	 */
 	fun handleMultipleImages(): Boolean {
 		val imageUris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
 		imageUris?.let {
@@ -257,7 +266,7 @@ class SaverActivity : ListActivity() {
 	}
 
 	/**
-	 * Save the given uri to file
+	 * Save the given uri to filesystem.
 	 */
 	fun saveUri(uri: Uri, filename: String): Boolean {
 		var success = false
@@ -275,7 +284,7 @@ class SaverActivity : ListActivity() {
 	}
 
 	/**
-	 * Save the given url to file
+	 * Save the given url to the filesystem.
 	 */
 	fun saveUrl(uri: Uri, filename: String): Boolean? {
 		var success: Boolean? = false
@@ -308,6 +317,9 @@ class SaverActivity : ListActivity() {
 		return success
 	}
 
+	/**
+	 * Save a stream to the filesystem.
+	 */
 	private fun saveStream(bis: InputStream, destinationFilename: String): Boolean {
 		var success = false
 		var bos: OutputStream? = null
@@ -337,6 +349,9 @@ class SaverActivity : ListActivity() {
 		return success
 	}
 
+	/**
+	 * Save a string to the filesystem.
+	 */
 	private fun saveString(s: String, filename: String): Boolean {
 		val destinationFilename = safeAddPath(filename)
 		var success = false
@@ -364,6 +379,9 @@ class SaverActivity : ListActivity() {
 		return success
 	}
 
+	/**
+	 * Get the filename from a Uri.
+	 */
 	private fun getFilename(uri: Uri): String {
 		// Find the actual filename
 		if (uri.scheme == "content") {
@@ -376,6 +394,9 @@ class SaverActivity : ListActivity() {
 		return getFilename(uri.lastPathSegment)
 	}
 
+	/**
+	 * Get the filename from a string.
+	 */
 	private fun getFilename(s: String): String {
 		// Default to last path if null
 		var result: String = s
@@ -401,6 +422,9 @@ class SaverActivity : ListActivity() {
 		return result
 	}
 
+	/**
+	 * Add the location path if not null and not already added.
+	 */
 	private fun safeAddPath(filename: String): String {
 		location?.let {
 			if (!filename.startsWith(it)){
