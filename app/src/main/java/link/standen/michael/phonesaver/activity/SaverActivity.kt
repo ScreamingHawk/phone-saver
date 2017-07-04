@@ -211,22 +211,14 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Handle the saving of text intents.
 	 */
-	fun handleText(passedCallback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	fun handleText(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			return saveUri(it, getFilename(it), passedCallback, dryRun)
+			return saveUri(it, getFilename(it), callback, dryRun)
 		}
 
 		// Save the text
 		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-
-			var callback = passedCallback
-			if (!dryRun) {
-				// To increase performance return now and blank the callback
-				callback(null)
-				callback = {}
-			}
-
 			object: AsyncTask<Unit, Unit, Unit>(){
 				override fun doInBackground(vararg params: Unit?) {
 					try {
@@ -249,7 +241,7 @@ class SaverActivity : ListActivity() {
 					}
 				}
 			}.execute()
-		} ?: passedCallback(false)
+		} ?: callback(false)
 	}
 
 	/**
