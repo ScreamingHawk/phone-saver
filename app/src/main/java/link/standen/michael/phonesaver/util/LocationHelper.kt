@@ -18,9 +18,9 @@ object LocationHelper {
 	/**
 	 * Loads the list of folder paths.
 	 */
-	fun loadFolderList(context: Context): MutableList<String>? {
-		val type = object : TypeToken<MutableList<String>>() {}.type
-		return Gson().fromJson<MutableList<String>>(JsonFileHelper.getJsonFromFile(context, FOLDER_LIST_STORE), type)
+	fun loadFolderList(context: Context): List<String>? {
+		val type = object : TypeToken<List<String>>() {}.type
+		return Gson().fromJson<List<String>>(JsonFileHelper.getJsonFromFile(context, FOLDER_LIST_STORE), type)
 	}
 
 	/**
