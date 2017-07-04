@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
@@ -16,6 +15,7 @@ import android.provider.OpenableColumns
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.View
+import android.webkit.MimeTypeMap
 import android.widget.*
 import java.io.*
 import java.net.MalformedURLException
@@ -224,11 +224,14 @@ class SaverActivity : ListActivity() {
 			object: AsyncTask<Unit, Unit, Unit>(){
 				override fun doInBackground(vararg params: Unit?) {
 					try {
+						URL(it) // Do this to test if it is a URL
 						// It's a URL
-						val url = URL(it)
-						val connection = url.openConnection()
-						val contentType = connection.getHeaderField("Content-Type")
 						Log.d(TAG, "Text with URL")
+						val mime = MimeTypeMap.getSingleton()
+						val contentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(it))
+						// Old but accurate test method
+						//val connection = url.openConnection()
+						//val contentType = connection.getHeaderField("Content-Type")
 						Log.d(TAG, "ContentType: $contentType")
 						debugInfo.add(Pair("URL Content-Type", contentType))
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
