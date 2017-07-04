@@ -42,6 +42,7 @@ class SaverActivity : ListActivity() {
 		setContentView(R.layout.saver_activity)
 
 		useIntent({ success ->
+			Log.i(TAG, "Supported: $success")
 			// Success should never be null on a dryRun
 			if (success!!){
 				loadList()
@@ -86,6 +87,9 @@ class SaverActivity : ListActivity() {
 		// Get intent action and MIME type
 		val action: String? = intent.action
 		val type: String? = intent.type
+
+		Log.i(TAG, "Action: $action")
+		Log.i(TAG, "Type: $type")
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
