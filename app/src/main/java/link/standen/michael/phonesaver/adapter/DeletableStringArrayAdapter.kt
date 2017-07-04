@@ -9,6 +9,7 @@ import android.widget.TextView
 
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
+import java.io.File
 
 /**
  * Manages a list of deletable strings.
@@ -33,7 +34,8 @@ class DeletableStringArrayAdapter(context: Context, private val resourceId: Int,
 		}
 
 		// Description
-		(view.findViewById(R.id.description) as TextView).text = getItem(position)
+		val s = getItem(position)
+		(view.findViewById(R.id.description) as TextView).text = if (s.isNullOrBlank()) File.separator else s
 
 		return view
 	}
