@@ -173,13 +173,14 @@ class SaverActivity : ListActivity() {
 	 */
 	fun finishIntent(success: Boolean?) {
 		// Notify user
-		Looper.prepare()
-		if (success == null){
-			Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
-		} else if (success){
-			Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
-		} else {
-			Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
+		runOnUiThread {
+			if (success == null){
+				Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
+			} else if (success){
+				Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
+			} else {
+				Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
+			}
 		}
 
 		exitApplication()
