@@ -214,11 +214,13 @@ class SaverActivity : ListActivity() {
 	fun handleText(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
+			Log.d(TAG, "Text has stream")
 			return saveUri(it, getFilename(it), callback, dryRun)
 		}
 
 		// Save the text
 		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+			Log.d(TAG, "Text Extra: $it")
 			object: AsyncTask<Unit, Unit, Unit>(){
 				override fun doInBackground(vararg params: Unit?) {
 					try {
@@ -226,6 +228,7 @@ class SaverActivity : ListActivity() {
 						val url = URL(it)
 						val connection = url.openConnection()
 						val contentType = connection.getHeaderField("Content-Type")
+						Log.d(TAG, "Text with URL")
 						Log.d(TAG, "ContentType: $contentType")
 						debugInfo.add(Pair("URL Content-Type", contentType))
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
@@ -235,6 +238,7 @@ class SaverActivity : ListActivity() {
 							callback(false)
 						}
 					} catch (e: MalformedURLException){
+						Log.d(TAG, "Text without URL")
 						// It's just some text
 						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it)
 						saveString(it, filename, callback, dryRun)
@@ -270,10 +274,12 @@ class SaverActivity : ListActivity() {
 	 * Save the given uri to filesystem.
 	 */
 	fun saveUri(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
-		val sourceFilename = uri.path
 		val destinationFilename = safeAddPath(filename)
 
-		Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
+		if (!dryRun) {
+			val sourceFilename = uri.path
+			Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
+		}
 
 		contentResolver.openInputStream(uri)?.use { bis ->
 			saveStream(bis, destinationFilename, callback, dryRun)
