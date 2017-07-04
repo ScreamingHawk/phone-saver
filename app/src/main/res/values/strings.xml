@@ -36,7 +36,7 @@
 		content type so &author; can add support.</string>
 
 	<!-- Loading -->
-	<string name="loading_title">Testing support...</string>
+	<string name="loading_title">Testing support…</string>
 	<string name="loading_body">Please wait while I test for download support.</string>
 
 	<!-- Credits -->
