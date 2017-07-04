@@ -224,22 +224,23 @@ class SaverActivity : ListActivity() {
 			object: AsyncTask<Unit, Unit, Unit>(){
 				override fun doInBackground(vararg params: Unit?) {
 					try {
-						URL(it) // Do this to test if it is a URL
+						val url = URL(it)
 						// It's a URL
 						Log.d(TAG, "Text with URL")
 						val mime = MimeTypeMap.getSingleton()
 						val contentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(it))
-						// Old but accurate test method
-						//val connection = url.openConnection()
-						//val contentType = connection.getHeaderField("Content-Type")
-						Log.d(TAG, "ContentType: $contentType")
-						debugInfo.add(Pair("URL Content-Type", contentType))
-						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
-						if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
-							saveUrl(Uri.parse(it), filename, callback, dryRun)
-						} else {
-							callback(false)
-						}
+								// Fall back to checking URL content type
+								?: url.openConnection().getHeaderField("Content-Type")
+						contentType?.let { contentType ->
+							Log.d(TAG, "ContentType: $contentType")
+							debugInfo.add(Pair("URL Content-Type", contentType))
+							val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
+							if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
+								saveUrl(Uri.parse(it), filename, callback, dryRun)
+							} else {
+								callback(false)
+							}
+						}?: callback(false)
 					} catch (e: MalformedURLException){
 						Log.d(TAG, "Text without URL")
 						// It's just some text
