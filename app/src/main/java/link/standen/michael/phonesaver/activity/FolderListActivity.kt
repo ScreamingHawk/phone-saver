@@ -1,7 +1,10 @@
 package link.standen.michael.phonesaver.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.DataSetObserver
+import android.os.Build
+import android.util.Log
 import android.view.View
 import android.widget.ListView
 import link.standen.michael.phonesaver.R
@@ -13,6 +16,7 @@ class FolderListActivity : ListActivity() {
 	companion object {
 		const val TAG = "FolderListActivity"
 		const val FOLDER_SELECT_REQUEST_CODE = 1
+		const val PERMISSION_REQUEST_CODE = 2
 	}
 
 	private lateinit var adapter: DeletableStringArrayAdapter
@@ -30,6 +34,9 @@ class FolderListActivity : ListActivity() {
 			val intent = android.content.Intent(this@FolderListActivity, FolderSelectActivity::class.java)
 			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
 		}
+
+		// Check for permissions
+		testPermissions()
 
 		// Init list items
 		loadFolderList()
@@ -100,6 +107,29 @@ class FolderListActivity : ListActivity() {
 			findViewById(android.R.id.empty).visibility = View.VISIBLE
 		} else {
 			findViewById(android.R.id.empty).visibility = View.GONE
+		}
+	}
+
+	/**
+	 * Permissions checker
+	 */
+	private fun testPermissions() {
+		if (Build.VERSION.SDK_INT >= 23) {
+			val permissions = listOf(
+					// All available permissions
+					android.Manifest.permission.READ_EXTERNAL_STORAGE,
+					android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+					android.Manifest.permission.INTERNET
+				// Filter out granted permissions
+			).filter { checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }.toTypedArray()
+			if (permissions.isNotEmpty()){
+				Log.i(TAG, "Requesting permission for " + permissions.reduce { total, next -> total + ", " + next })
+				// Request permissions
+				requestPermissions(permissions, PERMISSION_REQUEST_CODE)
+			}
+		} else {
+			// Permission is automatically granted on sdk<23 upon installation
+			Log.v(TAG, "Permission is granted")
 		}
 	}
 }

@@ -1,13 +1,10 @@
 package link.standen.michael.phonesaver.activity
 
-import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.BottomNavigationView
 import android.widget.ListView
-import android.content.pm.PackageManager
-import android.os.Build
 import android.widget.AdapterView
 import android.util.Log
 import java.io.File
@@ -76,12 +73,7 @@ class FolderSelectActivity : ListActivity() {
 
 	override fun onStart() {
 		super.onStart()
-
-		// Permission check
-		if (isStoragePermissionGranted()) {
-			updateListView()
-		}
-		// else wait for permission handler to continue
+		updateListView()
 	}
 
 	/**
@@ -164,37 +156,6 @@ class FolderSelectActivity : ListActivity() {
 			return currentPath.substring(0, currentPath.lastIndexOf(File.separatorChar))
 		} else {
 			return null
-		}
-	}
-
-	/**
-	 * Permissions checker
-	 */
-	private fun isStoragePermissionGranted(): Boolean {
-		if (Build.VERSION.SDK_INT >= 23) {
-			if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-				Log.v(TAG, "Permission is granted")
-				return true
-			} else {
-				Log.v(TAG, "Permission is revoked")
-				requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1)
-				return false
-			}
-		} else {
-			//permission is automatically granted on sdk<23 upon installation
-			Log.v(TAG, "Permission is granted")
-			return true
-		}
-	}
-
-	/**
-	 * Permissions handler
-	 */
-	override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-		Log.d(TAG, "Permission: " + permissions[0] + " was " + grantResults[0])
-		if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-			updateListView()
 		}
 	}
 
