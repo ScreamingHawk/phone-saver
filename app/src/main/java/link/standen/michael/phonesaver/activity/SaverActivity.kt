@@ -63,7 +63,7 @@ class SaverActivity : ListActivity() {
 						location = LocationHelper.addRoot((view as TextView).text.toString())
 						useIntent({ finishIntent(it) })
 					}
-					listView.adapter = ArrayAdapter<String>(this, R.layout.saver_list_item, it)
+					listView.adapter = ArrayAdapter<String>(this, R.layout.saver_list_item, it.map { if (it.isBlank()) File.separator else it })
 				}
 				return // await selection
 			} else if (it.size == 1) {
