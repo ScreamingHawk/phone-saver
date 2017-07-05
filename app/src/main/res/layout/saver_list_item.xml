@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:id="@android:id/text1"
+	android:layout_alignParentStart="true"
+	android:layout_alignParentLeft="true"
+	android:layout_centerVertical="true"
+	android:layout_alignParentEnd="true"
+	android:layout_alignParentRight="true"
+	android:paddingTop="@dimen/saver_vertical_padding"
+	android:paddingBottom="@dimen/saver_vertical_padding"
+	android:paddingLeft="@dimen/saver_horizontal_padding"
+	android:paddingRight="@dimen/saver_horizontal_padding"
+	android:textAppearance="@style/TextAppearance.AppCompat.Large"
+	android:maxLines="1" />

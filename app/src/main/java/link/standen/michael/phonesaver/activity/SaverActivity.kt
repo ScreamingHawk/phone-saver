@@ -63,7 +63,7 @@ class SaverActivity : ListActivity() {
 						location = LocationHelper.addRoot((view as TextView).text.toString())
 						useIntent({ finishIntent(it) })
 					}
-					listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, it)
+					listView.adapter = ArrayAdapter<String>(this, R.layout.saver_list_item, it)
 				}
 				return // await selection
 			} else if (it.size == 1) {

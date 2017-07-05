@@ -9,4 +9,7 @@
 	<dimen name="description_padding">5dp</dimen>
 
 	<dimen name="credits_padding">16dp</dimen>
+
+	<dimen name="saver_horizontal_padding">16dp</dimen>
+	<dimen name="saver_vertical_padding">16dp</dimen>
 </resources>
