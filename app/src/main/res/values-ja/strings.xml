@@ -21,6 +21,7 @@
 	<!-- Folder select -->
 	<string name="title_activity_folder_select">フォルダーの選択</string>
 	<string name="navigation_here">ここ</string>
+	<string name="navigation_read_only">読み取り専用</string>
 
 	<!-- Saving messages -->
 	<string name="toast_save_successful">正常に保存しました</string>
