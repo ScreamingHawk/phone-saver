@@ -6,4 +6,9 @@
 		android:icon="@drawable/ic_add_location_black_24dp"
 		android:title="@string/navigation_here" />
 
+	<item
+		android:id="@+id/navigation_read_only"
+		android:icon="@drawable/ic_location_off_black_24dp"
+		android:title="@string/navigation_read_only" />
+
 </menu>

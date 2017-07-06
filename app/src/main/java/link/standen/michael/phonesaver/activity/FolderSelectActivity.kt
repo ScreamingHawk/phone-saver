@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.util.Log
 import java.io.File
 import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import link.standen.michael.phonesaver.R.*
@@ -82,7 +83,9 @@ class FolderSelectActivity : ListActivity() {
 	private fun updateListView() {
 		Log.v(TAG, "Path is: "+currentPath)
 
-		val fList = File(currentPath).listFiles()
+		val currentFile = File(currentPath)
+
+		val fList = currentFile.listFiles()
 				// Directories only
 				?.filter { it.isDirectory }
 				// Get the file path
@@ -104,6 +107,16 @@ class FolderSelectActivity : ListActivity() {
 		this.title = LocationHelper.removeRoot(currentPath) + File.separatorChar
 
 		listView.adapter = ArrayAdapter<String>(this, layout.saver_list_item, folderList)
+
+		updateWritable(currentFile.canWrite())
+	}
+
+	/**
+	 * Updates the menu items based on whether the directory is writable or not.
+	 */
+	private fun updateWritable(writable: Boolean){
+		findViewById(id.navigation_here).visibility = if (writable) View.VISIBLE else View.GONE
+		findViewById(id.navigation_read_only).visibility = if (writable) View.GONE else View.VISIBLE
 	}
 
 	/**

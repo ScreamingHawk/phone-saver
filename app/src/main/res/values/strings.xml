@@ -21,6 +21,7 @@
 	<!-- Folder select -->
 	<string name="title_activity_folder_select">Select Folder</string>
 	<string name="navigation_here">Here</string>
+	<string name="navigation_read_only">Read Only</string>
 
 	<!-- Saving messages -->
 	<string name="toast_save_successful">Saved successfully</string>
