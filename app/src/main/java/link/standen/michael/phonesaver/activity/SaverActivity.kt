@@ -204,7 +204,7 @@ class SaverActivity : ListActivity() {
 	 */
 	fun handleImageVideo(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			saveUri(it, getFilename(it), callback, dryRun)
+			saveUri(it, getFilename(it, intent.type), callback, dryRun)
 		} ?: callback(false)
 	}
 
@@ -215,7 +215,7 @@ class SaverActivity : ListActivity() {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			Log.d(TAG, "Text has stream")
-			return saveUri(it, getFilename(it), callback, dryRun)
+			return saveUri(it, getFilename(it, intent.type), callback, dryRun)
 		}
 
 		// Save the text
@@ -234,7 +234,9 @@ class SaverActivity : ListActivity() {
 						contentType?.let { contentType ->
 							Log.d(TAG, "ContentType: $contentType")
 							debugInfo.add(Pair("URL Content-Type", contentType))
-							val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment)
+							val filename = getFilename(
+									intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
+									contentType)
 							if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
 								saveUrl(Uri.parse(it), filename, callback, dryRun)
 							} else {
@@ -244,7 +246,7 @@ class SaverActivity : ListActivity() {
 					} catch (e: MalformedURLException){
 						Log.d(TAG, "Text without URL")
 						// It's just some text
-						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it)
+						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it, "text/plain")
 						saveString(it, filename, callback, dryRun)
 					}
 				}
@@ -261,7 +263,7 @@ class SaverActivity : ListActivity() {
 			var counter = 0
 			var completeSuccess = true
 			imageUris.forEach {
-				saveUri(it, getFilename(it), { success ->
+				saveUri(it, getFilename(it, intent.type), { success ->
 					counter++
 					success?.let {
 						completeSuccess = completeSuccess && it
@@ -400,39 +402,43 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Get the filename from a Uri.
 	 */
-	private fun getFilename(uri: Uri): String {
+	private fun getFilename(uri: Uri, mime: String): String {
 		// Find the actual filename
 		if (uri.scheme == "content") {
 			contentResolver.query(uri, null, null, null, null)?.use {
 				if (it.moveToFirst()) {
-					return getFilename(it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)))
+					return getFilename(it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)), mime)
 				}
 			}
 		}
-		return getFilename(uri.lastPathSegment)
+		return getFilename(uri.lastPathSegment, mime)
 	}
 
 	/**
 	 * Get the filename from a string.
 	 */
-	private fun getFilename(s: String): String {
-		// Default to last path if null
-		var result: String = s
+	private fun getFilename(s: String, mime: String): String {
+		Log.d(TAG, "Converting filename: $s")
 
-		Log.d(TAG, "Converting filename: $result")
-
-		// Do some validation
-
-		result = result
+		var result = s
 				// Take last section after a slash
 				.replaceBeforeLast("/", "")
 				// Take first section before a space
 				.replaceAfter(" ", "")
 				// Remove non-filename characters
 				.replace(Regex(FILENAME_REGEX), "")
+
 		if (result.length > FILENAME_LENGTH_LIMIT) {
 			// Do not go over the filename length limit
 			result = result.substring(0, FILENAME_LENGTH_LIMIT)
+		}
+
+		if (!MimeTypeMap.getSingleton().hasExtension(result)){
+			// Add file extension
+			MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)?.let {
+				result += "." + it
+			}
+
 		}
 
 		Log.d(TAG, "Converted filename: $result")
