@@ -14,4 +14,5 @@
 	android:paddingLeft="@dimen/saver_horizontal_padding"
 	android:paddingRight="@dimen/saver_horizontal_padding"
 	android:textAppearance="@style/TextAppearance.AppCompat.Large"
+	android:textSize="@dimen/huge_text"
 	android:maxLines="1" />

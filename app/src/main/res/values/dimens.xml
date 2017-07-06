@@ -12,4 +12,6 @@
 
 	<dimen name="saver_horizontal_padding">16dp</dimen>
 	<dimen name="saver_vertical_padding">16dp</dimen>
+
+	<dimen name="huge_text">26sp</dimen>
 </resources>
