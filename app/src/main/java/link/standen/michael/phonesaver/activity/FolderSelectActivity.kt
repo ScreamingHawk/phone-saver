@@ -103,7 +103,7 @@ class FolderSelectActivity : ListActivity() {
 		// Set title
 		this.title = LocationHelper.removeRoot(currentPath) + File.separatorChar
 
-		listView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, folderList)
+		listView.adapter = ArrayAdapter<String>(this, layout.saver_list_item, folderList)
 	}
 
 	/**
