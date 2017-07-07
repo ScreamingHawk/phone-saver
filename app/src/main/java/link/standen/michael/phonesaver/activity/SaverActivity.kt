@@ -93,9 +93,10 @@ class SaverActivity : ListActivity() {
 
 		type?.let {
 			if (Intent.ACTION_SEND == action) {
-				if (type.startsWith("image/") || type.startsWith("video/")) {
-					// Handle single image/video being sent
-					return handleImageVideo(callback, dryRun)
+				if (type.startsWith("image/") || type.startsWith("video/") ||
+						type == "application/octet-stream") {
+					// Handle single stream being sent
+					return handleStream(callback, dryRun)
 				} else if (type == "text/plain") {
 					return handleText(callback, dryRun)
 				}
@@ -200,9 +201,9 @@ class SaverActivity : ListActivity() {
 	}
 
 	/**
-	 * Handle the saving of intents with images or videos.
+	 * Handle the saving of intents with streams such as images and videos.
 	 */
-	fun handleImageVideo(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	fun handleStream(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			saveUri(it, getFilename(it, intent.type), callback, dryRun)
 		} ?: callback(false)
