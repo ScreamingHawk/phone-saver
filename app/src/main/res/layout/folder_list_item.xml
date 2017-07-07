@@ -22,6 +22,8 @@
 		android:paddingLeft="@dimen/description_padding"
 		android:paddingEnd="@dimen/description_padding"
 		android:paddingRight="@dimen/description_padding"
+		android:paddingTop="@dimen/saver_vertical_padding"
+		android:paddingBottom="@dimen/saver_vertical_padding"
 		android:textAppearance="@style/TextAppearance.AppCompat.Large"
 		android:textSize="@dimen/huge_text"
 		android:maxLines="1" />
