@@ -54,5 +54,8 @@
 	<string name="credits_content3">This application is completely open source; licensed under the
 		<a href="https://tldrlegal.com/license/mit-license">MIT license</a>.
 	</string>
+	<string name="credits_content_translator">This translation of &appname; was provided by
+		<a href="https://michael.standen.link">&author;</a>.
+	</string>
 
 </resources>

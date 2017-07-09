@@ -68,5 +68,12 @@
 				android:padding="@dimen/credits_padding"
 				android:text="@string/credits_content3"/>
 
+			<TextView
+				android:id="@+id/credits_content_translator"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/credits_padding"
+				android:text="@string/credits_content_translator"/>
+
 		</LinearLayout>
 </ScrollView>
