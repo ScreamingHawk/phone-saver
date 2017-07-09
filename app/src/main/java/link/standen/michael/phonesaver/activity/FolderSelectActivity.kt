@@ -29,7 +29,7 @@ class FolderSelectActivity : ListActivity() {
 
 	private lateinit var listView: ListView
 
-	private var folderList: List<String>? = ArrayList()
+	private var folderList: List<String> = ArrayList()
 
 	private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 		when (item.itemId) {
@@ -101,7 +101,7 @@ class FolderSelectActivity : ListActivity() {
 		fList.add(0, resources.getString(string.back_folder))
 
 		folderList = fList.toList()
-		Log.d(TAG, "Length: "+folderList?.size)
+		Log.d(TAG, "Length: "+folderList.size)
 
 		// Set title
 		this.title = LocationHelper.removeRoot(currentPath) + File.separatorChar
