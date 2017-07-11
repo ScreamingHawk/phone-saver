@@ -341,7 +341,7 @@ class SaverActivity : ListActivity() {
 		}
 
 		var success = false
-		var bos: OutputStream? = null
+		var bos: BufferedOutputStream? = null
 
 		try {
 			val fout = File(destinationFilename)
