@@ -439,12 +439,12 @@ class SaverActivity : ListActivity() {
 			result = result.substring(0, FILENAME_LENGTH_LIMIT)
 		}
 
-		if (!MimeTypeMap.getSingleton().hasExtension(result)){
+		if (!MimeTypeMap.getSingleton().hasExtension(result.substringAfterLast('.', ""))){
 			// Add file extension
 			MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)?.let {
+				Log.d(TAG, "Adding extension $it to $result")
 				result += "." + it
 			}
-
 		}
 
 		Log.d(TAG, "Converted filename: $result")
