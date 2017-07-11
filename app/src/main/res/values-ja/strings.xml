@@ -50,5 +50,8 @@
 	<string name="credits_content3">このアプリケーションは完全にオープンソースです。
 		<a href="https://tldrlegal.com/license/mit-license">MIT ライセンス</a> でライセンスされます。
 	</string>
+	<string name="credits_content_translator">この &appname; の翻訳は
+		<a href="https://github.com/naofum">Naofumi Fukue</a> によって提供されています。
+	</string>
 
 </resources>
