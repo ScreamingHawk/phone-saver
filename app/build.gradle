@@ -9,8 +9,8 @@ android {
 		applicationId "link.standen.michael.phonesaver"
 		minSdkVersion 15
 		targetSdkVersion 25
-		versionCode 15
-		versionName "2.4"
+		versionCode 16
+		versionName "2.5"
 
 		vectorDrawables.useSupportLibrary = true
 	}
