@@ -91,7 +91,7 @@ class SaverActivity : ListActivity() {
 		Log.i(TAG, "Action: $action")
 		Log.i(TAG, "Type: $type")
 
-		type?.let {
+		type?.toLowerCase()?.let {
 			if (Intent.ACTION_SEND == action) {
 				if (type.startsWith("image/") || type.startsWith("video/") ||
 						type == "application/octet-stream") {
@@ -235,7 +235,7 @@ class SaverActivity : ListActivity() {
 						val contentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(it))
 								// Fall back to checking URL content type
 								?: url.openConnection().getHeaderField("Content-Type")
-						contentType?.let { contentType ->
+						contentType?.toLowerCase()?.let { contentType ->
 							Log.d(TAG, "ContentType: $contentType")
 							debugInfo.add(Pair("URL Content-Type", contentType))
 							val filename = getFilename(
