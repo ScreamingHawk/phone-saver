@@ -29,6 +29,7 @@
 	<string name="toast_save_failed">Save failed</string>
 	<string name="toast_save_init_error">Error loading save locations</string>
 	<string name="toast_save_init_no_locations">Please open the app to add save locations</string>
+	<string name="toast_save_file_exists">Not saving as file already exists</string>
 	<string name="downloader_description">Saving %1$s</string>
 
 	<!-- Debug / Error -->
@@ -58,4 +59,28 @@
 		<a href="https://michael.standen.link">&author;</a>.
 	</string>
 
+	<!-- Settings -->
+	<string name="title_activity_settings">Settings</string>
+
+	<string name="pref_title_file_exists">Behaviour if already file exists</string>
+	<array name="pref_list_title_file_exists">
+		<item>Overwrite existing</item>
+		<item>Do not save</item>
+		<item>Append number to name</item>
+		<!--<item>Request new name</item>-->
+	</array>
+	<array name="pref_list_description_file_exists">
+		<item>Overwrite existing file with new file</item>
+		<item>Do not save the new file</item>
+		<item>Append number to file name so both files are saved</item>
+		<!--<item>Request new file name with a pop up</item>-->
+	</array>
+
+	<string name="pref_default_value_file_exists">Overwrite</string>
+	<array name="pref_list_values_file_exists">
+		<item>Overwrite</item>
+		<item>Nothing</item>
+		<item>Postfix</item>
+		<!--<item>Request</item>-->
+	</array>
 </resources>

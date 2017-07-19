@@ -61,14 +61,20 @@ class FolderListActivity : ListActivity() {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		val id = item.itemId
-
-		if (id == link.standen.michael.phonesaver.R.id.action_credits) {
-			startActivity(Intent(this, CreditsActivity::class.java))
-			return true
+		when (item.itemId) {
+			R.id.action_credits ->
+				{
+					startActivity(Intent(this, CreditsActivity::class.java))
+					return true
+				}
+			R.id.action_settings ->
+				{
+					startActivity(Intent(this, SettingsActivity::class.java))
+					return true
+				}
+			else ->
+				return super.onOptionsItemSelected(item)
 		}
-
-		return super.onOptionsItemSelected(item)
 	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {

@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
@@ -31,6 +32,8 @@ class SaverActivity : ListActivity() {
 
 	private val FILENAME_REGEX = "[^-_.A-Za-z0-9]"
 	private val FILENAME_LENGTH_LIMIT = 100
+
+	private val FILENAME_EXT_MATCH_LIMIT = 1000
 
 	private var location: String? = null
 
@@ -175,10 +178,12 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Call when the intent is finished
 	 */
-	fun finishIntent(success: Boolean?) {
+	fun finishIntent(success: Boolean?, messageId: Int? = null) {
 		// Notify user
 		runOnUiThread {
-			if (success == null){
+			if (messageId != null){
+				Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show()
+			} else if (success == null){
 				Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
 			} else if (success){
 				Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
@@ -208,7 +213,9 @@ class SaverActivity : ListActivity() {
 	 */
 	fun handleStream(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			saveUri(it, getFilename(it, intent.type), callback, dryRun)
+			getFilename(it, intent.type, dryRun, {filename ->
+				saveUri(it, filename, callback, dryRun)
+			})
 		} ?: callback(false)
 	}
 
@@ -219,7 +226,10 @@ class SaverActivity : ListActivity() {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			Log.d(TAG, "Text has stream")
-			return saveUri(it, getFilename(it, intent.type), callback, dryRun)
+			getFilename(it, intent.type, dryRun, {filename ->
+				saveUri(it, filename, callback, dryRun)
+			})
+			return
 		}
 
 		// Save the text
@@ -238,22 +248,24 @@ class SaverActivity : ListActivity() {
 						contentType?.toLowerCase()?.let { contentType ->
 							Log.d(TAG, "ContentType: $contentType")
 							debugInfo.add(Pair("URL Content-Type", contentType))
-							val filename = getFilename(
-									intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
-									contentType)
-							if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
-								saveUrl(Uri.parse(it), filename, callback, dryRun)
-							} else if (contentType == "text/html"){
-								saveString(it, filename, callback, dryRun)
-							} else {
-								callback(false)
-							}
+							getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
+									contentType, dryRun, { filename ->
+										if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
+											saveUrl(Uri.parse(it), filename, callback, dryRun)
+										} else if (contentType == "text/html"){
+											saveString(it, filename, callback, dryRun)
+										} else {
+											callback(false)
+										}
+							})
 						}?: callback(false)
 					} catch (e: MalformedURLException){
 						Log.d(TAG, "Text without URL")
 						// It's just some text
-						val filename = getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it, "text/plain")
-						saveString(it, filename, callback, dryRun)
+						getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it,
+								"text/plain", dryRun, { filename ->
+							saveString(it, filename, callback, dryRun)
+						})
 					}
 				}
 			}.execute()
@@ -269,15 +281,17 @@ class SaverActivity : ListActivity() {
 			var counter = 0
 			var completeSuccess = true
 			imageUris.forEach {
-				saveUri(it, getFilename(it, intent.type), { success ->
-					counter++
-					success?.let {
-						completeSuccess = completeSuccess && it
-					}
-					if (counter == imageUris.size){
-						callback(completeSuccess)
-					}
-				}, dryRun)
+				getFilename(it, intent.type, dryRun, { filename->
+					saveUri(it, filename, { success ->
+						counter++
+						success?.let {
+							completeSuccess = completeSuccess && it
+						}
+						if (counter == imageUris.size){
+							callback(completeSuccess)
+						}
+					}, dryRun)
+				})
 			}
 		} ?: callback(false)
 	}
@@ -293,9 +307,13 @@ class SaverActivity : ListActivity() {
 			Log.d(TAG, "Saving $sourceFilename to $destinationFilename")
 		}
 
-		contentResolver.openInputStream(uri)?.use { bis ->
-			saveStream(bis, destinationFilename, callback, dryRun)
-		} ?: callback(false)
+		try {
+			contentResolver.openInputStream(uri)?.use { bis ->
+				saveStream(bis, destinationFilename, callback, dryRun)
+			} ?: callback(false)
+		} catch (e: FileNotFoundException){
+			Log.e(TAG, "File not found. Perhaps you are overriding the same file and just deleted it?", e)
+		}
 	}
 
 	/**
@@ -408,22 +426,22 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Get the filename from a Uri.
 	 */
-	private fun getFilename(uri: Uri, mime: String): String {
+	private fun getFilename(uri: Uri, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit) {
 		// Find the actual filename
 		if (uri.scheme == "content") {
 			contentResolver.query(uri, null, null, null, null)?.use {
 				if (it.moveToFirst()) {
-					return getFilename(it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)), mime)
+					return getFilename(it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)), mime, dryRun, callback)
 				}
 			}
 		}
-		return getFilename(uri.lastPathSegment, mime)
+		getFilename(uri.lastPathSegment, mime, dryRun, callback)
 	}
 
 	/**
 	 * Get the filename from a string.
 	 */
-	private fun getFilename(s: String, mime: String): String {
+	private fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit) {
 		Log.d(TAG, "Converting filename: $s")
 
 		var result = s
@@ -439,9 +457,11 @@ class SaverActivity : ListActivity() {
 			result = result.substring(0, FILENAME_LENGTH_LIMIT)
 		}
 
-		if (!MimeTypeMap.getSingleton().hasExtension(result.substringAfterLast('.', ""))){
+		var ext = result.substringAfterLast('.', "")
+		if (!MimeTypeMap.getSingleton().hasExtension(ext)){
 			// Add file extension
 			MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)?.let {
+				ext = it
 				Log.d(TAG, "Adding extension $it to $result")
 				result += "." + it
 			}
@@ -449,7 +469,52 @@ class SaverActivity : ListActivity() {
 
 		Log.d(TAG, "Converted filename: $result")
 
-		return result
+		if (!dryRun) {
+			val f = File(safeAddPath(result))
+			if (f.exists()) {
+				when (resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
+						PreferenceManager.getDefaultSharedPreferences(this).getString(
+								("file_exists"), resources.getString(R.string.pref_default_value_file_exists)))) {
+					0 -> {
+						// Overwrite. Delete the file, so that it will be overridden
+						Log.d(TAG, "Overwriting $result")
+						f.delete()
+					}
+					1 -> {
+						// Nothing. Quit
+						Log.d(TAG, "Quitting due to duplicate $result")
+						finishIntent(false, R.string.toast_save_file_exists)
+						return
+					}
+					2 -> {
+						// Postfix. Add counter before extension
+						Log.d(TAG, "Adding postfix to $result")
+						var i = 1
+						val before = safeAddPath(result.substringBeforeLast('.', "")) + "."
+						if (ext.isNotBlank()) {
+							ext = "." + ext
+						}
+						while (File(before + i + ext).exists()) {
+							i++
+							if (i > FILENAME_EXT_MATCH_LIMIT) {
+								// We have a lot of matches. This is too hard
+								Log.w(TAG, "There are over $FILENAME_EXT_MATCH_LIMIT matches for $before$ext. Aborting.")
+								finishIntent(false, R.string.toast_save_file_exists)
+								return
+							}
+						}
+						result = before + i + ext
+					}
+					3 -> {
+						// Request
+						Log.e(TAG, "Not implemented!")
+						throw NotImplementedError("Requesting filename not yet implemented.")
+					}
+				}
+			}
+		}
+
+		callback(result)
 	}
 
 	/**

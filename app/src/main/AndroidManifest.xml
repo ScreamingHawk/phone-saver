@@ -37,7 +37,9 @@
 			android:theme="@style/AppTheme.NoActionBar">
 		</activity>
 		<activity
-			android:name=".activity.SaverActivity">
+			android:name=".activity.SaverActivity"
+			android:label="@string/app_name"
+			android:theme="@style/AppTheme">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -49,9 +51,17 @@
 				<data android:mimeType="*/*" />
 			</intent-filter>
 		</activity>
+		<activity
+			android:name=".activity.SettingsActivity"
+			android:label="@string/title_activity_settings">
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="link.standen.michael.phonesaver.activity.FolderListActivity" />
+		</activity>
+
 		<receiver android:name=".receiver.DownloadBroadcastReceiver">
 			<intent-filter>
-				<action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+				<action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
 			</intent-filter>
 		</receiver>
 	</application>
