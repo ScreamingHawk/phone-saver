@@ -246,13 +246,13 @@ class SaverActivity : ListActivity() {
 								// Fall back to checking URL content type
 								?: url.openConnection().getHeaderField("Content-Type")
 						contentType?.toLowerCase()?.let { contentType ->
-							Log.d(TAG, "ContentType: $contentType")
+							Log.d(TAG, "URL Content-Type: $contentType")
 							debugInfo.add(Pair("URL Content-Type", contentType))
 							getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
 									contentType, dryRun, { filename ->
 										if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
 											saveUrl(Uri.parse(it), filename, callback, dryRun)
-										} else if (contentType == "text/html"){
+										} else if (contentType.startsWith("text/html")){
 											saveString(it, filename, callback, dryRun)
 										} else {
 											callback(false)
