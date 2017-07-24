@@ -75,14 +75,18 @@ class SaverActivity : ListActivity() {
 				useIntent({ finishIntent(it) })
 				return // activity dead
 			} else {
-				Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
-				exitApplication()
+				runOnUiThread {
+					Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
+					exitApplication()
+				}
 				return // activity dead
 			}
 		}
 
-		Toast.makeText(this, R.string.toast_save_init_error, Toast.LENGTH_LONG).show()
-		exitApplication()
+		runOnUiThread {
+			Toast.makeText(this, R.string.toast_save_init_error, Toast.LENGTH_LONG).show()
+			exitApplication()
+		}
 		return // activity dead
 	}
 
