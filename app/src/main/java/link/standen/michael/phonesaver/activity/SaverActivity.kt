@@ -247,10 +247,10 @@ class SaverActivity : ListActivity() {
 						// It's a URL
 						Log.d(TAG, "Text with URL")
 						val mime = MimeTypeMap.getSingleton()
-						val contentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(it))
+						val urlContentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(it))
 								// Fall back to checking URL content type
 								?: url.openConnection().getHeaderField("Content-Type")
-						contentType?.toLowerCase()?.let { contentType ->
+						urlContentType?.toLowerCase()?.let { contentType ->
 							Log.d(TAG, "URL Content-Type: $contentType")
 							debugInfo.add(Pair("URL Content-Type", contentType))
 							getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
