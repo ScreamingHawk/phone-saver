@@ -173,6 +173,7 @@ class SaverActivity : ListActivity() {
 
 			// Build and show unsupported message
 			val supportView = findViewById(R.id.not_supported) as TextView
+			@Suppress("DEPRECATION")
 			supportView.text = Html.fromHtml(resources.getString(R.string.not_supported, issueLink))
 			supportView.movementMethod = LinkMovementMethod.getInstance()
 			findViewById(R.id.not_supported_wrapper).visibility = View.VISIBLE
