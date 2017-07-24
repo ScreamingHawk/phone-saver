@@ -100,15 +100,15 @@ class SaverActivity : ListActivity() {
 
 		type?.toLowerCase()?.let {
 			if (Intent.ACTION_SEND == action) {
-				if (type.startsWith("image/") || type.startsWith("video/") ||
-						type == "application/octet-stream") {
+				if (it.startsWith("image/") || it.startsWith("video/") ||
+						it.startsWith("application/octet-stream")) {
 					// Handle single stream being sent
 					return handleStream(callback, dryRun)
-				} else if (type == "text/plain") {
+				} else if (it.startsWith("text/plain")) {
 					return handleText(callback, dryRun)
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
-				if (type.startsWith("image/")) {
+				if (it.startsWith("image/")) {
 					// Handle multiple images being sent
 					return handleMultipleImages(callback, dryRun)
 				}
