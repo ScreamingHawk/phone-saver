@@ -35,7 +35,8 @@
 	<!-- Debug / Error -->
 	<string name="not_supported_content_type">Unsupported Content Type</string>
 	<string name="not_supported">Please &lt;a href="%1$s">raise a feature request&lt;/a> with this
-		content type so &author; can add support.</string>
+		content type so &author; can add official support. &lt;br/>&lt;br/>You can also enable the \"force saving\"
+		setting to force &appname; to try to save it anyway.</string>
 
 	<!-- Loading -->
 	<string name="loading_title">Testing support…</string>
