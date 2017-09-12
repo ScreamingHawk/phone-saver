@@ -26,10 +26,10 @@ class FolderListActivity : ListActivity() {
 	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(link.standen.michael.phonesaver.R.layout.folder_list_activity)
-		val toolbar = findViewById(link.standen.michael.phonesaver.R.id.toolbar) as android.support.v7.widget.Toolbar
+		val toolbar = findViewById<android.support.v7.widget.Toolbar>(link.standen.michael.phonesaver.R.id.toolbar)
 		setSupportActionBar(toolbar)
 
-		val fab = findViewById(link.standen.michael.phonesaver.R.id.fab) as android.support.design.widget.FloatingActionButton
+		val fab = findViewById<android.support.design.widget.FloatingActionButton>(link.standen.michael.phonesaver.R.id.fab)
 		fab.setOnClickListener { _ ->
 			val intent = android.content.Intent(this@FolderListActivity, FolderSelectActivity::class.java)
 			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
@@ -48,7 +48,7 @@ class FolderListActivity : ListActivity() {
 				checkEmptyCharacterList()
 			}
 		})
-		(findViewById(android.R.id.list) as ListView).adapter = adapter
+		findViewById<ListView>(android.R.id.list).adapter = adapter
 	}
 
 	override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
@@ -57,25 +57,22 @@ class FolderListActivity : ListActivity() {
 		return true
 	}
 
-	override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+	override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean =
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		when (item.itemId) {
-			R.id.action_credits ->
-				{
-					startActivity(Intent(this, CreditsActivity::class.java))
-					return true
-				}
-			R.id.action_settings ->
-				{
-					startActivity(Intent(this, SettingsActivity::class.java))
-					return true
-				}
+			R.id.action_credits -> {
+				startActivity(Intent(this, CreditsActivity::class.java))
+				true
+			}
+			R.id.action_settings -> {
+				startActivity(Intent(this, SettingsActivity::class.java))
+				true
+			}
 			else ->
-				return super.onOptionsItemSelected(item)
+				super.onOptionsItemSelected(item)
 		}
-	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
 		super.onActivityResult(requestCode, resultCode, data)
@@ -110,9 +107,9 @@ class FolderListActivity : ListActivity() {
 	 */
 	fun checkEmptyCharacterList() {
 		if (folderList.isEmpty()) {
-			findViewById(android.R.id.empty).visibility = View.VISIBLE
+			findViewById<View>(android.R.id.empty).visibility = View.VISIBLE
 		} else {
-			findViewById(android.R.id.empty).visibility = View.GONE
+			findViewById<View>(android.R.id.empty).visibility = View.GONE
 		}
 	}
 

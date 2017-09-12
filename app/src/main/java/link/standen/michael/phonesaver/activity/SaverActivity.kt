@@ -1,5 +1,6 @@
 package link.standen.michael.phonesaver.activity
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
@@ -55,31 +56,35 @@ class SaverActivity : ListActivity() {
 		}, dryRun=true)
 	}
 
-	fun loadList() {
+	private fun loadList() {
 		LocationHelper.loadFolderList(this)?.let {
-			if (it.size > 1) {
-				runOnUiThread {
-					findViewById(R.id.loading).visibility = View.GONE
-					// Init list view
-					val listView = findViewById(android.R.id.list) as ListView
-					listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-						location = LocationHelper.addRoot((view as TextView).text.toString())
-						useIntent({ finishIntent(it) })
+			when {
+				it.size > 1 -> {
+					runOnUiThread {
+						findViewById<View>(R.id.loading).visibility = View.GONE
+						// Init list view
+						val listView = findViewById<ListView>(android.R.id.list)
+						listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
+							location = LocationHelper.addRoot((view as TextView).text.toString())
+							useIntent({ finishIntent(it) })
+						}
+						listView.adapter = ArrayAdapter<String>(this, R.layout.saver_list_item, it.map { if (it.isBlank()) File.separator else it })
 					}
-					listView.adapter = ArrayAdapter<String>(this, R.layout.saver_list_item, it.map { if (it.isBlank()) File.separator else it })
+					return // await selection
 				}
-				return // await selection
-			} else if (it.size == 1) {
-				// Only one location, just use it
-				location = LocationHelper.addRoot(it[0])
-				useIntent({ finishIntent(it) })
-				return // activity dead
-			} else {
-				runOnUiThread {
-					Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
-					exitApplication()
+				it.size == 1 -> {
+					// Only one location, just use it
+					location = LocationHelper.addRoot(it[0])
+					useIntent({ finishIntent(it) })
+					return // activity dead
 				}
-				return // activity dead
+				else -> {
+					runOnUiThread {
+						Toast.makeText(this, R.string.toast_save_init_no_locations, Toast.LENGTH_LONG).show()
+						exitApplication()
+					}
+					return // activity dead
+				}
 			}
 		}
 
@@ -90,7 +95,7 @@ class SaverActivity : ListActivity() {
 		return // activity dead
 	}
 
-	fun useIntent(callback: (success: Boolean?) -> Unit, dryRun: Boolean = false) {
+	private fun useIntent(callback: (success: Boolean?) -> Unit, dryRun: Boolean = false) {
 		// Get intent action and MIME type
 		val action: String? = intent.action
 		val type: String? = intent.type
@@ -122,11 +127,11 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Show the not supported information.
 	 */
-	fun showNotSupported() {
+	private fun showNotSupported() {
 		// Hide list
 		runOnUiThread {
-			findViewById(R.id.loading).visibility = View.GONE
-			findViewById(android.R.id.list).visibility = View.GONE
+			findViewById<View>(R.id.loading).visibility = View.GONE
+			findViewById<View>(android.R.id.list).visibility = View.GONE
 			// Generate issue text here as should always be English and does not need to be in strings.xml
 			val bobTitle = StringBuilder()
 			bobTitle.append("Support Request - ")
@@ -172,28 +177,25 @@ class SaverActivity : ListActivity() {
 			Log.i(TAG, issueLink)
 
 			// Build and show unsupported message
-			val supportView = findViewById(R.id.not_supported) as TextView
+			val supportView = findViewById<TextView>(R.id.not_supported)
 			@Suppress("DEPRECATION")
 			supportView.text = Html.fromHtml(resources.getString(R.string.not_supported, issueLink))
 			supportView.movementMethod = LinkMovementMethod.getInstance()
-			findViewById(R.id.not_supported_wrapper).visibility = View.VISIBLE
+			findViewById<View>(R.id.not_supported_wrapper).visibility = View.VISIBLE
 		}
 	}
 
 	/**
 	 * Call when the intent is finished
 	 */
-	fun finishIntent(success: Boolean?, messageId: Int? = null) {
+	private fun finishIntent(success: Boolean?, messageId: Int? = null) {
 		// Notify user
 		runOnUiThread {
-			if (messageId != null){
-				Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show()
-			} else if (success == null){
-				Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
-			} else if (success){
-				Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
-			} else {
-				Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
+			when {
+				messageId != null -> Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show()
+				success == null -> Toast.makeText(this, R.string.toast_save_in_progress, Toast.LENGTH_SHORT).show()
+				success -> Toast.makeText(this, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
+				else -> Toast.makeText(this, R.string.toast_save_failed, Toast.LENGTH_SHORT).show()
 			}
 		}
 
@@ -203,20 +205,19 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Exists the application is the best way available for the Android version
 	 */
-	fun exitApplication() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			finishAndRemoveTask()
-		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			finishAffinity()
-		} else {
-			finish()
+	@SuppressLint("NewApi")
+	private fun exitApplication() {
+		when {
+			Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> finishAndRemoveTask()
+			Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN -> finishAffinity()
+			else -> finish()
 		}
 	}
 
 	/**
 	 * Handle the saving of intents with streams such as images and videos.
 	 */
-	fun handleStream(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	private fun handleStream(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			getFilename(it, intent.type, dryRun, {filename ->
 				saveUri(it, filename, callback, dryRun)
@@ -227,7 +228,7 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Handle the saving of text intents.
 	 */
-	fun handleText(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	private fun handleText(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			Log.d(TAG, "Text has stream")
@@ -280,7 +281,7 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Handle the saving of multiple image files.
 	 */
-	fun handleMultipleImages(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	private fun handleMultipleImages(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		val imageUris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
 		imageUris?.let {
 			var counter = 0
@@ -304,7 +305,7 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Save the given uri to filesystem.
 	 */
-	fun saveUri(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	private fun saveUri(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		val destinationFilename = safeAddPath(filename)
 
 		if (!dryRun) {

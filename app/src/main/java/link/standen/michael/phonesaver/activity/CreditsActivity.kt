@@ -27,32 +27,32 @@ class CreditsActivity : AppCompatActivity() {
 		// Version
 		try {
 			val versionName = packageManager.getPackageInfo(packageName, 0).versionName
-			(findViewById(R.id.credits_version) as TextView).text = resources.getString(R.string.credits_version, versionName)
+			findViewById<TextView>(R.id.credits_version).text = resources.getString(R.string.credits_version, versionName)
 		} catch (e: PackageManager.NameNotFoundException) {
 			Log.e(TAG, "Unable to get package version", e)
 		}
 
 		// Linkify
-		(findViewById(R.id.credits_creator) as TextView).movementMethod = LinkMovementMethod.getInstance()
-		(findViewById(R.id.credits_content1) as TextView).movementMethod = LinkMovementMethod.getInstance()
-		(findViewById(R.id.credits_content2) as TextView).movementMethod = LinkMovementMethod.getInstance()
-		(findViewById(R.id.credits_content3) as TextView).movementMethod = LinkMovementMethod.getInstance()
+		findViewById<TextView>(R.id.credits_creator).movementMethod = LinkMovementMethod.getInstance()
+		findViewById<TextView>(R.id.credits_content1).movementMethod = LinkMovementMethod.getInstance()
+		findViewById<TextView>(R.id.credits_content2).movementMethod = LinkMovementMethod.getInstance()
+		findViewById<TextView>(R.id.credits_content3).movementMethod = LinkMovementMethod.getInstance()
 		if (getCurrentLocale().language == DEFAULT_LOCALE){
 			// English, hide the translator info
-			(findViewById(R.id.credits_content_translator) as TextView).visibility = View.GONE
+			findViewById<TextView>(R.id.credits_content_translator).visibility = View.GONE
 		} else {
-			(findViewById(R.id.credits_content_translator) as TextView).movementMethod = LinkMovementMethod.getInstance()
+			findViewById<TextView>(R.id.credits_content_translator).movementMethod = LinkMovementMethod.getInstance()
 		}
 	}
 
 	/**
 	 * A version safe way to get the currently applied locale.
 	 */
-	fun getCurrentLocale(): Locale {
+	private fun getCurrentLocale(): Locale =
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-			return this.resources.configuration.locales.get(0)
+			this.resources.configuration.locales.get(0)
 		} else {
-			return this.resources.configuration.locale
+			@Suppress("DEPRECATION")
+			this.resources.configuration.locale
 		}
-	}
 }

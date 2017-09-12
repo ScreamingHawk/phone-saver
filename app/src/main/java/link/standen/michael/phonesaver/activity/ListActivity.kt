@@ -17,7 +17,7 @@ open class ListActivity : AppCompatActivity() {
 		super.onResume()
 
 		// Restore the list view scroll location
-		listState?.let { (findViewById(android.R.id.list) as ListView).onRestoreInstanceState(listState) }
+		listState?.let { findViewById<ListView>(android.R.id.list).onRestoreInstanceState(listState) }
 		listState = null
 	}
 
@@ -34,7 +34,7 @@ open class ListActivity : AppCompatActivity() {
 	 */
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
-		listState = (findViewById(android.R.id.list) as ListView).onSaveInstanceState()
+		listState = findViewById<ListView>(android.R.id.list).onSaveInstanceState()
 		outState.putParcelable(LIST_STATE, listState)
 	}
 

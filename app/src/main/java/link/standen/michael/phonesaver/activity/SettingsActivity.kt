@@ -21,7 +21,7 @@ import link.standen.michael.phonesaver.R
  * guidelines and the [Settings API Guide](http://developer.android.com/guide/topics/ui/settings.html)
  * for more information on developing a Settings UI.
  */
-class SettingsActivity : AppCompatPreferenceActivity() {
+class SettingsActivity: AppCompatPreferenceActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -47,7 +47,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	class PhoneSaverPreferenceFragment : PreferenceFragment() {
+	class PhoneSaverPreferenceFragment: PreferenceFragment() {
 		override fun onCreate(savedInstanceState: Bundle?) {
 			super.onCreate(savedInstanceState)
 			addPreferencesFromResource(R.xml.preferences)
@@ -70,15 +70,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
 			return super.onOptionsItemSelected(item)
 		}
 
-		fun updateListPreferenceSummary(descriptionArray: Int, preference: Preference, newValue: String? = null): Boolean {
+		private fun updateListPreferenceSummary(descriptionArray: Int, preference: Preference, newValue: String? = null): Boolean {
 			with (preference as ListPreference) {
 				val index = findIndexOfValue(newValue?: value.toString())
 				// Set the summary to reflect the new value.
-				if (index >= 0) {
-					summary = context.resources.getStringArray(descriptionArray)[index]
-				} else {
-					summary = null
-				}
+				summary = if (index >= 0) context.resources.getStringArray(descriptionArray)[index] else null
 			}
 			return true
 		}

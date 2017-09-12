@@ -50,7 +50,7 @@ class FolderSelectActivity : ListActivity() {
 		setContentView(layout.folder_select_activity)
 
 		// Init list view
-		listView = findViewById(android.R.id.list) as ListView
+		listView = findViewById(android.R.id.list)
 		listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
 			with(view as TextView){
 				if (view.text.toString() == resources.getString(string.back_folder)) {
@@ -68,8 +68,8 @@ class FolderSelectActivity : ListActivity() {
 		}
 
 		// Init bottom buttons
-		val navigation = findViewById(id.navigation) as BottomNavigationView
-		navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+		findViewById<BottomNavigationView>(id.navigation)
+				.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 	}
 
 	override fun onStart() {
@@ -95,7 +95,7 @@ class FolderSelectActivity : ListActivity() {
 				// Convert to mutable
 				?.toMutableList()
 				// Default to empty
-				?: ArrayList<String>()
+				?: ArrayList()
 
 		// Add back button as first item
 		fList.add(0, resources.getString(string.back_folder))
@@ -115,16 +115,15 @@ class FolderSelectActivity : ListActivity() {
 	 * Updates the menu items based on whether the directory is writable or not.
 	 */
 	private fun updateWritable(writable: Boolean){
-		findViewById(id.navigation_here).visibility = if (writable) View.VISIBLE else View.GONE
-		findViewById(id.navigation_read_only).visibility = if (writable) View.GONE else View.VISIBLE
+		findViewById<View>(id.navigation_here).visibility = if (writable) View.VISIBLE else View.GONE
+		findViewById<View>(id.navigation_read_only).visibility = if (writable) View.GONE else View.VISIBLE
 	}
 
 	/**
 	 * Remove the current location from the given path.
 	 */
-	private fun removeCurrent(location: String): String {
-		return location.replace(currentPath, "")
-	}
+	private fun removeCurrent(location: String): String =
+		location.replace(currentPath, "")
 
 	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 		when (item?.itemId){
@@ -164,12 +163,11 @@ class FolderSelectActivity : ListActivity() {
 	/**
 	 * Returns the back location for the current path
 	 */
-	private fun getBackLocation(): String? {
+	private fun getBackLocation(): String? =
 		if (currentPath.contains(File.separatorChar)) {
-			return currentPath.substring(0, currentPath.lastIndexOf(File.separatorChar))
+			currentPath.substring(0, currentPath.lastIndexOf(File.separatorChar))
 		} else {
-			return null
+			null
 		}
-	}
 
 }

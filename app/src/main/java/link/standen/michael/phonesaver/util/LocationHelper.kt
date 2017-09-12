@@ -10,7 +10,6 @@ import com.google.gson.reflect.TypeToken
  */
 object LocationHelper {
 
-	const private val TAG = "LocationHelper"
 	const private val FOLDER_LIST_STORE = "FOLDER_STORE"
 
 	val rootLocation = Environment.getExternalStorageDirectory().absolutePath!!
@@ -37,15 +36,11 @@ object LocationHelper {
 	/**
 	 * Remove the root location from the given path.
 	 */
-	fun removeRoot(location: String): String {
-		return location.replace(rootLocation, "")
-	}
+	fun removeRoot(location: String): String = location.replace(rootLocation, "")
 
 	/**
 	 * Add the root location to the given path.
 	 */
-	fun addRoot(location: String): String {
-		return rootLocation + location
-	}
+	fun addRoot(location: String): String = rootLocation + location
 
 }
