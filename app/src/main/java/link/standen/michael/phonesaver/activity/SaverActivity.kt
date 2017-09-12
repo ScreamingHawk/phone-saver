@@ -272,7 +272,7 @@ class SaverActivity : ListActivity() {
 									contentType, dryRun, { filename ->
 										if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
 											saveUrl(Uri.parse(it), filename, callback, dryRun)
-										} else if (contentType.startsWith("text/html")){
+										} else if (contentType.startsWith("text/")){
 											saveString(it, filename, callback, dryRun)
 										} else if (FORCE_SAVING && !dryRun){
 											// Fallback to saving with saveUrl
