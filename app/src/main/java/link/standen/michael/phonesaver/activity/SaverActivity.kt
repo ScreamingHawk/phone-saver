@@ -36,6 +36,8 @@ class SaverActivity : ListActivity() {
 
 	private val FILENAME_EXT_MATCH_LIMIT = 1000
 
+	private var FORCE_SAVING = false
+
 	private var location: String? = null
 
 	data class Pair(val key: String, val value: String)
@@ -45,15 +47,22 @@ class SaverActivity : ListActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
 
-		useIntent({ success ->
-			Log.i(TAG, "Supported: $success")
-			// Success should never be null on a dryRun
-			if (success!!){
-				loadList()
-			} else {
-				showNotSupported()
+		FORCE_SAVING = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_saving", false)
+
+		when {
+			FORCE_SAVING -> loadList()
+			else -> {
+				useIntent({ success ->
+					Log.i(TAG, "Supported: $success")
+					// Success should never be null on a dryRun
+					if (success!!){
+						loadList()
+					} else {
+						showNotSupported()
+					}
+				}, dryRun=true)
 			}
-		}, dryRun=true)
+		}
 	}
 
 	private fun loadList() {
@@ -117,8 +126,13 @@ class SaverActivity : ListActivity() {
 					// Handle multiple images being sent
 					return handleMultipleImages(callback, dryRun)
 				}
+			} else if (FORCE_SAVING && !dryRun) {
+				// Save the file the best way we can
+				return handleText(callback, dryRun)
 			}
 		}
+
+		Log.i(TAG, "No supporting method")
 
 		// Failed to reach callback
 		finishIntent(false)
@@ -260,6 +274,9 @@ class SaverActivity : ListActivity() {
 											saveUrl(Uri.parse(it), filename, callback, dryRun)
 										} else if (contentType.startsWith("text/html")){
 											saveString(it, filename, callback, dryRun)
+										} else if (FORCE_SAVING && !dryRun){
+											// Fallback to saving with saveUrl
+											saveUrl(Uri.parse(it), filename, callback, dryRun)
 										} else {
 											callback(false)
 										}

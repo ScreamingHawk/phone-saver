@@ -75,7 +75,6 @@
 		<item>Append number to file name so both files are saved</item>
 		<!--<item>Request new file name with a pop up</item>-->
 	</array>
-
 	<string name="pref_default_value_file_exists">Overwrite</string>
 	<array name="pref_list_values_file_exists">
 		<item>Overwrite</item>
@@ -83,4 +82,9 @@
 		<item>Postfix</item>
 		<!--<item>Request</item>-->
 	</array>
+
+	<string name="pref_title_force_saving">Force saving</string>
+	<string name="pref_description_force_saving">Force a shared item to save even if it does not have
+		explicit support. WARNING: Saving with this feature enabled may have adverse effects.
+	</string>
 </resources>
