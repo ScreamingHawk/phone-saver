@@ -115,6 +115,7 @@ class SaverActivity : ListActivity() {
 		type?.toLowerCase()?.let {
 			if (Intent.ACTION_SEND == action) {
 				if (it.startsWith("image/") || it.startsWith("video/") ||
+						it.startsWith("audio/") ||
 						it.startsWith("application/octet-stream")) {
 					// Handle single stream being sent
 					return handleStream(callback, dryRun)
@@ -270,7 +271,9 @@ class SaverActivity : ListActivity() {
 							debugInfo.add(Pair("URL Content-Type", contentType))
 							getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
 									contentType, dryRun, { filename ->
-										if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
+										if (contentType.startsWith("image/") ||
+												contentType.startsWith("video/") ||
+												contentType.startsWith("audio/")) {
 											saveUrl(Uri.parse(it), filename, callback, dryRun)
 										} else if (contentType.startsWith("text/")){
 											saveString(it, filename, callback, dryRun)
@@ -336,6 +339,7 @@ class SaverActivity : ListActivity() {
 			} ?: callback(false)
 		} catch (e: FileNotFoundException){
 			Log.e(TAG, "File not found. Perhaps you are overriding the same file and just deleted it?", e)
+			callback(false)
 		}
 	}
 
