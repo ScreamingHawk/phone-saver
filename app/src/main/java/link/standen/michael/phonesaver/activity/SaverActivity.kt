@@ -5,6 +5,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
@@ -37,6 +38,7 @@ class SaverActivity : ListActivity() {
 	private val FILENAME_EXT_MATCH_LIMIT = 1000
 
 	private var FORCE_SAVING = false
+	private var REGISTER_MEDIA_SCANNER = false
 
 	private var location: String? = null
 
@@ -48,6 +50,7 @@ class SaverActivity : ListActivity() {
 		setContentView(R.layout.saver_activity)
 
 		FORCE_SAVING = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_saving", false)
+		REGISTER_MEDIA_SCANNER = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("register_file", false)
 
 		when {
 			FORCE_SAVING -> loadList()
@@ -367,6 +370,10 @@ class SaverActivity : ListActivity() {
 					.setDescription(resources.getString(R.string.downloader_description, sourceFilename))
 					.setDestinationInExternalPublicDir(LocationHelper.removeRoot(it), filename)
 
+			if (REGISTER_MEDIA_SCANNER){
+				downloader.allowScanningByMediaScanner()
+			}
+
 			(getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(downloader)
 
 			success = null
@@ -402,6 +409,10 @@ class SaverActivity : ListActivity() {
 
 			// Done
 			success = true
+
+			if (REGISTER_MEDIA_SCANNER){
+				MediaScannerConnection(this, null).scanFile(destinationFilename, null)
+			}
 		} catch (e: IOException) {
 			Log.e(TAG, "Unable to save file", e)
 		} finally {
@@ -438,6 +449,10 @@ class SaverActivity : ListActivity() {
 
 			// Done
 			success = true
+
+			if (REGISTER_MEDIA_SCANNER){
+				MediaScannerConnection(this, null).scanFile(destinationFilename, null)
+			}
 		} catch (e: IOException) {
 			Log.e(TAG, "Unable to save file", e)
 		} finally {
