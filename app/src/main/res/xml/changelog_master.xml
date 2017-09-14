@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+	<release version="3.3" versioncode="20">
+		<change>Add option to register files with media scanner</change>
+		<change>Explicit audio file support</change>
+	</release>
+	<release version="3.2" versioncode="19">
+		<change>Greater support for "text" based content types</change>
+	</release>
+	<release version="3.1" versioncode="18">
+		<change>Fix crashing when performing some toasts</change>
+		<change>Add force saving setting</change>
+		<change>Further fix case sensitive content type testing</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="3.0" versioncode="17">
+		<change>Fix "text/html" support</change>
+		<change>Add setting for handling files that already exist</change>
+		<change>Fix case sensitive content type testing</change>
+		<change>Fix file extension testing</change>
+	</release>
+	<release version="2.5" versioncode="16">
+		<change>Update Japanese translation</change>
+		<change>Add "text/html" support</change>
+		<change>Add translation credits</change>
+		<change>Fix handling URLs with embedded equals signs</change>
+	</release>
+	<release version="2.4" versioncode="15">
+		<change>Add "application/octet-stream" support</change>
+		<change>Make UI more consistent</change>
+		<change>Make entire folder line clickable</change>
+	</release>
+	<release version="2.3" versioncode="14">
+		<change>Update Japanese translation</change>
+		<change>Disallow selection of write protected folders</change>
+		<change>Automatically add file extensions</change>
+		<change>Make UI bigger</change>
+		<change>Fix folder title display for folder root location</change>
+		<change>Make UI consistent</change>
+		<change>Permissions test runs immediately on load</change>
+		<change>Update build and support libraries' versions</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="2.2" versioncode="13">
+		<change>Add fallback for URL content type detection</change>
+	</release>
+	<release version="2.1" versioncode="12">
+		<change>Guess content type from URL connection</change>
+		<change>Fix callback error preventing downloads</change>
+		<change>Fix multiple toasts appearing when they shouldn't</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="2.0" versioncode="11">
+		<change>Correct ellipse usage</change>
+		<change>Update Japanese translation</change>
+		<change>Allow incomplete translations</change>
+		<change>Increase performance for web URI requests</change>
+		<change>Fix missing callbacks</change>
+		<change>Add "testing for support" notification</change>
+		<change>Fix filename validation</change>
+		<change>Ensure "testing for support" is accurate by doing a full dry run</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="1.9" versioncode="10">
+		<change>Update Japanese translation</change>
+		<change>Allow complete phone navigation</change>
+		<change>Enhance support for "text/plain"</change>
+		<change>Enhance filename validation</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="1.8" versioncode="9">
+		<change>Add toast when background downloads are completed</change>
+		<change>Update Japanese translation</change>
+		<change>Add application version to suport request</change>
+	</release>
+	<release version="1.7" versioncode="8">
+		<change>Add video support</change>
+		<change>Enhance filename validation</change>
+		<change>Update Kotlin version</change>
+	</release>
+	<release version="1.6" versioncode="7">
+		<change>Add support for URL requests</change>
+		<change>Enhance support request ticket generation</change>
+		<change>Update tools and support libriaries versions</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="1.5" versioncode="6">
+		<change>Add support request ticket generation</change>
+		<change>Update tools and support libraries to stable versions</change>
+		<change>Fix UI layout</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="1.4" versioncode="5">
+		<change>Fix UI layout</change>
+	</release>
+	<release version="1.3" versioncode="4">
+		<change>Add playstore graphics</change>
+		<change>Fix UI layout</change>
+	</release>
+	<release version="1.2" versioncode="3">
+		<change>Update build tools</change>
+		<change>Add more icons</change>
+		<change>Fix folder list sorting</change>
+		<change>Fix back button behaviour</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="1.1" versioncode="2">
+		<change>Update icons</change>
+		<change>Code niceties</change>
+	</release>
+	<release version="1.0" versioncode="1">
+		<change>Initial release</change>
+	</release>
+</changelog>

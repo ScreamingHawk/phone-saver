@@ -7,16 +7,28 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.ListView
+import de.cketti.library.changelog.ChangeLog
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.adapter.DeletableStringArrayAdapter
 import link.standen.michael.phonesaver.util.LocationHelper
 
+/**
+ * The entry point activity.
+ * This activity shows the list of user selected folders.
+ */
 class FolderListActivity : ListActivity() {
 
 	companion object {
 		const val TAG = "FolderListActivity"
 		const val FOLDER_SELECT_REQUEST_CODE = 1
 		const val PERMISSION_REQUEST_CODE = 2
+
+		const val CHANGE_LOG_CSS = """
+				body { padding: 0.8em; }
+				h1 { margin-left: 0px; font-size: 1.2em; }
+				ul { padding-left: 1.2em; }
+				li { margin-left: 0px; }
+			"""
 	}
 
 	private lateinit var adapter: DeletableStringArrayAdapter
@@ -49,6 +61,27 @@ class FolderListActivity : ListActivity() {
 			}
 		})
 		findViewById<ListView>(android.R.id.list).adapter = adapter
+
+		// Show the change log
+		showChangeLog(false)
+	}
+
+	/**
+	 * Show the change log.
+	 * Shows the full change log when nothing is in "What's New" log. Shows "What's New" log otherwise.
+	 * @param force Force the change log to be displayed, if false only displayed if new content.
+	 */
+	private fun showChangeLog(force: Boolean) {
+		val cl = ChangeLog(this, CHANGE_LOG_CSS)
+		if (force || cl.isFirstRun) {
+			if (cl.getChangeLog(false).size == 0){
+				// Force the display of the full dialog list.
+				cl.fullLogDialog.show()
+			} else {
+				// Show only the new stuff.
+				cl.logDialog.show()
+			}
+		}
 	}
 
 	override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
@@ -68,6 +101,10 @@ class FolderListActivity : ListActivity() {
 			}
 			R.id.action_settings -> {
 				startActivity(Intent(this, SettingsActivity::class.java))
+				true
+			}
+			R.id.action_change_log -> {
+				showChangeLog(true)
 				true
 			}
 			else ->
