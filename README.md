@@ -11,11 +11,11 @@ An android app that lets you save files to your phone using the share function.
 
 ## Description
 
-Ever hit that share button and really wanted to just store the file on your phone? 
-That meme that you send to your friends that would be great in your reaction image folder. 
-That screenshot of that Snapchat that you want to hide in a secret folder. 
+Ever hit that share button and really wanted to just store the file on your phone?
+That meme that you send to your friends that would be great in your reaction image folder.
+That screenshot of that Snapchat that you want to hide in a secret folder.
 
-Well look no further! 
+Well look no further!
 
 Set up any number of locations on your mobile, and save to them with a single click when using Android's share feature.
 
@@ -23,6 +23,9 @@ Set up any number of locations on your mobile, and save to them with a single cl
 
 * Select any number of locations to save to
 * Save on a single click
+* Configure whether or not gallery and music apps are notified of saves
+* Choose from a range of duplicate file handling options
+* Automated bug reports for requesting support for file types
 
 ## Un-Features
 
