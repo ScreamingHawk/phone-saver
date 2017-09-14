@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="3.4" versioncode="21">
+		<change>Add change log</change>
+	</release>
 	<release version="3.3" versioncode="20">
 		<change>Add option to register files with media scanner</change>
 		<change>Explicit audio file support</change>
