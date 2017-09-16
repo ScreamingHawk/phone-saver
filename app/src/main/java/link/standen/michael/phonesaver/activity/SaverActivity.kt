@@ -130,7 +130,9 @@ class SaverActivity : ListActivity() {
 					// Handle multiple images being sent
 					return handleMultipleImages(callback, dryRun)
 				}
-			} else if (FORCE_SAVING && !dryRun) {
+			}
+			
+			if (FORCE_SAVING) {
 				// Save the file the best way we can
 				return handleText(callback, dryRun)
 			}
