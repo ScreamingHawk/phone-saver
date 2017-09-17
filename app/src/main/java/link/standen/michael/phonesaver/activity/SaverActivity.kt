@@ -33,12 +33,14 @@ class SaverActivity : ListActivity() {
 	private val TAG = "SaverActivity"
 
 	private val FILENAME_REGEX = "[^-_.A-Za-z0-9]"
+	private val FILENAME_LENIENT_REGEX = "[\\p{Cntrl}]"
 	private val FILENAME_LENGTH_LIMIT = 100
 
 	private val FILENAME_EXT_MATCH_LIMIT = 1000
 
 	private var FORCE_SAVING = false
 	private var REGISTER_MEDIA_SCANNER = false
+	private var USE_LENIENT_REGEX = false
 
 	private var location: String? = null
 
@@ -49,8 +51,10 @@ class SaverActivity : ListActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
 
-		FORCE_SAVING = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("force_saving", false)
-		REGISTER_MEDIA_SCANNER = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("register_file", false)
+		val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
+		FORCE_SAVING = sharedPrefs.getBoolean("force_saving", false)
+		REGISTER_MEDIA_SCANNER = sharedPrefs.getBoolean("register_file", false)
+		USE_LENIENT_REGEX = sharedPrefs.getBoolean("lenient_regex", false)
 
 		when {
 			FORCE_SAVING -> loadList()
@@ -494,7 +498,7 @@ class SaverActivity : ListActivity() {
 				// Take first section before a space
 				.replaceAfter(" ", "")
 				// Remove non-filename characters
-				.replace(Regex(FILENAME_REGEX), "")
+				.replace(Regex(if (USE_LENIENT_REGEX) FILENAME_LENIENT_REGEX else FILENAME_REGEX), "")
 
 		if (result.length > FILENAME_LENGTH_LIMIT) {
 			// Do not go over the filename length limit
