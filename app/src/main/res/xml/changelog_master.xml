@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="3.5" versioncode="22">
+		<change>Add setting to allow a wider range of characters in saved filenames. This supports emoji and other languages</change>
+		<change>Fix media scanner usage. Thanks amtlib-dot-dll!</change>
+		<change>Fix filename validation</change>
+		<change>Add mime type validation</change>
+	</release>
 	<release version="3.4" versioncode="21">
 		<change>Add change log</change>
 	</release>
