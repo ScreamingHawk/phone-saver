@@ -490,13 +490,18 @@ class SaverActivity : ListActivity() {
 	 * Get the filename from a string.
 	 */
 	private fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit) {
+		// Validate the mime type
+		Log.d(TAG, "Converting mime: $mime")
+		val convertedMime = mime.replaceAfter(";", "").replace(";", "")
+		Log.d(TAG, "Converted mime: $convertedMime")
+
 		Log.d(TAG, "Converting filename: $s")
 
 		var result = s
-				// Take last section after a slash
-				.replaceBeforeLast("/", "")
-				// Take first section before a space
-				.replaceAfter(" ", "")
+				// Take last section after a slash (excluding the slash)
+				.replaceBeforeLast("/", "").replace("/", "")
+				// Take first section before a space (excluding the space)
+				.replaceAfter(" ", "").replace(" ", "")
 				// Remove non-filename characters
 				.replace(Regex(if (USE_LENIENT_REGEX) FILENAME_LENIENT_REGEX else FILENAME_REGEX), "")
 
@@ -508,7 +513,7 @@ class SaverActivity : ListActivity() {
 		var ext = result.substringAfterLast('.', "")
 		if (!MimeTypeMap.getSingleton().hasExtension(ext)){
 			// Add file extension
-			MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)?.let {
+			MimeTypeMap.getSingleton().getExtensionFromMimeType(convertedMime)?.let {
 				ext = it
 				Log.d(TAG, "Adding extension $it to $result")
 				result += "." + it
