@@ -131,7 +131,7 @@ class SaverActivity : ListActivity() {
 					return handleMultipleImages(callback, dryRun)
 				}
 			}
-			
+
 			if (FORCE_SAVING) {
 				// Save the file the best way we can
 				return handleText(callback, dryRun)
@@ -413,7 +413,7 @@ class SaverActivity : ListActivity() {
 			success = true
 
 			if (REGISTER_MEDIA_SCANNER){
-				MediaScannerConnection(this, null).scanFile(destinationFilename, null)
+				MediaScannerConnection.scanFile(this, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
 			Log.e(TAG, "Unable to save file", e)
@@ -453,7 +453,7 @@ class SaverActivity : ListActivity() {
 			success = true
 
 			if (REGISTER_MEDIA_SCANNER){
-				MediaScannerConnection(this, null).scanFile(destinationFilename, null)
+				MediaScannerConnection.scanFile(this, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
 			Log.e(TAG, "Unable to save file", e)
