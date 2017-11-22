@@ -126,7 +126,7 @@ class SaverActivity : ListActivity() {
 						it.startsWith("application/octet-stream")) {
 					// Handle single stream being sent
 					return handleStream(callback, dryRun)
-				} else if (it.startsWith("text/plain")) {
+				} else if (it.startsWith("text/")) {
 					return handleText(callback, dryRun)
 				}
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
@@ -297,8 +297,9 @@ class SaverActivity : ListActivity() {
 					} catch (e: MalformedURLException){
 						Log.d(TAG, "Text without URL")
 						// It's just some text
+						val mimeType: String = intent.type?.toLowerCase() ?: "text/plain"
 						getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it,
-								"text/plain", dryRun, { filename ->
+								mimeType, dryRun, { filename ->
 							saveString(it, filename, callback, dryRun)
 						})
 					}
