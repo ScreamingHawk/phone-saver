@@ -121,24 +121,14 @@ class SaverActivity : ListActivity() {
 
 		type?.toLowerCase()?.let {
 			if (Intent.ACTION_SEND == action) {
-				if (it.startsWith("image/") || it.startsWith("video/") ||
-						it.startsWith("audio/") ||
-						it.startsWith("application/octet-stream")) {
-					// Handle single stream being sent
-					return handleStream(callback, dryRun)
-				} else if (it.startsWith("text/")) {
-					return handleText(callback, dryRun)
-				}
+				return handleSingle(callback, dryRun)
 			} else if (Intent.ACTION_SEND_MULTIPLE == action) {
-				if (it.startsWith("image/")) {
-					// Handle multiple images being sent
-					return handleMultipleImages(callback, dryRun)
-				}
+				return handleMultiple(callback, dryRun)
 			}
 
 			if (FORCE_SAVING) {
 				// Save the file the best way we can
-				return handleText(callback, dryRun)
+				return handleSingle(callback, dryRun)
 			}
 		}
 
@@ -239,20 +229,9 @@ class SaverActivity : ListActivity() {
 	}
 
 	/**
-	 * Handle the saving of intents with streams such as images and videos.
+	 * Handle the saving of single items.
 	 */
-	private fun handleStream(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
-		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			getFilename(it, intent.type, dryRun, {filename ->
-				saveUri(it, filename, callback, dryRun)
-			})
-		} ?: callback(false)
-	}
-
-	/**
-	 * Handle the saving of text intents.
-	 */
-	private fun handleText(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	private fun handleSingle(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			Log.d(TAG, "Text has stream")
@@ -309,9 +288,9 @@ class SaverActivity : ListActivity() {
 	}
 
 	/**
-	 * Handle the saving of multiple image files.
+	 * Handle the saving of multiple streams.
 	 */
-	private fun handleMultipleImages(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
+	private fun handleMultiple(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		val imageUris: ArrayList<Uri>? = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM)
 		imageUris?.let {
 			var counter = 0
