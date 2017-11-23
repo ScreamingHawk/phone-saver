@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="3.6" versioncode="23">
+		<change>Fix stream writer logic. Thanks brarcher!</change>
+		<change>Support all "text/" based mime types</change>
+		<change>Code niceties</change>
+	</release>
 	<release version="3.5" versioncode="22">
 		<change>Add setting to allow a wider range of characters in saved filenames. This supports emoji and other languages</change>
 		<change>Fix media scanner usage. Thanks amtlib-dot-dll!</change>
