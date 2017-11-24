@@ -389,7 +389,7 @@ class SaverActivity : ListActivity() {
 			bos = BufferedOutputStream(FileOutputStream(fout, false))
 			val buf = ByteArray(1024)
 			var bytesRead = bis.read(buf)
-			while (bytesRead == -1) {
+			while (bytesRead != -1) {
 				bos.write(buf, 0, bytesRead)
 				bytesRead = bis.read(buf)
 			}
