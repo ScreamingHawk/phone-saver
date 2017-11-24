@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="3.7" versioncode="24">
+		<change>Fix stream writer logic again. Thanks / Sorry brarcher!</change>
+	</release>
 	<release version="3.6" versioncode="23">
 		<change>Fix stream writer logic. Thanks brarcher!</change>
 		<change>Support all "text/" based mime types</change>
