@@ -102,6 +102,33 @@
 		explicit support. WARNING: Saving with this feature enabled may have adverse effects.
 	</string>
 
+	<string name="pref_title_log_to_user">Show debug information</string>
+	<array name="pref_list_title_log_to_user">
+		<item>None</item>
+		<item>Error</item>
+		<item>Warn</item>
+		<item>Info</item>
+		<item>Debug</item>
+		<item>Verbose</item>
+	</array>
+	<array name="pref_list_description_log_to_user">
+		<item>Do not show debug information</item>
+		<item>Show debug information at error level</item>
+		<item>Show debug information at warn level and above</item>
+		<item>Show debug information at info level and above</item>
+		<item>Show debug information at debug level and above</item>
+		<item>Show debug information at verbose level and above</item>
+	</array>
+	<string name="pref_default_value_log_to_user">None</string>
+	<array name="pref_list_values_log_to_user">
+		<item>None</item>
+		<item>Error</item>
+		<item>Warn</item>
+		<item>Info</item>
+		<item>Debug</item>
+		<item>Verbose</item>
+	</array>
+
 	<!-- Change log -->
 	<string name="changelog_full_title">Change Log</string>
 	<string name="changelog_title">What\'s New</string>

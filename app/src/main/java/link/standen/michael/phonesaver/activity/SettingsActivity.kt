@@ -59,6 +59,13 @@ class SettingsActivity: AppCompatPreferenceActivity() {
 				updateListPreferenceSummary(R.array.pref_list_description_file_exists, preference, newValue.toString())
 			}
 			updateListPreferenceSummary(R.array.pref_list_description_file_exists, fileExistsPref)
+
+			// Bind the summaries of log to user preferences to their value summary.
+			val logToUserPref = findPreference("log_to_user")
+			logToUserPref.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
+				updateListPreferenceSummary(R.array.pref_list_description_log_to_user, preference, newValue.toString())
+			}
+			updateListPreferenceSummary(R.array.pref_list_description_log_to_user, logToUserPref)
 		}
 
 		override fun onOptionsItemSelected(item: MenuItem): Boolean {

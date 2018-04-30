@@ -6,13 +6,13 @@ import android.os.Environment
 import android.support.design.widget.BottomNavigationView
 import android.widget.ListView
 import android.widget.AdapterView
-import android.util.Log
 import java.io.File
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import link.standen.michael.phonesaver.R.*
+import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
 
 /**
@@ -24,6 +24,8 @@ class FolderSelectActivity : ListActivity() {
 		const val TAG = "FolderSelectActivity"
 		const val FOLDER_SELECTED = "FolderSelected"
 	}
+
+	private var log: DebugLogger? = null
 
 	private var currentPath: String = Environment.getExternalStorageDirectory().absolutePath
 
@@ -48,6 +50,8 @@ class FolderSelectActivity : ListActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(layout.folder_select_activity)
+
+		log = DebugLogger(TAG, this)
 
 		// Init list view
 		listView = findViewById(android.R.id.list)
@@ -81,7 +85,7 @@ class FolderSelectActivity : ListActivity() {
 	 * Update the folder list view
 	 */
 	private fun updateListView() {
-		Log.v(TAG, "Path is: "+currentPath)
+		log!!.v("Path is: $currentPath")
 
 		val currentFile = File(currentPath)
 
@@ -101,7 +105,7 @@ class FolderSelectActivity : ListActivity() {
 		fList.add(0, resources.getString(string.back_folder))
 
 		folderList = fList.toList()
-		Log.d(TAG, "Length: "+folderList.size)
+		log!!.d("List length: "+folderList.size)
 
 		// Set title
 		this.title = LocationHelper.removeRoot(currentPath) + File.separatorChar

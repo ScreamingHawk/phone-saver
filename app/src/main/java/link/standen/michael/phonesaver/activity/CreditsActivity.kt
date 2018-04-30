@@ -4,13 +4,13 @@ import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.widget.TextView
 
 import link.standen.michael.phonesaver.R
-import java.util.*
+import java.util.Locale
 import android.os.Build
 import android.view.View
+import link.standen.michael.phonesaver.util.DebugLogger
 
 /**
  * Credits activity.
@@ -20,16 +20,20 @@ class CreditsActivity : AppCompatActivity() {
 	private val TAG = "CreditsActivity"
 	private val DEFAULT_LOCALE = Locale("en").language
 
+	private var log: DebugLogger? = null
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.credits_activity)
+
+		log = DebugLogger(TAG, this)
 
 		// Version
 		try {
 			val versionName = packageManager.getPackageInfo(packageName, 0).versionName
 			findViewById<TextView>(R.id.credits_version).text = resources.getString(R.string.credits_version, versionName)
 		} catch (e: PackageManager.NameNotFoundException) {
-			Log.e(TAG, "Unable to get package version", e)
+			log!!.e("Unable to get package version", e)
 		}
 
 		// Linkify

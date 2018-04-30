@@ -4,12 +4,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.DataSetObserver
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.widget.ListView
 import de.cketti.library.changelog.ChangeLog
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.adapter.DeletableStringArrayAdapter
+import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
 
 /**
@@ -31,6 +31,8 @@ class FolderListActivity : ListActivity() {
 			"""
 	}
 
+	private var log: DebugLogger? = null
+
 	private lateinit var adapter: DeletableStringArrayAdapter
 
 	private val folderList: MutableList<String> = ArrayList()
@@ -46,6 +48,8 @@ class FolderListActivity : ListActivity() {
 			val intent = android.content.Intent(this@FolderListActivity, FolderSelectActivity::class.java)
 			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
 		}
+
+		log = DebugLogger(TAG, this)
 
 		// Check for permissions
 		testPermissions()
@@ -163,13 +167,13 @@ class FolderListActivity : ListActivity() {
 				// Filter out granted permissions
 			).filter { checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }.toTypedArray()
 			if (permissions.isNotEmpty()){
-				Log.i(TAG, "Requesting permission for " + permissions.reduce { total, next -> total + ", " + next })
+				log!!.i("Requesting permission for " + permissions.reduce { total, next -> "$total, $next" })
 				// Request permissions
 				requestPermissions(permissions, PERMISSION_REQUEST_CODE)
 			}
 		} else {
 			// Permission is automatically granted on sdk<23 upon installation
-			Log.v(TAG, "Permission is granted")
+			log!!.v("Permission is granted")
 		}
 	}
 }

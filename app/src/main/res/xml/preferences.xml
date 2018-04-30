@@ -27,4 +27,13 @@
 		android:summary="@string/pref_description_force_saving"
 		android:title="@string/pref_title_force_saving"/>
 
+	<ListPreference
+		android:defaultValue="@string/pref_default_value_log_to_user"
+		android:entries="@array/pref_list_title_log_to_user"
+		android:entryValues="@array/pref_list_values_log_to_user"
+		android:key="log_to_user"
+		android:negativeButtonText="@null"
+		android:positiveButtonText="@null"
+		android:title="@string/pref_title_log_to_user" />
+
 </PreferenceScreen>
