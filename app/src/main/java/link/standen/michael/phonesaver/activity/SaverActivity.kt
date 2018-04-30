@@ -515,13 +515,14 @@ class SaverActivity : ListActivity() {
 								("file_exists"), resources.getString(R.string.pref_default_value_file_exists)))) {
 					0 -> {
 						// Overwrite. Delete the file, so that it will be overridden
-						log!!.d("Overwriting $result")
+						Toast.makeText(this, R.string.toast_save_file_exists_overwrite, Toast.LENGTH_SHORT).show()
+						log!!.w("Overwriting $result")
 						f.delete()
 					}
 					1 -> {
 						// Nothing. Quit
 						log!!.d("Quitting due to duplicate $result")
-						finishIntent(false, R.string.toast_save_file_exists)
+						finishIntent(false, R.string.toast_save_file_exists_fail)
 						return
 					}
 					2 -> {
@@ -537,7 +538,7 @@ class SaverActivity : ListActivity() {
 							if (i > FILENAME_EXT_MATCH_LIMIT) {
 								// We have a lot of matches. This is too hard
 								log!!.w("There are over $FILENAME_EXT_MATCH_LIMIT matches for $before$ext. Aborting.")
-								finishIntent(false, R.string.toast_save_file_exists)
+								finishIntent(false, R.string.toast_save_file_exists_fail)
 								return
 							}
 						}

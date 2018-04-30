@@ -30,7 +30,8 @@
 	<string name="toast_save_failed">Save failed</string>
 	<string name="toast_save_init_error">Error loading save locations</string>
 	<string name="toast_save_init_no_locations">Please open the app to add save locations</string>
-	<string name="toast_save_file_exists">Not saving as file already exists</string>
+	<string name="toast_save_file_exists_overwrite">Overwriting file already in this location</string>
+	<string name="toast_save_file_exists_fail">Not saving as file already exists</string>
 	<string name="downloader_description">Saving %1$s</string>
 
 	<!-- Debug / Error -->
