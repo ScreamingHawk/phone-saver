@@ -41,6 +41,7 @@ class SaverActivity : ListActivity() {
 	private var FORCE_SAVING = false
 	private var REGISTER_MEDIA_SCANNER = false
 	private var USE_LENIENT_REGEX = false
+	private var SAVE_STRATEGY = 0
 
 	private var log: DebugLogger? = null
 
@@ -59,6 +60,9 @@ class SaverActivity : ListActivity() {
 		FORCE_SAVING = sharedPrefs.getBoolean("force_saving", false)
 		REGISTER_MEDIA_SCANNER = sharedPrefs.getBoolean("register_file", false)
 		USE_LENIENT_REGEX = sharedPrefs.getBoolean("lenient_regex", false)
+		SAVE_STRATEGY = resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
+				PreferenceManager.getDefaultSharedPreferences(this).getString(
+						"file_exists", resources.getString(R.string.pref_default_value_file_exists)))
 
 		when {
 			FORCE_SAVING -> loadList()
@@ -464,17 +468,17 @@ class SaverActivity : ListActivity() {
 		if (uri.scheme == "content") {
 			contentResolver.query(uri, null, null, null, null)?.use {
 				if (it.moveToFirst()) {
-					return getFilename(it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)), mime, dryRun, callback)
+					return getFilename(it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME)), mime, dryRun, callback, uri)
 				}
 			}
 		}
-		getFilename(uri.lastPathSegment, mime, dryRun, callback)
+		getFilename(uri.lastPathSegment, mime, dryRun, callback, uri)
 	}
 
 	/**
 	 * Get the filename from a string.
 	 */
-	private fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit) {
+	private fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit, uri: Uri? = null) {
 		// Validate the mime type
 		log!!.d("Converting mime: $mime")
 		val convertedMime = mime.replaceAfter(";", "").replace(";", "")
@@ -508,13 +512,25 @@ class SaverActivity : ListActivity() {
 		log!!.d("Converted filename: $result")
 
 		if (!dryRun) {
-			val f = File(safeAddPath(result))
+			val destinationFilename = safeAddPath(result)
+			val f = File(destinationFilename)
 			if (f.exists()) {
-				when (resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
-						PreferenceManager.getDefaultSharedPreferences(this).getString(
-								("file_exists"), resources.getString(R.string.pref_default_value_file_exists)))) {
+				when (SAVE_STRATEGY) {
 					0 -> {
 						// Overwrite. Delete the file, so that it will be overridden
+						uri?.let { u ->
+							val sourceFilename = u.path
+							if (sourceFilename.contains(destinationFilename)){
+								if (SAVE_STRATEGY == 0) {
+									log!!.w("Aborting! It appears you are saving the file over itself")
+									finishIntent(false, R.string.toast_save_file_exists_self_abort)
+									return
+								} else {
+									log!!.i("Continuing! It appears you are saving the file over itself")
+									Toast.makeText(this, R.string.toast_save_file_exists_self_continue, Toast.LENGTH_SHORT).show()
+								}
+							}
+						}
 						Toast.makeText(this, R.string.toast_save_file_exists_overwrite, Toast.LENGTH_SHORT).show()
 						log!!.w("Overwriting $result")
 						f.delete()

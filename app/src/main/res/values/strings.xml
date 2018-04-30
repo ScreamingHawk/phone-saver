@@ -32,6 +32,10 @@
 	<string name="toast_save_init_no_locations">Please open the app to add save locations</string>
 	<string name="toast_save_file_exists_overwrite">Overwriting file already in this location</string>
 	<string name="toast_save_file_exists_fail">Not saving as file already exists</string>
+	<string name="toast_save_file_exists_self_abort">Aborting! It appears you are saving the file
+		over itself</string>
+	<string name="toast_save_file_exists_self_continue">Note! It appears you are saving the file
+		over itself. Continuing as allowed by save behaviour</string>
 	<string name="downloader_description">Saving %1$s</string>
 
 	<!-- Debug / Error -->
