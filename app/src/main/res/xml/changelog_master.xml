@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="3.9" versioncode="26">
+		<change>Add ability to see logging information</change>
+	</release>
 	<release version="3.8" versioncode="25">
 		<change>Update build tools to better support LineageOS</change>
 	</release>
