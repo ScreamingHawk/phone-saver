@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Environment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.File
 
 /**
  * A helper class for managing the stored locations
@@ -42,5 +43,19 @@ object LocationHelper {
 	 * Add the root location to the given path.
 	 */
 	fun addRoot(location: String): String = rootLocation + location
+
+
+
+	/**
+	 * Add the location path if not null and not already added.
+	 */
+	fun safeAddPath(location: String?, filename: String): String {
+		location?.let {
+			if (!filename.startsWith(it)){
+				return it + File.separatorChar + filename
+			}
+		}
+		return filename
+	}
 
 }

@@ -1,13 +1,10 @@
 package link.standen.michael.phonesaver.activity
 
 import android.annotation.SuppressLint
-import android.app.DownloadManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -21,8 +18,10 @@ import android.webkit.MimeTypeMap
 import android.widget.*
 import link.standen.michael.phonesaver.util.DebugLogger
 import java.io.*
-import java.net.MalformedURLException
-import java.net.URL
+import android.widget.TextView
+import link.standen.michael.phonesaver.saver.HandleSingleTextTask
+import link.standen.michael.phonesaver.util.data.Pair
+
 
 /**
  * An activity to handle saving files.
@@ -40,17 +39,16 @@ class SaverActivity : ListActivity() {
 		const val FILENAME_EXT_MATCH_LIMIT = 1000
 	}
 
-	private var forceSaving = false
-	private var registerMediaServer = false
+	var forceSaving = false
+	var registerMediaServer = false
 	private var useLenientRegex = false
 	private var saveStrategy = 0
 
 	private lateinit var log: DebugLogger
 
-	private var location: String? = null
+	var location: String? = null
 
-	data class Pair(val key: String, val value: String)
-	private var debugInfo: MutableList<Pair> = mutableListOf()
+	var debugInfo: MutableList<Pair> = mutableListOf()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -254,46 +252,7 @@ class SaverActivity : ListActivity() {
 		// Save the text
 		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
 			log.d("Text Extra: $it")
-			object: AsyncTask<Unit, Unit, Unit>(){
-				override fun doInBackground(vararg params: Unit?) {
-					try {
-						val url = URL(it)
-						// It's a URL
-						log.d("Text with URL")
-						val mime = MimeTypeMap.getSingleton()
-						val urlContentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(it))
-								// Fall back to checking URL content type
-								?: url.openConnection().getHeaderField("Content-Type")
-						urlContentType?.toLowerCase()?.let { contentType ->
-							log.d("URL Content-Type: $contentType")
-							debugInfo.add(Pair("URL Content-Type", contentType))
-							getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
-									contentType, dryRun, { filename ->
-										if (contentType.startsWith("image/") ||
-												contentType.startsWith("video/") ||
-												contentType.startsWith("audio/")) {
-											saveUrl(Uri.parse(it), filename, callback, dryRun)
-										} else if (contentType.startsWith("text/")){
-											saveString(it, filename, callback, dryRun)
-										} else if (forceSaving && !dryRun){
-											// Fallback to saving with saveUrl
-											saveUrl(Uri.parse(it), filename, callback, dryRun)
-										} else {
-											callback(false)
-										}
-							})
-						}?: callback(false)
-					} catch (e: MalformedURLException){
-						log.d("Text without URL")
-						// It's just some text
-						val mimeType: String = intent.type?.toLowerCase() ?: "text/plain"
-						getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it,
-								mimeType, dryRun, { filename ->
-							saveString(it, filename, callback, dryRun)
-						})
-					}
-				}
-			}.execute()
+			HandleSingleTextTask(this, it, intent, dryRun, callback).execute()
 		} ?: callback(false)
 	}
 
@@ -325,7 +284,7 @@ class SaverActivity : ListActivity() {
 	 * Save the given uri to filesystem.
 	 */
 	private fun saveUri(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
-		val destinationFilename = safeAddPath(filename)
+		val destinationFilename = LocationHelper.safeAddPath(location, filename)
 
 		if (!dryRun) {
 			val sourceFilename = uri.path
@@ -340,42 +299,6 @@ class SaverActivity : ListActivity() {
 			log.e("File not found. Perhaps you are overriding the same file and just deleted it?", e)
 			callback(false)
 		}
-	}
-
-	/**
-	 * Save the given url to the filesystem.
-	 */
-	fun saveUrl(uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
-		if (dryRun){
-			// This entire method can be skipped when doing a dry run
-			return callback(true)
-		}
-
-		var success: Boolean? = false
-
-		location?.let {
-			val sourceFilename = uri.toString()
-			val destinationFilename = safeAddPath(filename)
-
-			log.d("Saving $sourceFilename to $destinationFilename")
-
-			val downloader = DownloadManager.Request(uri)
-			downloader.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-					.setAllowedOverRoaming(true)
-					.setTitle(filename)
-					.setDescription(resources.getString(R.string.downloader_description, sourceFilename))
-					.setDestinationInExternalPublicDir(LocationHelper.removeRoot(it), filename)
-
-			if (registerMediaServer){
-				downloader.allowScanningByMediaScanner()
-			}
-
-			(getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(downloader)
-
-			success = null
-		}
-
-		callback(success)
 	}
 
 	/**
@@ -423,46 +346,6 @@ class SaverActivity : ListActivity() {
 	}
 
 	/**
-	 * Save a string to the filesystem.
-	 */
-	private fun saveString(s: String, filename: String, callback: (success: Boolean?) -> Unit,
-						   dryRun: Boolean) {
-		if (dryRun){
-			// This entire method can be skipped when doing a dry run
-			return callback(true)
-		}
-
-		val destinationFilename = safeAddPath(filename)
-		var success = false
-		var bw: BufferedWriter? = null
-
-		try {
-			val fout = File(destinationFilename)
-			if (!fout.exists()){
-				fout.createNewFile()
-			}
-			bw = BufferedWriter(FileWriter(destinationFilename))
-			bw.write(s)
-
-			// Done
-			success = true
-
-			if (registerMediaServer){
-				MediaScannerConnection.scanFile(this, arrayOf(destinationFilename), null, null)
-			}
-		} catch (e: IOException) {
-			log.e("Unable to save file", e)
-		} finally {
-			try {
-				bw?.close()
-			} catch (e: IOException) {
-				log.e("Unable to close stream", e)
-			}
-		}
-		callback(success)
-	}
-
-	/**
 	 * Get the filename from a Uri.
 	 */
 	private fun getFilename(uri: Uri, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit) {
@@ -480,7 +363,7 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Get the filename from a string.
 	 */
-	private fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit, uri: Uri? = null) {
+	fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit, uri: Uri? = null) {
 		// Validate the mime type
 		log.d("Converting mime: $mime")
 		val convertedMime = mime.replaceAfter(";", "").replace(";", "")
@@ -514,7 +397,7 @@ class SaverActivity : ListActivity() {
 		log.d("Converted filename: $result")
 
 		if (!dryRun) {
-			val destinationFilename = safeAddPath(result)
+			val destinationFilename = LocationHelper.safeAddPath(location, result)
 			val f = File(destinationFilename)
 			if (f.exists()) {
 				when (saveStrategy) {
@@ -547,7 +430,7 @@ class SaverActivity : ListActivity() {
 						// Postfix. Add counter before extension
 						log.d("Adding postfix to $result")
 						var i = 1
-						val before = safeAddPath(result.substringBeforeLast('.', "")) + "."
+						val before = LocationHelper.safeAddPath(location, result.substringBeforeLast('.', "")) + "."
 						if (ext.isNotBlank()) {
 							ext = ".$ext"
 						}
@@ -572,17 +455,5 @@ class SaverActivity : ListActivity() {
 		}
 
 		callback(result)
-	}
-
-	/**
-	 * Add the location path if not null and not already added.
-	 */
-	private fun safeAddPath(filename: String): String {
-		location?.let {
-			if (!filename.startsWith(it)){
-				return it + File.separatorChar + filename
-			}
-		}
-		return filename
 	}
 }
