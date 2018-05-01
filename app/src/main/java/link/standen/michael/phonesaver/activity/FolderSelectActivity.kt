@@ -25,7 +25,7 @@ class FolderSelectActivity : ListActivity() {
 		const val FOLDER_SELECTED = "FolderSelected"
 	}
 
-	private var log: DebugLogger? = null
+	private lateinit var log: DebugLogger
 
 	private var currentPath: String = Environment.getExternalStorageDirectory().absolutePath
 
@@ -85,7 +85,7 @@ class FolderSelectActivity : ListActivity() {
 	 * Update the folder list view
 	 */
 	private fun updateListView() {
-		log!!.v("Path is: $currentPath")
+		log.v("Path is: $currentPath")
 
 		val currentFile = File(currentPath)
 
@@ -105,7 +105,7 @@ class FolderSelectActivity : ListActivity() {
 		fList.add(0, resources.getString(string.back_folder))
 
 		folderList = fList.toList()
-		log!!.d("List length: "+folderList.size)
+		log.d("List length: "+folderList.size)
 
 		// Set title
 		this.title = LocationHelper.removeRoot(currentPath) + File.separatorChar

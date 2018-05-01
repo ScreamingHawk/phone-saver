@@ -30,20 +30,22 @@ import java.net.URL
  */
 class SaverActivity : ListActivity() {
 
-	private val TAG = "SaverActivity"
+	companion object {
+		const val TAG = "SaverActivity"
 
-	private val FILENAME_REGEX = "[^-_.A-Za-z0-9]"
-	private val FILENAME_LENIENT_REGEX = "[\\p{Cntrl}]"
-	private val FILENAME_LENGTH_LIMIT = 100
+		const val FILENAME_REGEX = "[^-_.A-Za-z0-9]"
+		const val FILENAME_LENIENT_REGEX = "[\\p{Cntrl}]"
+		const val FILENAME_LENGTH_LIMIT = 100
 
-	private val FILENAME_EXT_MATCH_LIMIT = 1000
+		const val FILENAME_EXT_MATCH_LIMIT = 1000
+	}
 
-	private var FORCE_SAVING = false
-	private var REGISTER_MEDIA_SCANNER = false
-	private var USE_LENIENT_REGEX = false
-	private var SAVE_STRATEGY = 0
+	private var forceSaving = false
+	private var registerMediaServer = false
+	private var useLenientRegex = false
+	private var saveStrategy = 0
 
-	private var log: DebugLogger? = null
+	private lateinit var log: DebugLogger
 
 	private var location: String? = null
 
@@ -57,18 +59,18 @@ class SaverActivity : ListActivity() {
 		log = DebugLogger(TAG, this)
 
 		val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
-		FORCE_SAVING = sharedPrefs.getBoolean("force_saving", false)
-		REGISTER_MEDIA_SCANNER = sharedPrefs.getBoolean("register_file", false)
-		USE_LENIENT_REGEX = sharedPrefs.getBoolean("lenient_regex", false)
-		SAVE_STRATEGY = resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
+		forceSaving = sharedPrefs.getBoolean("force_saving", false)
+		registerMediaServer = sharedPrefs.getBoolean("register_file", false)
+		useLenientRegex = sharedPrefs.getBoolean("lenient_regex", false)
+		saveStrategy = resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
 				PreferenceManager.getDefaultSharedPreferences(this).getString(
 						"file_exists", resources.getString(R.string.pref_default_value_file_exists)))
 
 		when {
-			FORCE_SAVING -> loadList()
+			forceSaving -> loadList()
 			else -> {
 				useIntent({ success ->
-					log!!.i("Supported: $success")
+					log.i("Supported: $success")
 					// Success should never be null on a dryRun
 					if (success!!){
 						loadList()
@@ -124,8 +126,8 @@ class SaverActivity : ListActivity() {
 		val action: String? = intent.action
 		val type: String? = intent.type
 
-		log!!.i("Action: $action")
-		log!!.i("Type: $type")
+		log.i("Action: $action")
+		log.i("Type: $type")
 
 		type?.toLowerCase()?.let {
 			if (Intent.ACTION_SEND == action) {
@@ -134,13 +136,13 @@ class SaverActivity : ListActivity() {
 				return handleMultiple(callback, dryRun)
 			}
 
-			if (FORCE_SAVING) {
+			if (forceSaving) {
 				// Save the file the best way we can
 				return handleSingle(callback, dryRun)
 			}
 		}
 
-		log!!.i("No supporting method")
+		log.i("No supporting method")
 
 		// Failed to reach callback
 		finishIntent(false)
@@ -188,7 +190,7 @@ class SaverActivity : ListActivity() {
 				bobBody.append("%0D%0AApplication Version: ")
 				bobBody.append(versionName)
 			} catch (e: PackageManager.NameNotFoundException) {
-				log!!.e("Unable to get package version", e)
+				log.e("Unable to get package version", e)
 			}
 			bobBody.append("%0D%0A%0D%0AMore information: TYPE_ADDITIONAL_INFORMATION_HERE")
 			bobBody.append("%0D%0A%0D%0AThank you")
@@ -196,7 +198,7 @@ class SaverActivity : ListActivity() {
 					bobTitle.toString().replace(" ", "%20") +
 					"&body=" +
 					bobBody.toString().replace(" ", "%20").replace("=", "%3D")
-			log!!.i(issueLink)
+			log.i(issueLink)
 
 			// Build and show unsupported message
 			val supportView = findViewById<TextView>(R.id.not_supported)
@@ -242,7 +244,7 @@ class SaverActivity : ListActivity() {
 	private fun handleSingle(callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
-			log!!.d("Text has stream")
+			log.d("Text has stream")
 			getFilename(it, intent.type, dryRun, {filename ->
 				saveUri(it, filename, callback, dryRun)
 			})
@@ -251,19 +253,19 @@ class SaverActivity : ListActivity() {
 
 		// Save the text
 		intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-			log!!.d("Text Extra: $it")
+			log.d("Text Extra: $it")
 			object: AsyncTask<Unit, Unit, Unit>(){
 				override fun doInBackground(vararg params: Unit?) {
 					try {
 						val url = URL(it)
 						// It's a URL
-						log!!.d("Text with URL")
+						log.d("Text with URL")
 						val mime = MimeTypeMap.getSingleton()
 						val urlContentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(it))
 								// Fall back to checking URL content type
 								?: url.openConnection().getHeaderField("Content-Type")
 						urlContentType?.toLowerCase()?.let { contentType ->
-							log!!.d("URL Content-Type: $contentType")
+							log.d("URL Content-Type: $contentType")
 							debugInfo.add(Pair("URL Content-Type", contentType))
 							getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(it).lastPathSegment,
 									contentType, dryRun, { filename ->
@@ -273,7 +275,7 @@ class SaverActivity : ListActivity() {
 											saveUrl(Uri.parse(it), filename, callback, dryRun)
 										} else if (contentType.startsWith("text/")){
 											saveString(it, filename, callback, dryRun)
-										} else if (FORCE_SAVING && !dryRun){
+										} else if (forceSaving && !dryRun){
 											// Fallback to saving with saveUrl
 											saveUrl(Uri.parse(it), filename, callback, dryRun)
 										} else {
@@ -282,7 +284,7 @@ class SaverActivity : ListActivity() {
 							})
 						}?: callback(false)
 					} catch (e: MalformedURLException){
-						log!!.d("Text without URL")
+						log.d("Text without URL")
 						// It's just some text
 						val mimeType: String = intent.type?.toLowerCase() ?: "text/plain"
 						getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: it,
@@ -327,7 +329,7 @@ class SaverActivity : ListActivity() {
 
 		if (!dryRun) {
 			val sourceFilename = uri.path
-			log!!.d("Saving $sourceFilename to $destinationFilename")
+			log.d("Saving $sourceFilename to $destinationFilename")
 		}
 
 		try {
@@ -335,7 +337,7 @@ class SaverActivity : ListActivity() {
 				saveStream(bis, destinationFilename, callback, dryRun)
 			} ?: callback(false)
 		} catch (e: FileNotFoundException){
-			log!!.e("File not found. Perhaps you are overriding the same file and just deleted it?", e)
+			log.e("File not found. Perhaps you are overriding the same file and just deleted it?", e)
 			callback(false)
 		}
 	}
@@ -355,7 +357,7 @@ class SaverActivity : ListActivity() {
 			val sourceFilename = uri.toString()
 			val destinationFilename = safeAddPath(filename)
 
-			log!!.d("Saving $sourceFilename to $destinationFilename")
+			log.d("Saving $sourceFilename to $destinationFilename")
 
 			val downloader = DownloadManager.Request(uri)
 			downloader.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
@@ -364,7 +366,7 @@ class SaverActivity : ListActivity() {
 					.setDescription(resources.getString(R.string.downloader_description, sourceFilename))
 					.setDestinationInExternalPublicDir(LocationHelper.removeRoot(it), filename)
 
-			if (REGISTER_MEDIA_SCANNER){
+			if (registerMediaServer){
 				downloader.allowScanningByMediaScanner()
 			}
 
@@ -405,16 +407,16 @@ class SaverActivity : ListActivity() {
 			// Done
 			success = true
 
-			if (REGISTER_MEDIA_SCANNER){
+			if (registerMediaServer){
 				MediaScannerConnection.scanFile(this, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
-			log!!.e("Unable to save file", e)
+			log.e("Unable to save file", e)
 		} finally {
 			try {
 				bos?.close()
 			} catch (e: IOException) {
-				log!!.e("Unable to close stream", e)
+				log.e("Unable to close stream", e)
 			}
 		}
 		callback(success)
@@ -445,16 +447,16 @@ class SaverActivity : ListActivity() {
 			// Done
 			success = true
 
-			if (REGISTER_MEDIA_SCANNER){
+			if (registerMediaServer){
 				MediaScannerConnection.scanFile(this, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
-			log!!.e("Unable to save file", e)
+			log.e("Unable to save file", e)
 		} finally {
 			try {
 				bw?.close()
 			} catch (e: IOException) {
-				log!!.e("Unable to close stream", e)
+				log.e("Unable to close stream", e)
 			}
 		}
 		callback(success)
@@ -480,11 +482,11 @@ class SaverActivity : ListActivity() {
 	 */
 	private fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit, uri: Uri? = null) {
 		// Validate the mime type
-		log!!.d("Converting mime: $mime")
+		log.d("Converting mime: $mime")
 		val convertedMime = mime.replaceAfter(";", "").replace(";", "")
-		log!!.d("Converted mime: $convertedMime")
+		log.d("Converted mime: $convertedMime")
 
-		log!!.d("Converting filename: $s")
+		log.d("Converting filename: $s")
 
 		var result = s
 				// Take last section after a slash (excluding the slash)
@@ -492,7 +494,7 @@ class SaverActivity : ListActivity() {
 				// Take first section before a space (excluding the space)
 				.replaceAfter(" ", "").replace(" ", "")
 				// Remove non-filename characters
-				.replace(Regex(if (USE_LENIENT_REGEX) FILENAME_LENIENT_REGEX else FILENAME_REGEX), "")
+				.replace(Regex(if (useLenientRegex) FILENAME_LENIENT_REGEX else FILENAME_REGEX), "")
 
 		if (result.length > FILENAME_LENGTH_LIMIT) {
 			// Do not go over the filename length limit
@@ -504,46 +506,46 @@ class SaverActivity : ListActivity() {
 			// Add file extension
 			MimeTypeMap.getSingleton().getExtensionFromMimeType(convertedMime)?.let {
 				ext = it
-				log!!.d("Adding extension $it to $result")
+				log.d("Adding extension $it to $result")
 				result += ".$it"
 			}
 		}
 
-		log!!.d("Converted filename: $result")
+		log.d("Converted filename: $result")
 
 		if (!dryRun) {
 			val destinationFilename = safeAddPath(result)
 			val f = File(destinationFilename)
 			if (f.exists()) {
-				when (SAVE_STRATEGY) {
+				when (saveStrategy) {
 					0 -> {
 						// Overwrite. Delete the file, so that it will be overridden
 						uri?.let { u ->
 							val sourceFilename = u.path
 							if (sourceFilename.contains(destinationFilename)){
-								if (SAVE_STRATEGY == 0) {
-									log!!.w("Aborting! It appears you are saving the file over itself")
+								if (saveStrategy == 0) {
+									log.w("Aborting! It appears you are saving the file over itself")
 									finishIntent(false, R.string.toast_save_file_exists_self_abort)
 									return
 								} else {
-									log!!.i("Continuing! It appears you are saving the file over itself")
+									log.i("Continuing! It appears you are saving the file over itself")
 									Toast.makeText(this, R.string.toast_save_file_exists_self_continue, Toast.LENGTH_SHORT).show()
 								}
 							}
 						}
 						Toast.makeText(this, R.string.toast_save_file_exists_overwrite, Toast.LENGTH_SHORT).show()
-						log!!.w("Overwriting $result")
+						log.w("Overwriting $result")
 						f.delete()
 					}
 					1 -> {
 						// Nothing. Quit
-						log!!.d("Quitting due to duplicate $result")
+						log.d("Quitting due to duplicate $result")
 						finishIntent(false, R.string.toast_save_file_exists_fail)
 						return
 					}
 					2 -> {
 						// Postfix. Add counter before extension
-						log!!.d("Adding postfix to $result")
+						log.d("Adding postfix to $result")
 						var i = 1
 						val before = safeAddPath(result.substringBeforeLast('.', "")) + "."
 						if (ext.isNotBlank()) {
@@ -553,7 +555,7 @@ class SaverActivity : ListActivity() {
 							i++
 							if (i > FILENAME_EXT_MATCH_LIMIT) {
 								// We have a lot of matches. This is too hard
-								log!!.w("There are over $FILENAME_EXT_MATCH_LIMIT matches for $before$ext. Aborting.")
+								log.w("There are over $FILENAME_EXT_MATCH_LIMIT matches for $before$ext. Aborting.")
 								finishIntent(false, R.string.toast_save_file_exists_fail)
 								return
 							}
@@ -562,7 +564,7 @@ class SaverActivity : ListActivity() {
 					}
 					3 -> {
 						// Request
-						log!!.e("Not implemented!")
+						log.e("Not implemented!")
 						throw NotImplementedError("Requesting filename not yet implemented.")
 					}
 				}

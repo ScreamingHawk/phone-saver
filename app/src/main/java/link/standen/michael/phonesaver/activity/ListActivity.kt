@@ -8,9 +8,12 @@ import android.os.Parcelable
 /**
  * An activity for selecting a folder in the file system.
  */
-open class ListActivity : AppCompatActivity() {
+abstract class ListActivity : AppCompatActivity() {
 
-	private val LIST_STATE = "listState"
+	companion object {
+		const val LIST_STATE = "listState"
+	}
+
 	private var listState: Parcelable? = null
 
 	override fun onResume() {

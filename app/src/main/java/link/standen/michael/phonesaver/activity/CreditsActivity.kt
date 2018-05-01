@@ -17,10 +17,13 @@ import link.standen.michael.phonesaver.util.DebugLogger
  */
 class CreditsActivity : AppCompatActivity() {
 
-	private val TAG = "CreditsActivity"
-	private val DEFAULT_LOCALE = Locale("en").language
+	companion object {
+		const val TAG = "CreditsActivity"
+	}
 
-	private var log: DebugLogger? = null
+	private val defaultLocale = Locale("en").language
+
+	private lateinit var log: DebugLogger
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -33,7 +36,7 @@ class CreditsActivity : AppCompatActivity() {
 			val versionName = packageManager.getPackageInfo(packageName, 0).versionName
 			findViewById<TextView>(R.id.credits_version).text = resources.getString(R.string.credits_version, versionName)
 		} catch (e: PackageManager.NameNotFoundException) {
-			log!!.e("Unable to get package version", e)
+			log.e("Unable to get package version", e)
 		}
 
 		// Linkify
@@ -41,7 +44,7 @@ class CreditsActivity : AppCompatActivity() {
 		findViewById<TextView>(R.id.credits_content1).movementMethod = LinkMovementMethod.getInstance()
 		findViewById<TextView>(R.id.credits_content2).movementMethod = LinkMovementMethod.getInstance()
 		findViewById<TextView>(R.id.credits_content3).movementMethod = LinkMovementMethod.getInstance()
-		if (getCurrentLocale().language == DEFAULT_LOCALE){
+		if (getCurrentLocale().language == defaultLocale){
 			// English, hide the translator info
 			findViewById<TextView>(R.id.credits_content_translator).visibility = View.GONE
 		} else {

@@ -31,7 +31,7 @@ class FolderListActivity : ListActivity() {
 			"""
 	}
 
-	private var log: DebugLogger? = null
+	private lateinit var log: DebugLogger
 
 	private lateinit var adapter: DeletableStringArrayAdapter
 
@@ -167,13 +167,13 @@ class FolderListActivity : ListActivity() {
 				// Filter out granted permissions
 			).filter { checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }.toTypedArray()
 			if (permissions.isNotEmpty()){
-				log!!.i("Requesting permission for " + permissions.reduce { total, next -> "$total, $next" })
+				log.i("Requesting permission for " + permissions.reduce { total, next -> "$total, $next" })
 				// Request permissions
 				requestPermissions(permissions, PERMISSION_REQUEST_CODE)
 			}
 		} else {
 			// Permission is automatically granted on sdk<23 upon installation
-			log!!.v("Permission is granted")
+			log.v("Permission is granted")
 		}
 	}
 }
