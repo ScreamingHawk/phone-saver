@@ -11,6 +11,12 @@
 
 	<SwitchPreference
 		android:defaultValue="false"
+		android:key="location_select"
+		android:summary="@string/pref_description_location_select"
+		android:title="@string/pref_title_location_select"/>
+
+	<SwitchPreference
+		android:defaultValue="false"
 		android:key="register_file"
 		android:summary="@string/pref_description_register_file"
 		android:title="@string/pref_title_register_file"/>

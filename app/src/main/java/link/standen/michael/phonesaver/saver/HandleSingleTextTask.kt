@@ -12,10 +12,7 @@ import link.standen.michael.phonesaver.activity.SaverActivity
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
 import link.standen.michael.phonesaver.util.data.Pair
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
+import java.io.*
 import java.lang.ref.WeakReference
 import java.net.MalformedURLException
 import java.net.URL
@@ -128,32 +125,50 @@ internal constructor(
 			return callback(true)
 		}
 
-		val destinationFilename = LocationHelper.safeAddPath(saverActivity.location, filename)
+		if (saverActivity.location == null) {
+			// No location, use documentUI
+			saverActivity.returnFromActivityResult = {
+				val bos = BufferedOutputStream(FileOutputStream(it))
+				doSaveString(saverActivity, bos, s, null, callback)
+			}
+			LocationSelectTask(saverActivity).save(filename, saverActivity.convertedMime!!)
+		} else {
+			// Manual
+			val destinationFilename = LocationHelper.safeAddPath(saverActivity.location, filename)
+			var bos: BufferedOutputStream? = null
+			try {
+				val fout = File(destinationFilename)
+				if (!fout.exists()){
+					fout.createNewFile()
+				}
+				bos = BufferedOutputStream(FileOutputStream(destinationFilename))
+				doSaveString(saverActivity, bos, s, destinationFilename, callback)
+			} catch (e: IOException) {
+				log.e("Unable to save file", e)
+			} finally {
+				try {
+					bos?.close()
+				} catch (e: IOException) {
+					log.e("Unable to close stream", e)
+				}
+			}
+		}
+	}
+	private fun doSaveString(saverActivity: SaverActivity, bos: BufferedOutputStream, s: String,
+							 destinationFilename: String?, callback: (success: Boolean?) -> Unit){
 		var success = false
-		var bw: BufferedWriter? = null
 
 		try {
-			val fout = File(destinationFilename)
-			if (!fout.exists()){
-				fout.createNewFile()
-			}
-			bw = BufferedWriter(FileWriter(destinationFilename))
-			bw.write(s)
+			bos.write(s.toByteArray())
 
 			// Done
 			success = true
 
-			if (saverActivity.registerMediaServer){
+			if (saverActivity.registerMediaServer && destinationFilename != null){
 				MediaScannerConnection.scanFile(saverActivity, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
 			log.e("Unable to save file", e)
-		} finally {
-			try {
-				bw?.close()
-			} catch (e: IOException) {
-				log.e("Unable to close stream", e)
-			}
 		}
 		callback(success)
 	}

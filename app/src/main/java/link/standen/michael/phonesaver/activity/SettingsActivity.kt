@@ -66,6 +66,15 @@ class SettingsActivity: AppCompatPreferenceActivity() {
 				updateListPreferenceSummary(R.array.pref_list_description_log_to_user, preference, newValue.toString())
 			}
 			updateListPreferenceSummary(R.array.pref_list_description_log_to_user, logToUserPref)
+
+			// Block the location select feature by API level
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+				with (findPreference("location_select")){
+					isEnabled = false
+					setTitle(R.string.pref_title_location_select_unavailable)
+					setSummary(R.string.pref_description_location_select_unavailable)
+				}
+			}
 		}
 
 		override fun onOptionsItemSelected(item: MenuItem): Boolean {

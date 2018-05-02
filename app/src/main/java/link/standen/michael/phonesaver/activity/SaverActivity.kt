@@ -1,6 +1,7 @@
 package link.standen.michael.phonesaver.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
@@ -19,9 +20,9 @@ import android.widget.*
 import link.standen.michael.phonesaver.util.DebugLogger
 import java.io.*
 import android.widget.TextView
+import link.standen.michael.phonesaver.saver.LocationSelectTask
 import link.standen.michael.phonesaver.saver.HandleSingleTextTask
 import link.standen.michael.phonesaver.util.data.Pair
-
 
 /**
  * An activity to handle saving files.
@@ -39,16 +40,22 @@ class SaverActivity : ListActivity() {
 		const val FILENAME_EXT_MATCH_LIMIT = 1000
 	}
 
+	val requestCodeLocationSelect = 1
+
 	var forceSaving = false
 	var registerMediaServer = false
 	private var useLenientRegex = false
+	private var locationSelectEnabled = false
 	private var saveStrategy = 0
 
 	private lateinit var log: DebugLogger
 
 	var location: String? = null
+	var convertedMime: String? = null
 
 	var debugInfo: MutableList<Pair> = mutableListOf()
+
+	lateinit var returnFromActivityResult: (fd: FileDescriptor?) -> Unit
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -60,6 +67,8 @@ class SaverActivity : ListActivity() {
 		forceSaving = sharedPrefs.getBoolean("force_saving", false)
 		registerMediaServer = sharedPrefs.getBoolean("register_file", false)
 		useLenientRegex = sharedPrefs.getBoolean("lenient_regex", false)
+		locationSelectEnabled = sharedPrefs.getBoolean("location_select", false)
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
 		saveStrategy = resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
 				PreferenceManager.getDefaultSharedPreferences(this).getString(
 						"file_exists", resources.getString(R.string.pref_default_value_file_exists)))
@@ -80,25 +89,46 @@ class SaverActivity : ListActivity() {
 		}
 	}
 
+	/**
+	 * Load the list of locations
+	 */
 	private fun loadList() {
 		LocationHelper.loadFolderList(this)?.let {
+			val locations = if (locationSelectEnabled){
+				val locationSelectLabel = resources.getString(R.string.location_select_label)
+				listOf(locationSelectLabel, *it.toTypedArray())
+			} else it
+
+			log.d("Locations:")
+			for (loc in locations){
+				log.d("\t$loc")
+			}
+
 			when {
-				it.size > 1 -> {
+				locations.size > 1 -> {
 					runOnUiThread {
 						findViewById<View>(R.id.loading).visibility = View.GONE
 						// Init list view
 						val listView = findViewById<ListView>(android.R.id.list)
-						listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-							location = LocationHelper.addRoot((view as TextView).text.toString())
+						listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+							if (!locationSelectEnabled || position != 0){
+								// The first item is the location select. Set location otherwise
+								location = LocationHelper.addRoot(locations[position])
+							}
 							useIntent({ finishIntent(it) })
 						}
-						listView.adapter = ArrayAdapter<String>(this, R.layout.saver_list_item, it.map { if (it.isBlank()) File.separator else it })
+						listView.adapter = ArrayAdapter<String>(this, R.layout.saver_list_item, locations.map {
+							if (it.isBlank()) File.separator else it
+						})
 					}
 					return // await selection
 				}
-				it.size == 1 -> {
+				locations.size == 1 -> {
 					// Only one location, just use it
-					location = LocationHelper.addRoot(it[0])
+					if (!locationSelectEnabled) {
+						// Only set location when not using location select
+						location = LocationHelper.addRoot(locations[0])
+					}
 					useIntent({ finishIntent(it) })
 					return // activity dead
 				}
@@ -289,22 +319,45 @@ class SaverActivity : ListActivity() {
 		if (!dryRun) {
 			val sourceFilename = uri.path
 			log.d("Saving $sourceFilename to $destinationFilename")
+		} else {
+			// This method can be skipped when doing a dry run
+			return callback(true)
 		}
 
-		try {
-			contentResolver.openInputStream(uri)?.use { bis ->
-				saveStream(bis, destinationFilename, callback, dryRun)
-			} ?: callback(false)
-		} catch (e: FileNotFoundException){
-			log.e("File not found. Perhaps you are overriding the same file and just deleted it?", e)
-			callback(false)
+		if (location == null){
+			// No location, use location select
+			returnFromActivityResult = {
+				if (it == null){
+					callback(false)
+				} else {
+					val bos = BufferedOutputStream(FileOutputStream(it))
+					contentResolver.openInputStream(uri)?.use { bis ->
+						saveStream(bis, bos, null, callback, dryRun)
+					} ?: callback(false)
+				}
+			}
+			LocationSelectTask(this).save(filename, convertedMime!!)
+		} else {
+			try {
+				contentResolver.openInputStream(uri)?.use { bis ->
+					val fout = File(destinationFilename)
+					if (!fout.exists()) {
+						fout.createNewFile()
+					}
+					val bos = BufferedOutputStream(FileOutputStream(fout, false))
+					saveStream(bis, bos, destinationFilename, callback, dryRun)
+				} ?: callback(false)
+			} catch (e: FileNotFoundException) {
+				log.e("File not found. Perhaps you are overriding the same file and just deleted it?", e)
+				callback(false)
+			}
 		}
 	}
 
 	/**
 	 * Save a stream to the filesystem.
 	 */
-	private fun saveStream(bis: InputStream, destinationFilename: String,
+	private fun saveStream(bis: InputStream, bos: OutputStream, destinationFilename: String?,
 						   callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
@@ -312,14 +365,8 @@ class SaverActivity : ListActivity() {
 		}
 
 		var success = false
-		var bos: BufferedOutputStream? = null
 
 		try {
-			val fout = File(destinationFilename)
-			if (!fout.exists()){
-				fout.createNewFile()
-			}
-			bos = BufferedOutputStream(FileOutputStream(fout, false))
 			val buf = ByteArray(1024)
 			var bytesRead = bis.read(buf)
 			while (bytesRead != -1) {
@@ -330,14 +377,14 @@ class SaverActivity : ListActivity() {
 			// Done
 			success = true
 
-			if (registerMediaServer){
+			if (registerMediaServer && destinationFilename != null){
 				MediaScannerConnection.scanFile(this, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
 			log.e("Unable to save file", e)
 		} finally {
 			try {
-				bos?.close()
+				bos.close()
 			} catch (e: IOException) {
 				log.e("Unable to close stream", e)
 			}
@@ -366,7 +413,7 @@ class SaverActivity : ListActivity() {
 	fun getFilename(s: String, mime: String, dryRun: Boolean, callback: (filename: String) -> Unit, uri: Uri? = null) {
 		// Validate the mime type
 		log.d("Converting mime: $mime")
-		val convertedMime = mime.replaceAfter(";", "").replace(";", "")
+		convertedMime = mime.replaceAfter(";", "").replace(";", "")
 		log.d("Converted mime: $convertedMime")
 
 		log.d("Converting filename: $s")
@@ -397,58 +444,60 @@ class SaverActivity : ListActivity() {
 		log.d("Converted filename: $result")
 
 		if (!dryRun) {
-			val destinationFilename = LocationHelper.safeAddPath(location, result)
-			val f = File(destinationFilename)
-			if (f.exists()) {
-				when (saveStrategy) {
-					0 -> {
-						// Overwrite. Delete the file, so that it will be overridden
-						uri?.let { u ->
-							val sourceFilename = u.path
-							if (sourceFilename.contains(destinationFilename)){
-								if (saveStrategy == 0) {
-									log.w("Aborting! It appears you are saving the file over itself")
-									finishIntent(false, R.string.toast_save_file_exists_self_abort)
-									return
-								} else {
-									log.i("Continuing! It appears you are saving the file over itself")
-									Toast.makeText(this, R.string.toast_save_file_exists_self_continue, Toast.LENGTH_SHORT).show()
+			location?.let {
+				val destinationFilename = LocationHelper.safeAddPath(location, result)
+				val f = File(destinationFilename)
+				if (f.exists()) {
+					when (saveStrategy) {
+						0 -> {
+							// Overwrite. Delete the file, so that it will be overridden
+							uri?.let { u ->
+								val sourceFilename = u.path
+								if (sourceFilename.contains(destinationFilename)) {
+									if (saveStrategy == 0) {
+										log.w("Aborting! It appears you are saving the file over itself")
+										finishIntent(false, R.string.toast_save_file_exists_self_abort)
+										return
+									} else {
+										log.i("Continuing! It appears you are saving the file over itself")
+										Toast.makeText(this, R.string.toast_save_file_exists_self_continue, Toast.LENGTH_SHORT).show()
+									}
 								}
 							}
+							Toast.makeText(this, R.string.toast_save_file_exists_overwrite, Toast.LENGTH_SHORT).show()
+							log.w("Overwriting $result")
+							f.delete()
 						}
-						Toast.makeText(this, R.string.toast_save_file_exists_overwrite, Toast.LENGTH_SHORT).show()
-						log.w("Overwriting $result")
-						f.delete()
-					}
-					1 -> {
-						// Nothing. Quit
-						log.d("Quitting due to duplicate $result")
-						finishIntent(false, R.string.toast_save_file_exists_fail)
-						return
-					}
-					2 -> {
-						// Postfix. Add counter before extension
-						log.d("Adding postfix to $result")
-						var i = 1
-						val before = LocationHelper.safeAddPath(location, result.substringBeforeLast('.', "")) + "."
-						if (ext.isNotBlank()) {
-							ext = ".$ext"
+						1 -> {
+							// Nothing. Quit
+							log.d("Quitting due to duplicate $result")
+							finishIntent(false, R.string.toast_save_file_exists_fail)
+							return
 						}
-						while (File(before + i + ext).exists()) {
-							i++
-							if (i > FILENAME_EXT_MATCH_LIMIT) {
-								// We have a lot of matches. This is too hard
-								log.w("There are over $FILENAME_EXT_MATCH_LIMIT matches for $before$ext. Aborting.")
-								finishIntent(false, R.string.toast_save_file_exists_fail)
-								return
+						2 -> {
+							// Postfix. Add counter before extension
+							log.d("Adding postfix to $result")
+							var i = 1
+							val before = LocationHelper.safeAddPath(location, result.substringBeforeLast('.', "")) + "."
+							if (ext.isNotBlank()) {
+								ext = ".$ext"
 							}
+							while (File(before + i + ext).exists()) {
+								i++
+								if (i > FILENAME_EXT_MATCH_LIMIT) {
+									// We have a lot of matches. This is too hard
+									log.w("There are over $FILENAME_EXT_MATCH_LIMIT matches for $before$ext. Aborting.")
+									finishIntent(false, R.string.toast_save_file_exists_fail)
+									return
+								}
+							}
+							result = before + i + ext
 						}
-						result = before + i + ext
-					}
-					3 -> {
-						// Request
-						log.e("Not implemented!")
-						throw NotImplementedError("Requesting filename not yet implemented.")
+						3 -> {
+							// Request
+							log.e("Not implemented!")
+							throw NotImplementedError("Requesting filename not yet implemented.")
+						}
 					}
 				}
 			}
@@ -456,4 +505,30 @@ class SaverActivity : ListActivity() {
 
 		callback(result)
 	}
+
+	fun failOnActivityResult(requestCode: Int) {
+		onActivityResult(requestCode, Activity.RESULT_CANCELED, null)
+	}
+
+	/**
+	 * Return from location select
+	 */
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+
+		when (requestCode){
+			requestCodeLocationSelect -> {
+				if (resultCode == RESULT_OK){
+					data?.data.let {uri ->
+						val pfd = contentResolver.openFileDescriptor(uri, "w")
+						return returnFromActivityResult(pfd.fileDescriptor)
+					}
+				} else {
+					// Selection cancelled, fail save
+					returnFromActivityResult(null)
+				}
+			}
+		}
+	}
+
 }
