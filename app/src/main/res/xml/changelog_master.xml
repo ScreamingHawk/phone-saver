@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="4.0.0" versioncode="27">
+		<change>Add setting to select location during save</change>
+		<change>The above setting should work for users with external SD cards</change>
+		<change>Add notification when saving a file over itself, if detected</change>
+		<change>Refactored backend</change>
+		<change>Fixed potential memory leak</change>
+		<change>Updated version pattern to semantic versioning</change>
+	</release>
 	<release version="3.9" versioncode="26">
 		<change>Add ability to see logging information</change>
 	</release>
