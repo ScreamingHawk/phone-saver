@@ -1,56 +1,92 @@
 package link.standen.michael.phonesaver.util
 
-import android.content.Context
+import android.app.Activity
 import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import link.standen.michael.phonesaver.R
+import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 /**
  * A log wrapper that also logs to the user.
- * logLevel: 0 = None, 1 = Error, 2 = Warn, 3 = Info, 4 = Debug
+ * logLevel: 0 = None, 1 = Error, 2 = Warn, 3 = Info, 4 = Debug, 5 = Verbose
  */
-class DebugLogger(private var TAG: String, private var CONTEXT: Context) {
+class DebugLogger(private val tag: String, private val context: Activity) {
 
-	private val logLevel = CONTEXT.resources.getStringArray(R.array.pref_list_values_log_to_user).indexOf(
-			PreferenceManager.getDefaultSharedPreferences(CONTEXT).getString(
-					"log_to_user", CONTEXT.resources.getString(R.string.pref_default_value_log_to_user)))
+	private val logLevel = context.resources.getStringArray(R.array.pref_list_values_log_to_user).indexOf(
+			PreferenceManager.getDefaultSharedPreferences(context).getString(
+					"log_to_user", context.resources.getString(R.string.pref_default_value_log_to_user)))
+
+	companion object {
+		private var EXECUTOR: ScheduledExecutorService? = null
+		private val TOAST_QUEUE: Queue<Runnable> = ConcurrentLinkedQueue()
+	}
+
+	init {
+		if (EXECUTOR == null){
+			EXECUTOR = Executors.newSingleThreadScheduledExecutor()
+			EXECUTOR?.scheduleAtFixedRate({
+				TOAST_QUEUE.poll()?.run()
+			}, 0, 100, TimeUnit.MILLISECONDS)
+		}
+	}
 
 	fun v(msg: String){
-		Log.v(TAG, msg)
+		Log.v(tag, msg)
 		if (logLevel >= 5){
-			Toast.makeText(CONTEXT, "VERBOSE: $msg", Toast.LENGTH_SHORT).show()
+			makeToast("VERBOSE: $msg")
 		}
 	}
 
 	fun d(msg: String){
-		Log.d(TAG, msg)
+		Log.d(tag, msg)
 		if (logLevel >= 4){
-			Toast.makeText(CONTEXT, "DEBUG: $msg", Toast.LENGTH_SHORT).show()
+			makeToast("DEBUG: $msg")
 		}
 	}
 
 	fun i(msg: String){
-		Log.i(TAG, msg)
+		Log.i(tag, msg)
 		if (logLevel >= 3){
-			Toast.makeText(CONTEXT, "INFO: $msg", Toast.LENGTH_SHORT).show()
+			makeToast("INFO: $msg")
 		}
 	}
 
 	fun w(msg: String){
-		Log.w(TAG, msg)
+		Log.w(tag, msg)
 		if (logLevel >= 2){
-			Toast.makeText(CONTEXT, "WARN: $msg", Toast.LENGTH_SHORT).show()
+			makeToast("WARN: $msg")
 		}
 	}
 
 	fun e(msg: String, e: Exception? = null){
-		Log.e(TAG, msg, e)
+		Log.e(tag, msg, e)
 		if (logLevel >= 1){
-			Toast.makeText(CONTEXT, "ERROR: $msg", Toast.LENGTH_SHORT).show()
+			makeToast("ERROR: $msg")
 			e?.let {
-				Toast.makeText(CONTEXT, "ERROR: ${it.message}", Toast.LENGTH_SHORT).show()
+				makeToast("ERROR: ${it.message}")
 			}
+		}
+	}
+
+	private fun makeToast(msg: String){
+		if (EXECUTOR == null){
+			Log.e(tag, "No executor for debug toaster")
+		} else {
+			Log.i(tag, "Making toast")
+			TOAST_QUEUE.offer(Runnable {
+				Log.d(tag, "Toasting")
+				context.runOnUiThread {
+					Toast.makeText(context.applicationContext, msg, Toast.LENGTH_SHORT).show()
+				}
+				// Sleep for length of a short toast
+				Thread.sleep(2000)
+				Log.d(tag, "Slept")
+			})
 		}
 	}
 }
