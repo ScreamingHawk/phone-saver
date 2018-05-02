@@ -31,7 +31,7 @@ class DeletableLocationArrayAdapter(context: Context, private val resourceId: In
 			view.findViewById<View>(R.id.delete).setOnClickListener {
 				items.removeAt(position)
 				notifyDataSetChanged()
-				LocationHelper.saveFolderList(context, items.filter { !it.deletable }.map { it.location }.toMutableList())
+				LocationHelper.saveFolderList(context, items.filter { it.deletable }.map { it.location }.toMutableList())
 			}
 		} else {
 			view.findViewById<View>(R.id.delete).visibility = View.GONE
