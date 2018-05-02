@@ -36,8 +36,9 @@ class FolderListActivity : ListActivity() {
 	private lateinit var log: DebugLogger
 
 	private lateinit var adapter: DeletableLocationArrayAdapter
-
 	private val folderList: MutableList<String> = ArrayList()
+
+	private var locationSelectEnabled: Boolean = false
 
 	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -56,11 +57,11 @@ class FolderListActivity : ListActivity() {
 		// Check for permissions
 		testPermissions()
 
-		// Init list items
-		loadFolderList()
-
 		// Show the change log
 		showChangeLog(false)
+
+		// Call to load lists
+		onResume()
 	}
 
 	override fun onResume() {
@@ -70,8 +71,10 @@ class FolderListActivity : ListActivity() {
 		val locationsWithData = folderList.map {
 			LocationWithData(it)
 		}.toMutableList()
-		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("location_select", false)
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+
+		locationSelectEnabled = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("location_select", false)
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+		if (locationSelectEnabled){
 			// Add select location to list view
 			locationsWithData.add(0, LocationWithData(resources.getString(R.string.location_select_label), false))
 		}
@@ -83,6 +86,9 @@ class FolderListActivity : ListActivity() {
 			}
 		})
 		findViewById<ListView>(android.R.id.list).adapter = adapter
+
+		// Init list items
+		loadFolderList()
 	}
 
 	/**
@@ -162,7 +168,7 @@ class FolderListActivity : ListActivity() {
 	 * Shows or hides the empty list layout as required.
 	 */
 	fun checkEmptyCharacterList() {
-		if (folderList.isEmpty()) {
+		if (!locationSelectEnabled && folderList.isEmpty()) {
 			findViewById<View>(android.R.id.empty).visibility = View.VISIBLE
 		} else {
 			findViewById<View>(android.R.id.empty).visibility = View.GONE
