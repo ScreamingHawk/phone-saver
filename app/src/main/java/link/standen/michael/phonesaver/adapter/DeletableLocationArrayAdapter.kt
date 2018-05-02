@@ -9,7 +9,7 @@ import android.widget.TextView
 
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
-import link.standen.michael.phonesaver.util.data.LocationWithData
+import link.standen.michael.phonesaver.data.LocationWithData
 import java.io.File
 
 /**

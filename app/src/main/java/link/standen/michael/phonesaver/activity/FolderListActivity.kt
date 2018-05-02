@@ -12,7 +12,7 @@ import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.adapter.DeletableLocationArrayAdapter
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
-import link.standen.michael.phonesaver.util.data.LocationWithData
+import link.standen.michael.phonesaver.data.LocationWithData
 
 /**
  * The entry point activity.

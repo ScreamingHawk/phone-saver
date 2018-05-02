@@ -11,7 +11,7 @@ import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.activity.SaverActivity
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
-import link.standen.michael.phonesaver.util.data.Pair
+import link.standen.michael.phonesaver.data.Pair
 import java.io.*
 import java.lang.ref.WeakReference
 import java.net.MalformedURLException

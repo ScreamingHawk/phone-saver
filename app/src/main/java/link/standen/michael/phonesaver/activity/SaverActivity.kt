@@ -22,7 +22,7 @@ import java.io.*
 import android.widget.TextView
 import link.standen.michael.phonesaver.saver.LocationSelectTask
 import link.standen.michael.phonesaver.saver.HandleSingleTextTask
-import link.standen.michael.phonesaver.util.data.Pair
+import link.standen.michael.phonesaver.data.Pair
 
 /**
  * An activity to handle saving files.

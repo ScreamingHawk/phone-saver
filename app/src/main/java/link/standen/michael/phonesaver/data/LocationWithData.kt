@@ -1,4 +1,4 @@
-package link.standen.michael.phonesaver.util.data
+package link.standen.michael.phonesaver.data
 
 /**
  * A data class for holding a location and whether or not it can be deleted
