@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="4.0.1" versioncode="28">
+		<change>Fic saving locations after deleting a location</change>
+	</release>
 	<release version="4.0.0" versioncode="27">
 		<change>Add setting to select location during save</change>
 		<change>The above setting should work for users with external SD cards</change>
