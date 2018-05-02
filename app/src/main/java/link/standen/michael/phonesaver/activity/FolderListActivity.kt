@@ -4,13 +4,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.DataSetObserver
 import android.os.Build
+import android.preference.PreferenceManager
 import android.view.View
 import android.widget.ListView
 import de.cketti.library.changelog.ChangeLog
 import link.standen.michael.phonesaver.R
-import link.standen.michael.phonesaver.adapter.DeletableStringArrayAdapter
+import link.standen.michael.phonesaver.adapter.DeletableLocationArrayAdapter
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
+import link.standen.michael.phonesaver.util.data.LocationWithData
 
 /**
  * The entry point activity.
@@ -33,7 +35,7 @@ class FolderListActivity : ListActivity() {
 
 	private lateinit var log: DebugLogger
 
-	private lateinit var adapter: DeletableStringArrayAdapter
+	private lateinit var adapter: DeletableLocationArrayAdapter
 
 	private val folderList: MutableList<String> = ArrayList()
 
@@ -57,17 +59,30 @@ class FolderListActivity : ListActivity() {
 		// Init list items
 		loadFolderList()
 
+		// Show the change log
+		showChangeLog(false)
+	}
+
+	override fun onResume() {
+		super.onResume()
+
 		// Init list view
-		adapter = DeletableStringArrayAdapter(this, R.layout.folder_list_item, folderList)
+		val locationsWithData = folderList.map {
+			LocationWithData(it)
+		}.toMutableList()
+		if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("location_select", false)
+				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+			// Add select location to list view
+			locationsWithData.add(0, LocationWithData(resources.getString(R.string.location_select_label), false))
+		}
+
+		adapter = DeletableLocationArrayAdapter(this, R.layout.folder_list_item, locationsWithData)
 		adapter.registerDataSetObserver(object: DataSetObserver() {
 			override fun onChanged() {
 				checkEmptyCharacterList()
 			}
 		})
 		findViewById<ListView>(android.R.id.list).adapter = adapter
-
-		// Show the change log
-		showChangeLog(false)
 	}
 
 	/**
