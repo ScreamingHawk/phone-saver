@@ -99,11 +99,6 @@ class SaverActivity : ListActivity() {
 				listOf(locationSelectLabel, *it.toTypedArray())
 			} else it
 
-			log.d("Locations:")
-			for (loc in locations){
-				log.d("\t$loc")
-			}
-
 			when {
 				locations.size > 1 -> {
 					runOnUiThread {
