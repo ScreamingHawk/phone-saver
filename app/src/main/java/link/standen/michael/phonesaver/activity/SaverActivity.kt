@@ -414,6 +414,8 @@ class SaverActivity : ListActivity() {
 		log.d("Converting filename: $s")
 
 		var result = s
+				// Trim whitespace
+				.trim()
 				// Take last section after a slash (excluding the slash)
 				.replaceBeforeLast("/", "").replace("/", "")
 				// Take first section before a space (excluding the space)
