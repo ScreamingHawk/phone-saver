@@ -32,6 +32,9 @@ internal constructor(
 	private val saverActivityRef: WeakReference<SaverActivity> = WeakReference(context)
 
 	private lateinit var log: DebugLogger
+	companion object {
+		const val TAG = "HandleSingleTextTask"
+	}
 
 	override fun doInBackground(vararg params: Unit?) {
 		val saverActivity = saverActivityRef.get()
@@ -40,7 +43,7 @@ internal constructor(
 			callback(false)
 			return
 		}
-		log = DebugLogger(SaverActivity.TAG, saverActivity)
+		log = DebugLogger(TAG, saverActivity)
 
 		try {
 			val url = URL(text)
@@ -81,7 +84,7 @@ internal constructor(
 	}
 
 	/**
-	 * Save the given url to the filesystem.
+	 * Save the given url to the filesystem
 	 */
 	private fun saveUrl(saverActivity: SaverActivity, uri: Uri, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
@@ -89,20 +92,31 @@ internal constructor(
 			return callback(true)
 		}
 
-		var success: Boolean? = false
+		val sourceFilename = uri.toString()
 
-		saverActivity.location?.let {
-			val sourceFilename = uri.toString()
+		if (saverActivity.location == null) {
+			// No location, use documentUI
+			saverActivity.returnFromActivityResult = { destination ->
+				if (destination == null){
+					callback(false)
+				} else {
+					log.d("Calling to save URL $sourceFilename to $destination")
+					SaveFromUrlTask(saverActivity, sourceFilename, destination, filename, dryRun, callback).execute()
+				}
+			}
+			LocationSelectTask(saverActivity).save(filename, saverActivity.convertedMime!!)
+		} else {
+			// Locate passed
 			val destinationFilename = LocationHelper.safeAddPath(saverActivity.location, filename)
 
 			log.d("Saving $sourceFilename to $destinationFilename")
 
 			val downloader = DownloadManager.Request(uri)
 			downloader.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+					.setDestinationInExternalPublicDir(LocationHelper.removeRoot(saverActivity.location!!), filename)
 					.setAllowedOverRoaming(true)
 					.setTitle(filename)
 					.setDescription(saverActivity.resources.getString(R.string.downloader_description, sourceFilename))
-					.setDestinationInExternalPublicDir(LocationHelper.removeRoot(it), filename)
 
 			if (saverActivity.registerMediaServer){
 				downloader.allowScanningByMediaScanner()
@@ -110,14 +124,12 @@ internal constructor(
 
 			(saverActivity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(downloader)
 
-			success = null
+			callback(null)
 		}
-
-		callback(success)
 	}
 
 	/**
-	 * Save a string to the filesystem.
+	 * Save a string to the filesystem
 	 */
 	private fun saveString(saverActivity: SaverActivity, s: String, filename: String, callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
@@ -128,8 +140,13 @@ internal constructor(
 		if (saverActivity.location == null) {
 			// No location, use documentUI
 			saverActivity.returnFromActivityResult = {
-				val bos = BufferedOutputStream(FileOutputStream(it))
-				doSaveString(saverActivity, bos, s, null, callback)
+				if (it == null){
+					callback(false)
+				} else {
+					val pfd = saverActivity.contentResolver.openFileDescriptor(it, "w")
+					val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
+					doSaveString(saverActivity, bos, s, null, callback)
+				}
 			}
 			LocationSelectTask(saverActivity).save(filename, saverActivity.convertedMime!!)
 		} else {
@@ -154,6 +171,10 @@ internal constructor(
 			}
 		}
 	}
+
+	/**
+	 * Do the saving of the string
+	 */
 	private fun doSaveString(saverActivity: SaverActivity, bos: BufferedOutputStream, s: String,
 							 destinationFilename: String?, callback: (success: Boolean?) -> Unit){
 		var success = false

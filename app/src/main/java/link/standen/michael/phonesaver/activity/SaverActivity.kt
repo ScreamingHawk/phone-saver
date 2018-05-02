@@ -55,7 +55,7 @@ class SaverActivity : ListActivity() {
 
 	var debugInfo: MutableList<Pair> = mutableListOf()
 
-	lateinit var returnFromActivityResult: (fd: FileDescriptor?) -> Unit
+	lateinit var returnFromActivityResult: (uri: Uri?) -> Unit
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -325,7 +325,8 @@ class SaverActivity : ListActivity() {
 				if (it == null){
 					callback(false)
 				} else {
-					val bos = BufferedOutputStream(FileOutputStream(it))
+					val pfd = contentResolver.openFileDescriptor(it, "w")
+					val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
 					contentResolver.openInputStream(uri)?.use { bis ->
 						saveStream(bis, bos, null, callback, dryRun)
 					} ?: callback(false)
@@ -352,7 +353,7 @@ class SaverActivity : ListActivity() {
 	/**
 	 * Save a stream to the filesystem.
 	 */
-	private fun saveStream(bis: InputStream, bos: OutputStream, destinationFilename: String?,
+	fun saveStream(bis: InputStream, bos: OutputStream, destinationFilename: String?,
 						   callback: (success: Boolean?) -> Unit, dryRun: Boolean) {
 		if (dryRun){
 			// This entire method can be skipped when doing a dry run
@@ -461,7 +462,9 @@ class SaverActivity : ListActivity() {
 									}
 								}
 							}
-							Toast.makeText(this, R.string.toast_save_file_exists_overwrite, Toast.LENGTH_SHORT).show()
+							runOnUiThread {
+								Toast.makeText(this, R.string.toast_save_file_exists_overwrite, Toast.LENGTH_SHORT).show()
+							}
 							log.w("Overwriting $result")
 							f.delete()
 						}
@@ -516,9 +519,8 @@ class SaverActivity : ListActivity() {
 		when (requestCode){
 			requestCodeLocationSelect -> {
 				if (resultCode == RESULT_OK){
-					data?.data.let {uri ->
-						val pfd = contentResolver.openFileDescriptor(uri, "w")
-						return returnFromActivityResult(pfd.fileDescriptor)
+					data?.data?.let {uri ->
+						return returnFromActivityResult(uri)
 					}
 				} else {
 					// Selection cancelled, fail save
