@@ -77,15 +77,12 @@ class DebugLogger(private val tag: String, private val context: Activity) {
 		if (EXECUTOR == null){
 			Log.e(tag, "No executor for debug toaster")
 		} else {
-			Log.i(tag, "Making toast")
 			TOAST_QUEUE.offer(Runnable {
-				Log.d(tag, "Toasting")
 				context.runOnUiThread {
 					Toast.makeText(context.applicationContext, msg, Toast.LENGTH_SHORT).show()
 				}
 				// Sleep for length of a short toast
 				Thread.sleep(2000)
-				Log.d(tag, "Slept")
 			})
 		}
 	}
