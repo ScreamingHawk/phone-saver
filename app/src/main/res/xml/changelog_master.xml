@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="4.0.2" versioncode="29">
+		<change>Fix download using select location for URLs</change>
+		<change>Fix folder list display when select location is enabled</change>
+		<change>Fix filename when URL title begins with a space</change>
+		<change>Fix crash when debug mode is enabled</change>
+		<change>Fix typo in change log</change>
+		<change>Code niceties</change>
+	</release>
 	<release version="4.0.1" versioncode="28">
 		<change>Fix saving locations after deleting a location</change>
 	</release>
