@@ -13,9 +13,7 @@ import link.standen.michael.phonesaver.R
 class DownloadBroadcastReceiver: BroadcastReceiver() {
 
 	override fun onReceive(context: Context, intent: Intent) {
-		val action = intent.action
-
-		if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == action) {
+		if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == intent.action) {
 			Toast.makeText(context, R.string.toast_save_successful, Toast.LENGTH_SHORT).show()
 		}
 	}
