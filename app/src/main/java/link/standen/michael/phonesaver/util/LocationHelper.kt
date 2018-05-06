@@ -14,7 +14,7 @@ import java.io.File
  */
 object LocationHelper {
 
-	const private val FOLDER_LIST_STORE = "FOLDER_STORE"
+	private const val FOLDER_LIST_STORE = "FOLDER_STORE"
 
 	val rootLocation = Environment.getExternalStorageDirectory().absolutePath!!
 
