@@ -93,11 +93,7 @@ class SaverActivity : ListActivity() {
 	 * Load the list of locations
 	 */
 	private fun loadList() {
-		LocationHelper.loadFolderList(this)?.let {
-			val locations = if (locationSelectEnabled){
-				val locationSelectLabel = resources.getString(R.string.location_select_label)
-				listOf(locationSelectLabel, *it.toTypedArray())
-			} else it
+		LocationHelper.loadFolderListWLocationSelect(this)?.let {locations ->
 
 			when {
 				locations.size > 1 -> {
