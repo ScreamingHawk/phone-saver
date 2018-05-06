@@ -36,6 +36,7 @@ class SaverActivity : ListActivity() {
 		const val FILENAME_LENGTH_LIMIT = 100
 
 		const val FILENAME_EXT_MATCH_LIMIT = 1000
+		const val DIRECT_SHARE_FOLDER = "DIRECT_SHARE_FOLDER"
 	}
 
 	val requestCodeLocationSelect = 1
@@ -57,8 +58,13 @@ class SaverActivity : ListActivity() {
 		log = DebugLogger(this)
 
 		preferenceHelper.loadPreferences()
+		val directShareLocation = intent?.extras?.getString(DIRECT_SHARE_FOLDER)
 
 		when {
+			directShareLocation != null -> {
+				location = LocationHelper.addRoot(directShareLocation)
+				useIntent({ finishIntent(it) })
+			}
 			PreferenceHelper.forceSaving -> loadList()
 			else -> {
 				useIntent({ success ->

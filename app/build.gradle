@@ -35,4 +35,5 @@ dependencies {
 	implementation 'com.android.support:support-v4:27.1.1'
 
 	implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
+	implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 }

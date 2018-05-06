@@ -50,6 +50,9 @@
 				<category android:name="android.intent.category.DEFAULT" />
 				<data android:mimeType="*/*" />
 			</intent-filter>
+			<meta-data
+				android:name="android.service.chooser.chooser_target_service"
+				android:value=".service.LocationChooserTargetService" />
 		</activity>
 		<activity
 			android:name=".activity.SettingsActivity"
@@ -64,6 +67,14 @@
 				<action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
 			</intent-filter>
 		</receiver>
+
+		<service android:name=".service.LocationChooserTargetService"
+			android:label="@string/app_name"
+			android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE">
+			<intent-filter>
+				<action android:name="android.service.chooser.ChooserTargetService" />
+			</intent-filter>
+		</service>
 	</application>
 
 </manifest>
