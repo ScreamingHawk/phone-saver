@@ -28,8 +28,8 @@ class PreferenceHelper(private val context: Context) {
 		forceSaving = sharedPrefs.getBoolean("force_saving", false)
 		registerMediaServer = sharedPrefs.getBoolean("register_file", false)
 		useLenientRegex = sharedPrefs.getBoolean("lenient_regex", false)
-		locationSelectEnabled = sharedPrefs.getBoolean("location_select", false)
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+		locationSelectEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
+				sharedPrefs.getBoolean("location_select", false)
 		saveStrategy = context.resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
 				PreferenceManager.getDefaultSharedPreferences(context).getString(
 						"file_exists", context.resources.getString(R.string.pref_default_value_file_exists)))
