@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.DataSetObserver
 import android.os.Build
-import android.preference.PreferenceManager
 import android.view.View
 import android.widget.ListView
 import de.cketti.library.changelog.ChangeLog
@@ -13,6 +12,7 @@ import link.standen.michael.phonesaver.adapter.DeletableLocationArrayAdapter
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
 import link.standen.michael.phonesaver.data.LocationWithData
+import link.standen.michael.phonesaver.util.PreferenceHelper
 
 /**
  * The entry point activity.
@@ -38,7 +38,7 @@ class FolderListActivity : ListActivity() {
 	private lateinit var adapter: DeletableLocationArrayAdapter
 	private val folderList: MutableList<String> = ArrayList()
 
-	private var locationSelectEnabled: Boolean = false
+	private val preferenceHelper = PreferenceHelper(this)
 
 	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -72,9 +72,9 @@ class FolderListActivity : ListActivity() {
 			LocationWithData(it)
 		}.toMutableList()
 
-		locationSelectEnabled = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("location_select", false)
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-		if (locationSelectEnabled){
+		preferenceHelper.loadPreferences()
+
+		if (PreferenceHelper.locationSelectEnabled){
 			// Add select location to list view
 			locationsWithData.add(0, LocationWithData(resources.getString(R.string.location_select_label), false))
 		}
@@ -168,7 +168,7 @@ class FolderListActivity : ListActivity() {
 	 * Shows or hides the empty list layout as required.
 	 */
 	fun checkEmptyCharacterList() {
-		if (!locationSelectEnabled && folderList.isEmpty()) {
+		if (!PreferenceHelper.locationSelectEnabled && folderList.isEmpty()) {
 			findViewById<View>(android.R.id.empty).visibility = View.VISIBLE
 		} else {
 			findViewById<View>(android.R.id.empty).visibility = View.GONE

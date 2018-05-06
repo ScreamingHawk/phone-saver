@@ -8,7 +8,6 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import link.standen.michael.phonesaver.R
 import link.standen.michael.phonesaver.util.LocationHelper
 import android.provider.OpenableColumns
@@ -23,6 +22,7 @@ import android.widget.TextView
 import link.standen.michael.phonesaver.saver.LocationSelectTask
 import link.standen.michael.phonesaver.saver.HandleSingleTextTask
 import link.standen.michael.phonesaver.data.Pair
+import link.standen.michael.phonesaver.util.PreferenceHelper
 
 /**
  * An activity to handle saving files.
@@ -42,13 +42,8 @@ class SaverActivity : ListActivity() {
 
 	val requestCodeLocationSelect = 1
 
-	var forceSaving = false
-	var registerMediaServer = false
-	private var useLenientRegex = false
-	private var locationSelectEnabled = false
-	private var saveStrategy = 0
-
 	private lateinit var log: DebugLogger
+	private val preferenceHelper = PreferenceHelper(this)
 
 	var location: String? = null
 	var convertedMime: String? = null
@@ -63,18 +58,10 @@ class SaverActivity : ListActivity() {
 
 		log = DebugLogger(TAG, this)
 
-		val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this)
-		forceSaving = sharedPrefs.getBoolean("force_saving", false)
-		registerMediaServer = sharedPrefs.getBoolean("register_file", false)
-		useLenientRegex = sharedPrefs.getBoolean("lenient_regex", false)
-		locationSelectEnabled = sharedPrefs.getBoolean("location_select", false)
-				&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-		saveStrategy = resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(
-				PreferenceManager.getDefaultSharedPreferences(this).getString(
-						"file_exists", resources.getString(R.string.pref_default_value_file_exists)))
+		preferenceHelper.loadPreferences()
 
 		when {
-			forceSaving -> loadList()
+			PreferenceHelper.forceSaving -> loadList()
 			else -> {
 				useIntent({ success ->
 					log.i("Supported: $success")
@@ -102,7 +89,7 @@ class SaverActivity : ListActivity() {
 						// Init list view
 						val listView = findViewById<ListView>(android.R.id.list)
 						listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-							if (!locationSelectEnabled || position != 0){
+							if (!PreferenceHelper.locationSelectEnabled || position != 0){
 								// The first item is the location select. Set location otherwise
 								location = LocationHelper.addRoot(locations[position])
 							}
@@ -116,7 +103,7 @@ class SaverActivity : ListActivity() {
 				}
 				locations.size == 1 -> {
 					// Only one location, just use it
-					if (!locationSelectEnabled) {
+					if (!PreferenceHelper.locationSelectEnabled) {
 						// Only set location when not using location select
 						location = LocationHelper.addRoot(locations[0])
 					}
@@ -155,7 +142,7 @@ class SaverActivity : ListActivity() {
 				return handleMultiple(callback, dryRun)
 			}
 
-			if (forceSaving) {
+			if (PreferenceHelper.forceSaving) {
 				// Save the file the best way we can
 				return handleSingle(callback, dryRun)
 			}
@@ -369,7 +356,7 @@ class SaverActivity : ListActivity() {
 			// Done
 			success = true
 
-			if (registerMediaServer && destinationFilename != null){
+			if (PreferenceHelper.registerMediaServer && destinationFilename != null){
 				MediaScannerConnection.scanFile(this, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
@@ -418,7 +405,7 @@ class SaverActivity : ListActivity() {
 				// Take first section before a space (excluding the space)
 				.replaceAfter(" ", "").replace(" ", "")
 				// Remove non-filename characters
-				.replace(Regex(if (useLenientRegex) FILENAME_LENIENT_REGEX else FILENAME_REGEX), "")
+				.replace(Regex(if (PreferenceHelper.useLenientRegex) FILENAME_LENIENT_REGEX else FILENAME_REGEX), "")
 
 		if (result.length > FILENAME_LENGTH_LIMIT) {
 			// Do not go over the filename length limit
@@ -442,20 +429,15 @@ class SaverActivity : ListActivity() {
 				val destinationFilename = LocationHelper.safeAddPath(location, result)
 				val f = File(destinationFilename)
 				if (f.exists()) {
-					when (saveStrategy) {
+					when (PreferenceHelper.saveStrategy) {
 						0 -> {
 							// Overwrite. Delete the file, so that it will be overridden
 							uri?.let { u ->
 								val sourceFilename = u.path
 								if (sourceFilename.contains(destinationFilename)) {
-									if (saveStrategy == 0) {
-										log.w("Aborting! It appears you are saving the file over itself")
-										finishIntent(false, R.string.toast_save_file_exists_self_abort)
-										return
-									} else {
-										log.i("Continuing! It appears you are saving the file over itself")
-										Toast.makeText(this, R.string.toast_save_file_exists_self_continue, Toast.LENGTH_SHORT).show()
-									}
+									log.w("Aborting! It appears you are saving the file over itself")
+									finishIntent(false, R.string.toast_save_file_exists_self_abort)
+									return
 								}
 							}
 							runOnUiThread {

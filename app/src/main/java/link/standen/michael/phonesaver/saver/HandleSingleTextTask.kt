@@ -12,6 +12,7 @@ import link.standen.michael.phonesaver.activity.SaverActivity
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
 import link.standen.michael.phonesaver.data.Pair
+import link.standen.michael.phonesaver.util.PreferenceHelper
 import java.io.*
 import java.lang.ref.WeakReference
 import java.net.MalformedURLException
@@ -64,7 +65,7 @@ internal constructor(
 						saveUrl(saverActivity, Uri.parse(text), filename, callback, dryRun)
 					} else if (contentType.startsWith("text/")){
 						saveString(saverActivity, text, filename, callback, dryRun)
-					} else if (saverActivity.forceSaving && !dryRun){
+					} else if (PreferenceHelper.forceSaving && !dryRun){
 						// Fallback to saving with saveUrl
 						saveUrl(saverActivity, Uri.parse(text), filename, callback, dryRun)
 					} else {
@@ -118,7 +119,7 @@ internal constructor(
 					.setTitle(filename)
 					.setDescription(saverActivity.resources.getString(R.string.downloader_description, sourceFilename))
 
-			if (saverActivity.registerMediaServer){
+			if (PreferenceHelper.registerMediaServer){
 				downloader.allowScanningByMediaScanner()
 			}
 
@@ -185,7 +186,7 @@ internal constructor(
 			// Done
 			success = true
 
-			if (saverActivity.registerMediaServer && destinationFilename != null){
+			if (PreferenceHelper.registerMediaServer && destinationFilename != null){
 				MediaScannerConnection.scanFile(saverActivity, arrayOf(destinationFilename), null, null)
 			}
 		} catch (e: IOException) {
