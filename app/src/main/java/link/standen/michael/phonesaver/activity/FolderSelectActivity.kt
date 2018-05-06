@@ -21,7 +21,6 @@ import link.standen.michael.phonesaver.util.LocationHelper
 class FolderSelectActivity : ListActivity() {
 
 	companion object {
-		const val TAG = "FolderSelectActivity"
 		const val FOLDER_SELECTED = "FolderSelected"
 	}
 
@@ -51,7 +50,7 @@ class FolderSelectActivity : ListActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(layout.folder_select_activity)
 
-		log = DebugLogger(TAG, this)
+		log = DebugLogger(this)
 
 		// Init list view
 		listView = findViewById(android.R.id.list)

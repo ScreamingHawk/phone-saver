@@ -18,7 +18,7 @@ internal constructor(private val saverActivity: SaverActivity) {
 			// Not available for this API
 			saverActivity.failOnActivityResult(saverActivity.requestCodeLocationSelect)
 		} else {
-			log = DebugLogger("LocationSelectTask", saverActivity)
+			log = DebugLogger(saverActivity, LocationSelectTask::class.java.simpleName)
 			val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
 			intent.addCategory(Intent.CATEGORY_OPENABLE)
 			intent.type = mime

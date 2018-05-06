@@ -26,13 +26,10 @@ internal constructor(
 	private val saverActivityRef: WeakReference<SaverActivity> = WeakReference(context)
 
 	private lateinit var log: DebugLogger
-	companion object {
-		const val TAG = "SaveFromUrlTask"
-	}
 
 	override fun doInBackground(vararg params: Unit?) {
 		saverActivityRef.get()?.let {saverActivity ->
-			log = DebugLogger(TAG, saverActivity)
+			log = DebugLogger(saverActivity, SaveFromUrlTask::class.java.simpleName)
 
 			log.d("Saving URL $sourceFilename to $destination")
 
@@ -43,7 +40,7 @@ internal constructor(
 				saverActivity.saveStream(it, bos, filename, callback, dryRun)
 			}
 		}?: run {
-			Log.e(TAG, "Saver Activity is gone")
+			Log.e(SaveFromUrlTask::class.java.simpleName, "Saver Activity is gone")
 			callback(false)
 		}
 	}

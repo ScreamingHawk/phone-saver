@@ -33,9 +33,6 @@ internal constructor(
 	private val saverActivityRef: WeakReference<SaverActivity> = WeakReference(context)
 
 	private lateinit var log: DebugLogger
-	companion object {
-		const val TAG = "HandleSingleTextTask"
-	}
 
 	override fun doInBackground(vararg params: Unit?) {
 		val saverActivity = saverActivityRef.get()
@@ -44,7 +41,7 @@ internal constructor(
 			callback(false)
 			return
 		}
-		log = DebugLogger(TAG, saverActivity)
+		log = DebugLogger(saverActivity, HandleSingleTextTask::class.java.simpleName)
 
 		try {
 			val url = URL(text)

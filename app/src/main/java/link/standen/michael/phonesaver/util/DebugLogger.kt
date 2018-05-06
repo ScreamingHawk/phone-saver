@@ -1,6 +1,7 @@
 package link.standen.michael.phonesaver.util
 
 import android.app.Activity
+import android.content.Context
 import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
@@ -15,7 +16,11 @@ import java.util.concurrent.TimeUnit
  * A log wrapper that also logs to the user.
  * logLevel: 0 = None, 1 = Error, 2 = Warn, 3 = Info, 4 = Debug, 5 = Verbose
  */
-class DebugLogger(private val tag: String, private val context: Activity) {
+class DebugLogger(private val context: Context, forceTag: String? = null) {
+
+	private val tag = forceTag?.let {
+		it
+	}?: context::class.java.simpleName
 
 	private val logLevel = context.resources.getStringArray(R.array.pref_list_values_log_to_user).indexOf(
 			PreferenceManager.getDefaultSharedPreferences(context).getString(
@@ -77,13 +82,15 @@ class DebugLogger(private val tag: String, private val context: Activity) {
 		if (EXECUTOR == null){
 			Log.e(tag, "No executor for debug toaster")
 		} else {
-			TOAST_QUEUE.offer(Runnable {
-				context.runOnUiThread {
-					Toast.makeText(context.applicationContext, msg, Toast.LENGTH_SHORT).show()
-				}
-				// Sleep for length of a short toast
-				Thread.sleep(2000)
-			})
+			if (context is Activity) {
+				TOAST_QUEUE.offer(Runnable {
+					context.runOnUiThread {
+						Toast.makeText(context.applicationContext, msg, Toast.LENGTH_SHORT).show()
+					}
+					// Sleep for length of a short toast
+					Thread.sleep(2000)
+				})
+			}
 		}
 	}
 }

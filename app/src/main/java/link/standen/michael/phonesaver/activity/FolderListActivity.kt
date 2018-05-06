@@ -21,7 +21,6 @@ import link.standen.michael.phonesaver.util.PreferenceHelper
 class FolderListActivity : ListActivity() {
 
 	companion object {
-		const val TAG = "FolderListActivity"
 		const val FOLDER_SELECT_REQUEST_CODE = 1
 		const val PERMISSION_REQUEST_CODE = 2
 
@@ -52,7 +51,7 @@ class FolderListActivity : ListActivity() {
 			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
 		}
 
-		log = DebugLogger(TAG, this)
+		log = DebugLogger(this)
 
 		// Check for permissions
 		testPermissions()

@@ -31,8 +31,6 @@ import link.standen.michael.phonesaver.util.PreferenceHelper
 class SaverActivity : ListActivity() {
 
 	companion object {
-		const val TAG = "SaverActivity"
-
 		const val FILENAME_REGEX = "[^-_.A-Za-z0-9]"
 		const val FILENAME_LENIENT_REGEX = "[\\p{Cntrl}]"
 		const val FILENAME_LENGTH_LIMIT = 100
@@ -56,7 +54,7 @@ class SaverActivity : ListActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.saver_activity)
 
-		log = DebugLogger(TAG, this)
+		log = DebugLogger(this)
 
 		preferenceHelper.loadPreferences()
 

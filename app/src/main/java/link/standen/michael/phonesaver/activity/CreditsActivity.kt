@@ -17,10 +17,6 @@ import link.standen.michael.phonesaver.util.DebugLogger
  */
 class CreditsActivity : AppCompatActivity() {
 
-	companion object {
-		const val TAG = "CreditsActivity"
-	}
-
 	private val defaultLocale = Locale("en").language
 
 	private lateinit var log: DebugLogger
@@ -29,7 +25,7 @@ class CreditsActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.credits_activity)
 
-		log = DebugLogger(TAG, this)
+		log = DebugLogger(this)
 
 		// Version
 		try {

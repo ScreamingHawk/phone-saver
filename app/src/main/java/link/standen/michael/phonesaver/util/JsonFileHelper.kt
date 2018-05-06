@@ -1,7 +1,6 @@
 package link.standen.michael.phonesaver.util
 
 import android.content.Context
-import android.util.Log
 
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -11,7 +10,7 @@ import java.io.IOException
  */
 object JsonFileHelper {
 
-	private val TAG = "JsonFileHelper"
+	private fun getLogger(context: Context) = DebugLogger(context, JsonFileHelper::class.java.simpleName)
 
 	/**
 	 * Saves JSON to a file.
@@ -25,7 +24,7 @@ object JsonFileHelper {
 			fos.close()
 			return true
 		} catch (e: IOException) {
-			Log.e(TAG, "Error writing JSON", e)
+			getLogger(context).e("Error writing JSON", e)
 		}
 
 		return false
@@ -36,6 +35,8 @@ object JsonFileHelper {
 	 */
 	fun getJsonFromFile(context: Context, filename: String): String? {
 		var json: String? = null
+
+		val log = getLogger(context)
 
 		try {
 			val fis = context.openFileInput(filename)
@@ -51,9 +52,9 @@ object JsonFileHelper {
 
 			json = stringBuff.toString()
 		} catch (e: FileNotFoundException) {
-			Log.e(TAG, String.format("JSON file %s not found", filename), e)
+			log.e(String.format("JSON file %s not found", filename), e)
 		} catch (e: IOException) {
-			Log.e(TAG, String.format("Error reading file %s", filename), e)
+			log.e(String.format("Error reading file %s", filename), e)
 		}
 
 		return json
