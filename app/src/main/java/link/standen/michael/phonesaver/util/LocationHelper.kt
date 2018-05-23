@@ -69,6 +69,7 @@ object LocationHelper {
 	fun safeAddPath(location: String?, filename: String): String {
 		location?.let {
 			if (!filename.startsWith(it)){
+				//FIXME Something about this call isn't safe after all...
 				return it + File.separatorChar + filename
 			}
 		}

@@ -460,7 +460,7 @@ class SaverActivity : ListActivity() {
 							// Postfix. Add counter before extension
 							log.d("Adding postfix to $result")
 							var i = 1
-							val before = LocationHelper.safeAddPath(location, result.substringBeforeLast('.', "")) + "."
+							val before = destinationFilename.substringBeforeLast('.', "") + "."
 							if (ext.isNotBlank()) {
 								ext = ".$ext"
 							}
