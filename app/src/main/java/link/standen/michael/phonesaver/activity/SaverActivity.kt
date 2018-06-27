@@ -255,9 +255,9 @@ class SaverActivity : ListActivity() {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			log.d("Text has stream")
-			getFilename(it, intent.type, dryRun, {filename ->
+			getFilename(it, intent.type, dryRun) {filename ->
 				saveUri(it, filename, callback, dryRun)
-			})
+			}
 			return
 		}
 
@@ -277,7 +277,7 @@ class SaverActivity : ListActivity() {
 			var counter = 0
 			var completeSuccess = true
 			imageUris.forEach {
-				getFilename(it, intent.type, dryRun, { filename->
+				getFilename(it, intent.type, dryRun) { filename ->
 					saveUri(it, filename, { success ->
 						counter++
 						success?.let {
@@ -287,7 +287,7 @@ class SaverActivity : ListActivity() {
 							callback(completeSuccess)
 						}
 					}, dryRun)
-				})
+				}
 			}
 		} ?: callback(false)
 	}
