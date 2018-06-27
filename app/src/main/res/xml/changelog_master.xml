@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="4.0.3" versioncode="30">
+		<change>Fix append number saving strategy</change>
+		<change>Add direct share capability (beta)</change>
+		<change>Optimise preference loading and management</change>
+		<change>Code niceties</change>
+	</release>
 	<release version="4.0.2" versioncode="29">
 		<change>Fix download using select location for URLs</change>
 		<change>Fix folder list display when select location is enabled</change>
