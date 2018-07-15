@@ -30,7 +30,6 @@ Set up any number of locations on your mobile, and save to them with a single cl
 ## Un-Features
 
 * No sign up
-* No internet connection
 * No requests to rate the app
 * No trail periods
 * No paid upgrades
