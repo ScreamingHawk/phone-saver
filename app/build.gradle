@@ -1,19 +1,18 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
 
 android {
-	compileSdkVersion 27
-	buildToolsVersion '27.0.3'
+	compileSdkVersion 28
+	buildToolsVersion "28.0.1"
 	defaultConfig {
 		applicationId "link.standen.michael.phonesaver"
 		minSdkVersion 15
-		targetSdkVersion 27
+		targetSdkVersion 28
 		versionCode 30
 		versionName "4.0.3"
-
 		vectorDrawables.useSupportLibrary = true
 	}
+
 	buildTypes {
 		release {
 			minifyEnabled false
@@ -24,15 +23,23 @@ android {
 		disable 'MissingTranslation'
 	}
 }
+
+ext {
+	supportLibVersion = '28.0.0-beta01'
+}
+
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-	implementation 'com.android.support:appcompat-v7:27.1.1'
+
+	implementation "com.android.support:appcompat-v7:${supportLibVersion}"
+	implementation "com.android.support:design:${supportLibVersion}"
+	implementation "com.android.support:support-vector-drawable:${supportLibVersion}"
+	implementation "com.android.support:support-v4:${supportLibVersion}"
+
 	implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-	implementation 'com.android.support:design:27.1.1'
-	implementation 'com.android.support:support-vector-drawable:27.1.1'
-	implementation 'com.google.code.gson:gson:2.8.0'
-	implementation 'com.android.support:support-v4:27.1.1'
+
+	implementation 'com.google.code.gson:gson:2.8.5'
 
 	implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 	implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
