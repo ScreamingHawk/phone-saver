@@ -29,13 +29,15 @@ ext {
 }
 
 dependencies {
+	def supportVersion = '28.0.0-beta01'
+
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-	implementation "com.android.support:appcompat-v7:${supportLibVersion}"
-	implementation "com.android.support:design:${supportLibVersion}"
-	implementation "com.android.support:support-vector-drawable:${supportLibVersion}"
-	implementation "com.android.support:support-v4:${supportLibVersion}"
+	implementation "com.android.support:appcompat-v7:${supportVersion}"
+	implementation "com.android.support:design:${supportVersion}"
+	implementation "com.android.support:support-vector-drawable:${supportVersion}"
+	implementation "com.android.support:support-v4:${supportVersion}"
 
 	implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
