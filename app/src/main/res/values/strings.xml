@@ -27,17 +27,17 @@
 	<string name="navigation_read_only">Read Only</string>
 
 	<!-- Saving messages -->
-	<string name="toast_save_successful">Saved successfully</string>
-	<string name="toast_save_in_progress">Save in progress</string>
-	<string name="toast_save_failed">Save failed</string>
-	<string name="toast_save_init_error">Error loading save locations</string>
-	<string name="toast_save_init_no_locations">Please open the app to add save locations</string>
-	<string name="toast_save_file_exists_overwrite">Overwriting file already in this location</string>
-	<string name="toast_save_file_exists_fail">Not saving as file already exists</string>
-	<string name="toast_save_file_exists_self_abort">Aborting! It appears you are saving the file
-		over itself</string>
-	<string name="toast_save_file_exists_self_continue">Note! It appears you are saving the file
-		over itself. Continuing as allowed by save behaviour</string>
+	<string name="toast_save_successful">Saved successfully.</string>
+	<string name="toast_save_in_progress">Save in progress…</string>
+	<string name="toast_save_failed">Save failed.</string>
+	<string name="toast_save_init_error">Error loading save locations.</string>
+	<string name="toast_save_init_no_locations">Please open the app to add save locations.</string>
+	<string name="toast_save_file_exists_overwrite">Overwriting file already in this location…</string>
+	<string name="toast_save_file_exists_fail">Cannot save, as file already exists.</string>
+	<string name="toast_save_file_exists_self_abort">Aborting! It appears you are saving this file
+		over itself.</string>
+	<string name="toast_save_file_exists_self_continue">Note! It appears you are saving this file
+		over itself. Continuing as allowed by save behaviour…</string>
 	<string name="downloader_description">Saving %1$s</string>
 
 	<!-- Debug / Error -->
@@ -48,7 +48,7 @@
 
 	<!-- Loading -->
 	<string name="loading_title">Testing support…</string>
-	<string name="loading_body">Please wait while I test for download support.</string>
+	<string name="loading_body">Please wait while I test for download support…</string>
 
 	<!-- Credits -->
 	<string name="credits_version">v%1$s</string>
@@ -58,10 +58,10 @@
 	<string name="credits_content1">Phone Saver is a simple application for saving files to your
 		phone through the share feature.
 	</string>
-	<string name="credits_content2">You can view the source code, log bugs or request features on
+	<string name="credits_content2">You can view the source code, log bugs, and request features on
 		<a href="https://github.com/ScreamingHawk/phone-saver">Github</a>.
 	</string>
-	<string name="credits_content3">This application is completely open source; licensed under the
+	<string name="credits_content3">This application is completely open source; it is licensed under the
 		<a href="https://tldrlegal.com/license/mit-license">MIT license</a>.
 	</string>
 	<string name="credits_content_translator">This translation of &appname; was provided by
@@ -71,7 +71,7 @@
 	<!-- Settings -->
 	<string name="title_activity_settings">Settings</string>
 
-	<string name="pref_title_file_exists">Behaviour if already file exists</string>
+	<string name="pref_title_file_exists">Behaviour if file already exists</string>
 	<array name="pref_list_title_file_exists">
 		<item>Overwrite existing</item>
 		<item>Do not save</item>
