@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+	<!ENTITY appname "Phone Saver">
+	<!ENTITY author "Michael Standen">
+	]>
+
+<resources>
+	<string name="app_name">&appname;</string>
+
+	<!-- Menu -->
+	<string name="action_settings">設定</string>
+	<string name="action_change_log">變更記錄</string>
+	<string name="action_credits">鳴謝</string>
+
+	<!-- Folder list -->
+	<string name="delete_button">刪除</string>
+	<string name="back_folder">\u2191 返回</string>
+
+	<string name="folder_list_empty_title">歡迎使用 Phone Saver!</string>
+	<string name="folder_list_empty_body">請使用下面的按鈕加入儲存位置。</string>
+
+	<string name="location_select_label">* 選擇位置 *</string>
+
+	<!-- Folder select -->
+	<string name="title_activity_folder_select">選擇資料夾</string>
+	<string name="navigation_here">這裡</string>
+	<string name="navigation_read_only">唯讀</string>
+
+	<!-- Saving messages -->
+	<string name="toast_save_successful">成功儲存。</string>
+	<string name="toast_save_in_progress">正在儲存…</string>
+	<string name="toast_save_failed">儲存失敗。</string>
+	<string name="toast_save_init_error">載入儲存位置時發生錯誤。</string>
+	<string name="toast_save_init_no_locations">請開啟應用程式來加入儲存位置。</string>
+	<string name="toast_save_file_exists_overwrite">正在覆寫已存在於這個位置的檔案…</string>
+	<string name="toast_save_file_exists_fail">檔案已存在，因此無法儲存。</string>
+	<string name="toast_save_file_exists_self_abort">正在中止！似乎您正在儲存檔案
+		在自身上。</string>
+	<string name="toast_save_file_exists_self_continue">注意！似乎您正在儲存檔案
+		在自身上。因為儲存行為允許而繼續…</string>
+	<string name="downloader_description">正在儲存 %1$s</string>
+
+	<!-- Debug / Error -->
+	<string name="not_supported_content_type">不支援的內容類型</string>
+	<string name="not_supported">請&lt;a href="%1$s">提出這個內容類型的功能請求&lt;/a>，讓
+		&author; 能夠加入正式的支援。&lt;br/>&lt;br/>您也可以啟用「強制儲存」設定來強制
+		&appname; 無論如何都試著儲存。</string>
+
+	<!-- Loading -->
+	<string name="loading_title">正在測試支援…</string>
+	<string name="loading_body">請稍候，正在測試下載支援…</string>
+
+	<!-- Credits -->
+	<string name="credits_version">v%1$s</string>
+	<string name="title_activity_credits">關於 &appname;</string>
+	<string name="logo_description">標誌</string>
+	<string name="credits_creator">由 <a href="https://michael.standen.link">&author;</a></string>
+	<string name="credits_content1">Phone Saver 是一個簡單的應用程式，可以透過分享功能
+		儲存檔案到手機中。
+	</string>
+	<string name="credits_content2">您可以在
+		<a href="https://github.com/ScreamingHawk/phone-saver">Github</a> 檢視原始碼、記錄錯誤和要求功能。
+	</string>
+	<string name="credits_content3">這個應用程式完全開放原始碼，根據
+		<a href="https://tldrlegal.com/license/mit-license">MIT 許可證</a> 授權。
+	</string>
+	<string name="credits_content_translator">&appname; 的翻譯由
+		<a href="https://michael.standen.link">&author;</a>提供。
+	</string>
+
+	<!-- Settings -->
+	<string name="title_activity_settings">設定</string>
+
+	<string name="pref_title_file_exists">如果檔案已經存在的行為</string>
+	<array name="pref_list_title_file_exists">
+		<item>覆寫已存在的檔案</item>
+		<item>不儲存</item>
+		<item>在名稱後附加數字</item>
+		<!--<item>Request new name</item>-->
+	</array>
+	<array name="pref_list_description_file_exists">
+		<item>以新檔案覆寫已存在的檔案</item>
+		<item>不儲存新檔案</item>
+		<item>在檔案名稱後附加數字，使兩個檔案都儲存</item>
+		<!--<item>Request new file name with a pop up</item>-->
+	</array>
+	<string name="pref_default_value_file_exists">覆寫</string>
+	<array name="pref_list_values_file_exists">
+		<item>覆寫</item>
+		<item>無</item>
+		<item>後置</item>
+		<!--<item>Request</item>-->
+	</array>
+
+	<string name="pref_title_location_select">啟用位置選擇</string>
+	<string name="pref_description_location_select">儲存時使用
+		Android 的內建文件使用者介面啟用位置的選擇。這是儲存到外部
+		SD 卡建議的方式。
+	</string>
+	<string name="pref_title_location_select_unavailable">無法使用位置選擇</string>
+	<string name="pref_description_location_select_unavailable">儲存時使用
+		Android 的內建文件使用者介面啟用位置的選擇。這是儲存到外部
+		SD 卡建議的方式。注意：這個功能在您的 Android 版本中無法使用。
+	</string>
+
+	<string name="pref_title_register_file">註冊多媒體掃描器</string>
+	<string name="pref_description_register_file">當檔案已下載時通知多媒體掃描器。
+		這有助於確保圖庫和音樂應用程式可以獲取檔案。
+	</string>
+
+	<string name="pref_title_lenient_regex">使用寬鬆的檔案名稱驗證</string>
+	<string name="pref_description_lenient_regex">當這個選項停用時，檔案名稱僅限於
+		英數字元、底線和連字號。當啟用時，檔案名稱不受限制。
+		這增加了對非拉丁字元和語言、表情符號等等的支援。警告：這可能造成
+		一些檔案無法儲存，或可能使不支援這些字元的應用程式無法運作。
+	</string>
+
+	<string name="pref_title_force_saving">強制儲存</string>
+	<string name="pref_description_force_saving">強制儲存分享的項目，即使沒有
+		明確的支援。警告：啟用此功能可能會對儲存有不良影響。
+	</string>
+
+	<string name="pref_title_log_to_user">顯示除錯資訊</string>
+	<array name="pref_list_title_log_to_user">
+		<item>無</item>
+		<item>錯誤</item>
+		<item>警告</item>
+		<item>資訊</item>
+		<item>除錯</item>
+		<item>詳細</item>
+	</array>
+	<array name="pref_list_description_log_to_user">
+		<item>不顯示除錯資訊</item>
+		<item>顯示錯誤等級的除錯資訊</item>
+		<item>顯示警告等級以上的除錯資訊</item>
+		<item>顯示資訊等級以上的除錯資訊</item>
+		<item>顯示除錯等級以上的除錯資訊</item>
+		<item>顯示詳細等級以上的除錯資訊</item>
+	</array>
+	<string name="pref_default_value_log_to_user">無</string>
+	<array name="pref_list_values_log_to_user">
+		<item>無</item>
+		<item>錯誤</item>
+		<item>警告</item>
+		<item>資訊</item>
+		<item>除錯</item>
+		<item>詳細</item>
+	</array>
+
+	<!-- Change log -->
+	<string name="changelog_full_title">變更記錄</string>
+	<string name="changelog_title">新功能</string>
+	<string name="changelog_ok_button">確定</string>
+	<string name="changelog_show_full">顯示全部&#8230;</string>
+</resources>
