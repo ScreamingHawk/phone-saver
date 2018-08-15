@@ -8,7 +8,7 @@ If you decide to continue using this software, it means you accept all terms and
 
 To function basically as intended, the app is designed to only request storage permission. Turning on this permission is to allow the software to read device storage and also modify storage content. Any information that may be collected with the enablement of this permission is locally stored on your device in which the software is installed and there are no means any of that information can be collected by the developer.
 
-The app is also capable of having full network access. This capability is solely to allow the developer to get crash reports so it can be fixed and nothing else.
+The app is also capable of having full network access. This capability is so web content can be saved and also to allow the developer get crash reports so it can be fixed.
 
 These permissions can be revoked when they are not needed, this is possible on devices running Android 6.0 upward. <hr>
 
@@ -16,7 +16,10 @@ These permissions can be revoked when they are not needed, this is possible on d
 
 ### Personal Data
 
-No personal data is collected while utilizing the software</p>
+Data is collected;
+
+When a crash is reported your device information is captured and also filename/url data is collected when an unsupported file/feature request is inititated.
+
 
 ### Usage Data
 
@@ -24,7 +27,8 @@ The app may collect usage information.
 
 ### Use of Data
     
-The crash reports data that may be collected is done so the developer is made aware of the bug in the app and makes fixes to keep the app functioning properly.
+The data that may be collected when crash reports are sent or wehn unsupported files/feature is requested, is to provide information to assist the developer make fixes and make the app more efficient for utilization.
+
 
 ## Security Of Data
 
