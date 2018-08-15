@@ -1,6 +1,5 @@
 ## Phone-Saver Privacy Policy
 
-**Effect as of 13/08/2018**
 
 This is the developer's policy on how your personal information may be collected, used, disclosed and secured. These policies are stated to ensure you know what personal details you may or may not disclose when Phone-saver software is being utilized and the choices you have associated with that data. 
 If you decide to continue using this software, it means you accept all terms and conditions stated by the developer in this policy. Kindly note that this privacy policy is restricted only to Phone-Saver software and the developer is not and will not be liable to be held in account for the privacy practices of any third-party tools or services that may be contained in the software. <HR>
