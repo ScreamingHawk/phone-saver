@@ -15,7 +15,7 @@ android:
     - '.+'
 
 before_script:
-    - cd Android
+    - cd phone-saver
     - chmod +x gradlew
 
 script:
