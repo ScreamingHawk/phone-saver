@@ -1,70 +1,58 @@
-## FREQUENTLY ASKED QUESTIONS(FAQs)
+## Frequently Asked Question (FAQs)
 
+This is a compilation of Frequently Asked Questions for Phone Saver. This document will aid prospective and existing end-users of the software as a self-service guide in cases where the developer can't be reached. This document is subject to change and modifications at any time. Thus it'll be updated from time to time consequently to suit any new changes to the software as new developments would be implemented which might cause a discrepancy with this current document.
 
-This is a compilation of Frequently asked questions for Phone saver software. This document will aid prospective and already existing end-users of the software as a self-service guide in cases where the developer can't be reached. This document is subject to change and modifications at any time. Thus it'll be updated from time to time consequently to suit any new changes to the software as new developments would be implemented which might cause a discrepancy with this current document.
+### What is Phone Saver?
 
-- **What is Phone saver?**
+Phone saver is an Android application that enables you to save a file to your device using the Android share function. This can be done with a single click.
 
-Phone saver is an Android software that enables you to save a file from a share operation easily to another location on your device storage. This is done with a single click.
+### How do I set up Phone Saver?
 
-- **What are the features of Phone saver ?**
+* Open the application
+* Use the `Add` button to select locations to save to
+* Check the `Settings` to configure the application to your needs
 
-Single click share and save operations.
-Clean and easy to understand UI
-Multiple save locations
-Configure whether or not the gallery and music apps are notified of saves
-Choose from a range of duplicate file handling options
-Automated bug reports for requesting support for file types
+### Why can't I select my SD card?
 
+As each manufacturer manages the SD card, it is difficult to implement SD card file management in a way that works for every device. This is currently the biggest feature / bug report for Phone Saver. 
+As a work around, you can enable the `Enable location select` setting from the settings menu. This will allow you to select a location when saving a file, and should correctly handle SD cards. 
 
-- **What kind of shareable files can be saved using phone saver?**
+### I get an "Unsupported" message. What can I do?
 
-Phone saver can save virtually almost every file format that exists, meaning almost every file that can be shared on your device, can be saved.
+If you see this message, please submit a bug report using the link provided on the screen. This will help the developer add support later. 
+While you wait for development, you can try enabling the `Force saving` option in the settings. This will bypass a number of validation checks to force the file to save. There is no guarantee this option will work for you.
 
-- **How can I set up and use Phone saver ?**
+### Why can't I create a folder in Phone Saver?
 
-To use Phone saver after installation, you simply need to set up locations/directories on your local storage where you are likely to save your shared files to.
+Phone Saver is not a file storage manager. To create a new folder to save your content, you will need to use another app. 
 
-- **What is the maximum number of locations I can set up on Phone saver ?**
-
-You can set up as many locations as you wish, however, to maintain a clean UI and for organization, it's advisable to keep it simple.
-
-- **Can new directories/locations be created on Phone saver ?**
-
-No, new directories/locations can't be created on Phone saver. New save locations have to be created first on your device storage using your file manager before it can be seen and then added on Phone saver.
-
-- **Can I save multiple shared files ?**
+### Can I save multiple shared files?
 
 Yes, if the multiple files can be shared it can be saved.
 
-- **I can't see SD card directory, how can I save files to my external SD card ?**
+### What other information is collected when I use Phone Saver?
 
-To save file's to your external SD card storage, go to settings and find "Enable location select" toggle the option ON. With that option enabled, there's an option to **select location**. Whenever a share operation is initiated, and you want to save to external SD card, click on the select location option and you can now access any storage on your device including an OTG flash drive.
+No personal information is collected and used by the developer directly. Read phone saver [privacy policy](https://github.com/ScreamingHawk/phone-saver/blob/master/Privacy.md) to understand the developer's policy towards your privacy.
 
-- **I tried saving a shared file and it couldn't save, what can I do ?**
+### Is Phone Saver available to any other operating system?
 
-In the eventuality of an unsupported file format or when phone saver crashes, the developer may capture the unsupported share request which may include the filename/URL. Crash reports collected by Google are used for the sole purpose of assisting the development of the application. When providing crash reports you have the option to submit additional system information.
+There is no intention to migrate Phone Saver to another operating system.
+However, Phone Saver is [permissively licensed](https://github.com/ScreamingHawk/phone-saver/blob/master/LICENSE) and clones are allowed so long as the license conditions are met.
 
-- **What other information is collected when I utilize phone saver ?**
+### Where can I download Phone Saver?
 
-No personal information is collected and used by the developer directly. Read phone saver [privacy policy](https://github.com/ScreamingHawk/phone-saver/blob/master/Privacy.md) to know and understand fully the developer's policy towards your privacy.
+Phone Saver can be downloaded from [Google Playstore](https://play.google.com/store/apps/details?id=link.standen.michael.phonesaver) and also on [F-droid](https://f-droid.org/repository/browse/?fdid=link.standen.michael.phonesaver).
 
-- **Do I need to pay any token or fee to use Phone saver ?**
+### Can I contribute to Phone Saver?
 
-Phone saver is designed to be used totally for free. Zero cost to utilize the software.
+**Yes please!**
 
-- **Is phone saver available to any other operating system ?**
+Feel free to submit a bug or pull request for anything you feel should be added.
 
-Phone saver as of right now is only available devices running on an Android operating system.
+Phone Saver currently has multiple contributors that add as little as a single line change. Any accepted pull request will be mentioned in the application [release notes](https://github.com/ScreamingHawk/phone-saver/blob/master/app/src/main/res/xml/changelog_master.xml), which are dispalyed when the application is loaded after an update.
 
-- **Where can I download Phone saver ?**
-Phone saver can be downloaded from [Google Playstore](https://play.google.com/store/apps/details?id=link.standen.michael.phonesaver) and also on [F-droid](https://f-droid.org/repository/browse/?fdid=link.standen.michael.phonesaver)
-To see the latest release and all releases of Phone saver click [here](https://github.com/ScreamingHawk/phone-saver/releases)
+### I have some questions not contained in this FAQs document, how can I contact the developer?
 
-- **I have some questions not contained in this FAQs document, how can I contact the developer ?**
+For further inquiries, you can contact the developer via email. Send an email to `michael@standen.link`. The developer can also be contacted by [opening an issue](https://github.com/ScreamingHawk/phone-saver/issues/new) on the repository.
 
-If there are other questions you think should be added to this FAQs document, feel free to open an issue or add the question(s) to this document and make a pull request.
-
-For further inquiries, you can contact the developer via email. Send a mail to michael@standen.link. The developer can also be contacted by an [open issue](https://github.com/ScreamingHawk/phone-saver/issues/new) on the repository 
-
-You can also check out the developer [Here](https://michael.standen.link/)
+You can also [check out the developer here](https://michael.standen.link/).
