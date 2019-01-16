@@ -52,3 +52,8 @@ This software is provided under the [MIT License](https://tldrlegal.com/license/
 Special thanks to all [the contributors](https://github.com/ScreamingHawk/phone-saver/graphs/contributors) of Phone Saver.
 
 I really mean it. You guys rock!
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/ScreamingHawk/phone-saver/badge.svg?style=beer-square)](https://beerpay.io/ScreamingHawk/phone-saver)  [![Beerpay](https://beerpay.io/ScreamingHawk/phone-saver/make-wish.svg?style=flat-square)](https://beerpay.io/ScreamingHawk/phone-saver?focus=wish)
