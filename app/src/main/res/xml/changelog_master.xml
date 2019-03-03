@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="4.1.0" versioncode="31">
+		<change>Further fixes to append number saving strategy</change>
+		<change>Update Chinese translation</change>
+		<change>Code niceties</change>
+	</release>
 	<release version="4.0.3" versioncode="30">
 		<change>Fix append number saving strategy</change>
 		<change>Add direct share capability (beta)</change>
@@ -119,7 +124,7 @@
 	<release version="1.8" versioncode="9">
 		<change>Add toast when background downloads are completed</change>
 		<change>Update Japanese translation</change>
-		<change>Add application version to suport request</change>
+		<change>Add application version to support request</change>
 	</release>
 	<release version="1.7" versioncode="8">
 		<change>Add video support</change>
