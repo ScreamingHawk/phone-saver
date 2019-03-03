@@ -36,8 +36,12 @@ internal constructor(
 			// Open streams for saving
 			URL(sourceFilename).openStream().use {
 				val pfd = saverActivity.contentResolver.openFileDescriptor(destination, "w")
-				val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
-				saverActivity.saveStream(it, bos, filename, callback, dryRun)
+				if (pfd == null){
+					callback(false)
+				} else {
+					val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
+					saverActivity.saveStream(it, bos, filename, callback, dryRun)
+				}
 			}
 		}?: run {
 			Log.e(SaveFromUrlTask::class.java.simpleName, "Saver Activity is gone")

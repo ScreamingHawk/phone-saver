@@ -3,12 +3,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-	compileSdkVersion 27
-	buildToolsVersion '27.0.3'
+	compileSdkVersion 28
+	buildToolsVersion '28.0.3'
 	defaultConfig {
 		applicationId "link.standen.michael.phonesaver"
 		minSdkVersion 15
-		targetSdkVersion 27
+		targetSdkVersion 28
 		versionCode 30
 		versionName "4.0.3"
 
@@ -27,12 +27,12 @@ android {
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-	implementation 'com.android.support:appcompat-v7:27.1.1'
-	implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-	implementation 'com.android.support:design:27.1.1'
-	implementation 'com.android.support:support-vector-drawable:27.1.1'
-	implementation 'com.google.code.gson:gson:2.8.0'
-	implementation 'com.android.support:support-v4:27.1.1'
+	implementation 'com.android.support:appcompat-v7:28.0.0'
+	implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+	implementation 'com.android.support:design:28.0.0'
+	implementation 'com.android.support:support-vector-drawable:28.0.0'
+	implementation 'com.google.code.gson:gson:2.8.2'
+	implementation 'com.android.support:support-v4:28.0.0'
 
 	implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 	implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'

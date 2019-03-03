@@ -255,7 +255,7 @@ class SaverActivity : ListActivity() {
 		// Try save stream first
 		intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)?.let {
 			log.d("Text has stream")
-			getFilename(it, intent.type, dryRun) {filename ->
+			getFilename(it, intent.type ?: "", dryRun) {filename ->
 				saveUri(it, filename, callback, dryRun)
 			}
 			return
@@ -277,7 +277,7 @@ class SaverActivity : ListActivity() {
 			var counter = 0
 			var completeSuccess = true
 			imageUris.forEach {
-				getFilename(it, intent.type, dryRun) { filename ->
+				getFilename(it, intent.type ?: "", dryRun) { filename ->
 					saveUri(it, filename, { success ->
 						counter++
 						success?.let {
@@ -313,10 +313,14 @@ class SaverActivity : ListActivity() {
 					callback(false)
 				} else {
 					val pfd = contentResolver.openFileDescriptor(it, "w")
-					val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
-					contentResolver.openInputStream(uri)?.use { bis ->
-						saveStream(bis, bos, null, callback, dryRun)
-					} ?: callback(false)
+					if (pfd == null){
+						callback(false)
+					} else {
+						val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
+						contentResolver.openInputStream(uri)?.use { bis ->
+							saveStream(bis, bos, null, callback, dryRun)
+						} ?: callback(false)
+					}
 				}
 			}
 			LocationSelectTask(this).save(filename, convertedMime!!)
@@ -387,7 +391,7 @@ class SaverActivity : ListActivity() {
 				}
 			}
 		}
-		getFilename(uri.lastPathSegment, mime, dryRun, callback, uri)
+		getFilename(uri.lastPathSegment ?: "default", mime, dryRun, callback, uri)
 	}
 
 	/**
@@ -438,7 +442,7 @@ class SaverActivity : ListActivity() {
 							// Overwrite. Delete the file, so that it will be overridden
 							uri?.let { u ->
 								val sourceFilename = u.path
-								if (sourceFilename.contains(destinationFilename)) {
+								if (sourceFilename?.contains(destinationFilename) == true) {
 									log.w("Aborting! It appears you are saving the file over itself")
 									finishIntent(false, R.string.toast_save_file_exists_self_abort)
 									return

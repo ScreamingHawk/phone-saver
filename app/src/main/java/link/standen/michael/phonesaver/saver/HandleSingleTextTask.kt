@@ -54,7 +54,7 @@ internal constructor(
 			urlContentType?.toLowerCase()?.let { contentType ->
 				log.d("URL Content-Type: $contentType")
 				saverActivity.debugInfo.add(Pair("URL Content-Type", contentType))
-				saverActivity.getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(text).lastPathSegment,
+				saverActivity.getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(text).lastPathSegment ?: "default",
 						contentType, dryRun, { filename ->
 					if (contentType.startsWith("image/") ||
 							contentType.startsWith("video/") ||
@@ -142,8 +142,12 @@ internal constructor(
 					callback(false)
 				} else {
 					val pfd = saverActivity.contentResolver.openFileDescriptor(it, "w")
-					val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
-					doSaveString(saverActivity, bos, s, null, callback)
+					if (pfd == null){
+						callback(false)
+					} else {
+						val bos = BufferedOutputStream(FileOutputStream(pfd.fileDescriptor))
+						doSaveString(saverActivity, bos, s, null, callback)
+					}
 				}
 			}
 			LocationSelectTask(saverActivity).save(filename, saverActivity.convertedMime!!)

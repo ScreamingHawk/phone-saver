@@ -135,8 +135,11 @@ class FolderListActivity : ListActivity() {
 				super.onOptionsItemSelected(item)
 		}
 
-	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
+		if (data == null){
+			return
+		}
 		if (resultCode == RESULT_OK) {
 			if (requestCode == 1) {
 				val folder = LocationHelper.removeRoot(data.getStringExtra(FolderSelectActivity.FOLDER_SELECTED))
