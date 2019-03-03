@@ -35,8 +35,7 @@ class LocationChooserTargetService : ChooserTargetService() {
 		log = DebugLogger(this)
 		log.d("Creating direct share targets")
 
-		return LocationHelper.loadFolderList(this)?.let {
-			it.map {
+		return LocationHelper.loadFolderList(this)?.map {
 				val name = if (it.length > targetNameMaxLength) {
 					it.substring(it.length - targetNameMaxLength)
 				} else it
@@ -44,8 +43,8 @@ class LocationChooserTargetService : ChooserTargetService() {
 				val extras = Bundle()
 				extras.putString(SaverActivity.DIRECT_SHARE_FOLDER, it)
 				ChooserTarget(name, Icon.createWithBitmap(generateIcon(it)), targetRanking, componentName, extras)
-			}.toMutableList()
-		} ?: mutableListOf()
+			}?.toMutableList()
+		 ?: mutableListOf()
 	}
 
 	/**
