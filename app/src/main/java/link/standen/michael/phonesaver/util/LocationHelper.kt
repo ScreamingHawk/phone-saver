@@ -59,9 +59,10 @@ object LocationHelper {
 	fun removeRoot(location: String): String = location.replace(rootLocation, "")
 
 	/**
-	 * Add the root location to the given path.
+	 * Add the root location to the given path, if not already added.
 	 */
-	fun addRoot(location: String): String = rootLocation + location
+	fun addRoot(location: String): String = if (location.startsWith(rootLocation))
+		location else (rootLocation + location)
 
 	/**
 	 * Add the location path if not null and not already added.
@@ -69,7 +70,6 @@ object LocationHelper {
 	fun safeAddPath(location: String?, filename: String): String {
 		location?.let {
 			if (!filename.startsWith(it)){
-				//FIXME Something about this call isn't safe after all...
 				return it + File.separatorChar + filename
 			}
 		}
