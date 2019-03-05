@@ -433,7 +433,7 @@ class SaverActivity : ListActivity() {
 		log.d("Converted filename: $result")
 
 		if (!dryRun) {
-			location?.let {
+			location?.let { location ->
 				val destinationFilename = LocationHelper.safeAddPath(location, result)
 				val f = File(destinationFilename)
 				if (f.exists()) {
@@ -477,7 +477,8 @@ class SaverActivity : ListActivity() {
 									return
 								}
 							}
-							result = before + i + ext
+							// Update the result to contain the new number
+							result = result.substringBeforeLast('.', "") + "." + i + ext
 						}
 						3 -> {
 							// Request
