@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="4.1.1" versioncode="32">
+		<change>Actually finally fixed append number saving strategy!!!</change>
+	</release>
 	<release version="4.1.0" versioncode="31">
 		<change>Further fixes to append number saving strategy</change>
 		<change>Update Chinese translation</change>
