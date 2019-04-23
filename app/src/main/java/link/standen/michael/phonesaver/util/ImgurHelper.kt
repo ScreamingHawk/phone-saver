@@ -1,12 +1,10 @@
 package link.standen.michael.phonesaver.util
 
 import android.content.Context
+import link.standen.michael.phonesaver.data.ConnectionPair
 
-import java.net.URL
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.net.HttpURLConnection
-
 
 /**
  * A helper class for managing links from Imgur
@@ -19,35 +17,30 @@ object ImgurHelper {
 	 * Returns the first image from an Imgur link
 	 * @return The URL of the first Imgur image, or the input url parameter
 	 */
-	fun getImageUrl(context: Context, url: String): String {
+	fun getImageUrl(context: Context, pair: ConnectionPair): ConnectionPair {
 
-		var u = url
+		var p = pair
+		val u = pair.url
 
 		val log = getLogger(context)
-		if (isImgurPage(url)){
-			log.d("Getting imgur image string from $url")
+		if (isImgurPage(u)){
+			log.d("Getting imgur image string from $u")
 
-			// Find image in page
-			var conn = URL(url).openConnection() as HttpURLConnection
-			conn.connect()
-			var code = conn.responseCode
-			while (code == HttpURLConnection.HTTP_MOVED_PERM || code == HttpURLConnection.HTTP_MOVED_TEMP){
-				// Follow redirects
-				conn.disconnect()
-				val redirectTo = conn.getHeaderField("Location")
-				log.d("Following redirect to $redirectTo")
-				conn = URL(redirectTo).openConnection() as HttpURLConnection
-				conn.connect()
-				code = conn.responseCode
+			if (p.conn == null){
+				// Try to redirect and connect here
+				p = LinkHelper.resolveRedirects(context, u)
+				if (p.conn == null) {
+					// Fail to make connection / follow redirects
+					return pair
+				}
 			}
-			log.d("Status: $code")
-			val inputStream = conn.inputStream
-			val buffer = StringBuffer()
+			val inputStream = p.conn?.inputStream
 			if (inputStream == null) {
 				// Nothing to do.
 				log.d("No input stream")
-				return u
+				return p
 			}
+			val buffer = StringBuffer()
 			val reader = BufferedReader(InputStreamReader(inputStream))
 			var line: String?
 			do  {
@@ -56,21 +49,24 @@ object ImgurHelper {
 			} while (line != null)
 			if (buffer.isEmpty()) {
 				// No content
-				return u
+				return p
 			}
 			val text = buffer.toString()
 
 			"""https?://i.imgur.com/[0-z]+\.[a-z]{3,4}""".toRegex().find(text)?.value?.let {
 				log.d("Imgur image url is $it")
-				u = it
+				return ConnectionPair(it, null)
 			}
 		} else {
-			log.d("Not an imgur url $url")
+			log.d("Not an imgur url $u")
 		}
 
-		return u
+		return p
 	}
 
+	/**
+	 * Checks a URL is for an Imgur page (not image)
+	 */
 	private fun isImgurPage(url: String): Boolean {
 		return !("""https?://[m.]?imgur.com/[0-z/]+""".toRegex().matchEntire(url)?.groups?.isEmpty() ?: true)
 	}

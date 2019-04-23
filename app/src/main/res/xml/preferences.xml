@@ -28,6 +28,12 @@
 		android:title="@string/pref_title_lenient_regex"/>
 
 	<SwitchPreference
+		android:defaultValue="true"
+		android:key="follow_redirects"
+		android:summary="@string/pref_description_follow_redirects"
+		android:title="@string/pref_title_follow_redirects"/>
+
+	<SwitchPreference
 		android:defaultValue="false"
 		android:key="force_saving"
 		android:summary="@string/pref_description_force_saving"
