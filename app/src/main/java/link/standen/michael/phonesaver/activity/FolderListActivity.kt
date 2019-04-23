@@ -41,13 +41,13 @@ class FolderListActivity : ListActivity() {
 
 	override fun onCreate(savedInstanceState: android.os.Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(link.standen.michael.phonesaver.R.layout.folder_list_activity)
-		val toolbar = findViewById<android.support.v7.widget.Toolbar>(link.standen.michael.phonesaver.R.id.toolbar)
+		setContentView(R.layout.folder_list_activity)
+		val toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.toolbar)
 		setSupportActionBar(toolbar)
 
-		val fab = findViewById<android.support.design.widget.FloatingActionButton>(link.standen.michael.phonesaver.R.id.fab)
-		fab.setOnClickListener { _ ->
-			val intent = android.content.Intent(this@FolderListActivity, FolderSelectActivity::class.java)
+		val fab = findViewById<android.support.design.widget.FloatingActionButton>(R.id.fab)
+		fab.setOnClickListener {
+			val intent = Intent(this@FolderListActivity, FolderSelectActivity::class.java)
 			this@FolderListActivity.startActivityForResult(intent, FOLDER_SELECT_REQUEST_CODE)
 		}
 
@@ -110,7 +110,7 @@ class FolderListActivity : ListActivity() {
 
 	override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		menuInflater.inflate(link.standen.michael.phonesaver.R.menu.folder_list_menu, menu)
+		menuInflater.inflate(R.menu.folder_list_menu, menu)
 		return true
 	}
 

@@ -276,9 +276,9 @@ class SaverActivity : ListActivity() {
 		imageUris?.let {
 			var counter = 0
 			var completeSuccess = true
-			imageUris.forEach {
-				getFilename(it, intent.type ?: "", dryRun) { filename ->
-					saveUri(it, filename, { success ->
+			imageUris.forEach {uri ->
+				getFilename(uri, intent.type ?: "", dryRun) { filename ->
+					saveUri(uri, filename, { success ->
 						counter++
 						success?.let {
 							completeSuccess = completeSuccess && it

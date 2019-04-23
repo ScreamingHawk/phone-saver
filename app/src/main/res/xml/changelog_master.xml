@@ -143,7 +143,7 @@
 	<release version="1.6" versioncode="7">
 		<change>Add support for URL requests</change>
 		<change>Enhance support request ticket generation</change>
-		<change>Update tools and support libriaries versions</change>
+		<change>Update tools and support libraries versions</change>
 		<change>Code niceties</change>
 	</release>
 	<release version="1.5" versioncode="6">

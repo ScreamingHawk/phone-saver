@@ -49,7 +49,7 @@ Phone Saver can be downloaded from [Google Playstore](https://play.google.com/st
 
 Feel free to submit a bug or pull request for anything you feel should be added.
 
-Phone Saver currently has multiple contributors that add as little as a single line change. Any accepted pull request will be mentioned in the application [release notes](https://github.com/ScreamingHawk/phone-saver/blob/master/app/src/main/res/xml/changelog_master.xml), which are dispalyed when the application is loaded after an update.
+Phone Saver currently has multiple contributors that add as little as a single line change. Any accepted pull request will be mentioned in the application [release notes](https://github.com/ScreamingHawk/phone-saver/blob/master/app/src/main/res/xml/changelog_master.xml), which are displayed when the application is loaded after an update.
 
 ### I have some questions not contained in this FAQs document, how can I contact the developer?
 

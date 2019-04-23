@@ -4,7 +4,7 @@
 	<!ENTITY author "Michael Standen">
 	]>
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 	<string name="app_name">&appname;</string>
 
 	<!-- Menu -->
@@ -36,7 +36,7 @@
 	<string name="toast_save_file_exists_fail">檔案已存在，因此無法儲存。</string>
 	<string name="toast_save_file_exists_self_abort">正在中止！似乎您正在儲存檔案
 		在自身上。</string>
-	<string name="toast_save_file_exists_self_continue">注意！似乎您正在儲存檔案
+	<string name="toast_save_file_exists_self_continue" tools:keep="@string/toast_save_file_exists_self_continue">注意！似乎您正在儲存檔案
 		在自身上。因為儲存行為允許而繼續…</string>
 	<string name="downloader_description">正在儲存 %1$s</string>
 

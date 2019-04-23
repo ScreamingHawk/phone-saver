@@ -4,7 +4,7 @@
 	<!ENTITY author "Michael Standen">
 	]>
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 	<string name="app_name">&appname;</string>
 
 	<!-- Menu -->
@@ -33,7 +33,7 @@
 
 	<!-- Debug / Error -->
 	<string name="not_supported_content_type">サポートしていないコンテンツタイプ</string>
-	<string name="not_supported">このコンテンツタイプの &lt;a href="%1$s">機能リクエスト&lt;/a>
+	<string name="not_supported" tools:keep="@string/not_supported">このコンテンツタイプの &lt;a href="%1$s">機能リクエスト&lt;/a>
 		をすると、&author; がサポートできます。</string>
 
 	<!-- Credits -->
