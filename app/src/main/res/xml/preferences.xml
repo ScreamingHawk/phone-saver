@@ -33,6 +33,12 @@
 		android:summary="@string/pref_description_force_saving"
 		android:title="@string/pref_title_force_saving"/>
 
+	<SwitchPreference
+		android:defaultValue="false"
+		android:key="special_imgur"
+		android:summary="@string/pref_description_special_imgur"
+		android:title="@string/pref_title_special_imgur"/>
+
 	<ListPreference
 		android:defaultValue="@string/pref_default_value_log_to_user"
 		android:entries="@array/pref_list_title_log_to_user"

@@ -12,6 +12,7 @@ import link.standen.michael.phonesaver.activity.SaverActivity
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
 import link.standen.michael.phonesaver.data.Pair
+import link.standen.michael.phonesaver.util.ImgurHelper
 import link.standen.michael.phonesaver.util.PreferenceHelper
 import java.io.*
 import java.lang.ref.WeakReference
@@ -44,27 +45,36 @@ internal constructor(
 		log = DebugLogger(saverActivity, HandleSingleTextTask::class.java.simpleName)
 
 		try {
-			val url = URL(text)
+			var url = URL(text)
+			var u = text
 			// It's a URL
 			log.d("Text with URL")
+			if (PreferenceHelper.specialImgur){
+				// Convert imgur URL to imgur
+				u = ImgurHelper.getImageUrl(saverActivity, text)
+				url = URL(u)
+			} else {
+				log.d("Imgur helper disabled")
+			}
+
 			val mime = MimeTypeMap.getSingleton()
-			val urlContentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(text))
+			val urlContentType = mime.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(u))
 			// Fall back to checking URL content type
 					?: url.openConnection().getHeaderField("Content-Type")
 			urlContentType?.toLowerCase()?.let { contentType ->
 				log.d("URL Content-Type: $contentType")
 				saverActivity.debugInfo.add(Pair("URL Content-Type", contentType))
-				saverActivity.getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(text).lastPathSegment ?: "default",
+				saverActivity.getFilename(intent.getStringExtra(Intent.EXTRA_SUBJECT) ?: Uri.parse(u).lastPathSegment ?: "default",
 						contentType, dryRun, { filename ->
 					if (contentType.startsWith("image/") ||
 							contentType.startsWith("video/") ||
 							contentType.startsWith("audio/")) {
-						saveUrl(saverActivity, Uri.parse(text), filename, callback, dryRun)
+						saveUrl(saverActivity, Uri.parse(u), filename, callback, dryRun)
 					} else if (contentType.startsWith("text/")){
-						saveString(saverActivity, text, filename, callback, dryRun)
+						saveString(saverActivity, u, filename, callback, dryRun)
 					} else if (PreferenceHelper.forceSaving && !dryRun){
 						// Fallback to saving with saveUrl
-						saveUrl(saverActivity, Uri.parse(text), filename, callback, dryRun)
+						saveUrl(saverActivity, Uri.parse(u), filename, callback, dryRun)
 					} else {
 						callback(false)
 					}

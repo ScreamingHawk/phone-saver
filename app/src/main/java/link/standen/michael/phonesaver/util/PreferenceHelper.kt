@@ -16,6 +16,7 @@ class PreferenceHelper(private val context: Context) {
 		var registerMediaServer = false
 		var useLenientRegex = false
 		var forceSaving = false
+		var specialImgur = false
 		var logLevel = 0
 	}
 
@@ -26,6 +27,7 @@ class PreferenceHelper(private val context: Context) {
 		val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
 
 		forceSaving = sharedPrefs.getBoolean("force_saving", false)
+		specialImgur = sharedPrefs.getBoolean("special_imgur", false)
 		registerMediaServer = sharedPrefs.getBoolean("register_file", false)
 		useLenientRegex = sharedPrefs.getBoolean("lenient_regex", false)
 		locationSelectEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&

@@ -120,6 +120,10 @@
 		explicit support. WARNING: Saving with this feature enabled may have adverse effects.
 	</string>
 
+	<string name="pref_title_special_imgur">Save Imgur images</string>
+	<string name="pref_description_special_imgur">Save the first image when sharing an Imgur link.
+	</string>
+
 	<string name="pref_title_log_to_user">Show debug information</string>
 	<array name="pref_list_title_log_to_user">
 		<item>None</item>
