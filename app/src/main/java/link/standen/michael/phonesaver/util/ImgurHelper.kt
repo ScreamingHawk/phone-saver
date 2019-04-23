@@ -9,7 +9,7 @@ import java.net.HttpURLConnection
 
 
 /**
- * A helper class for managing JSON files
+ * A helper class for managing links from Imgur
  */
 object ImgurHelper {
 
