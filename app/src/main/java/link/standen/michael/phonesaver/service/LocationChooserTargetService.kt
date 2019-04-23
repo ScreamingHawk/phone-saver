@@ -28,7 +28,7 @@ class LocationChooserTargetService : ChooserTargetService() {
 		private const val targetNameMaxLength = 15
 	}
 
-	private val componentName = ComponentName(SaverActivity::class.java.`package`.name, SaverActivity::class.java.name)
+	private val componentName = ComponentName(SaverActivity::class.java.`package`?.name ?: "LocationChooserTargetService", SaverActivity::class.java.name)
 	private lateinit var log: DebugLogger
 
 	override fun onGetChooserTargets(targetActivityName: ComponentName?, matchedFilter: IntentFilter?): MutableList<ChooserTarget> {

@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+				  xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<ListPreference
 		android:defaultValue="@string/pref_default_value_file_exists"
@@ -7,43 +8,50 @@
 		android:key="file_exists"
 		android:negativeButtonText="@null"
 		android:positiveButtonText="@null"
-		android:title="@string/pref_title_file_exists" />
+		android:title="@string/pref_title_file_exists"
+		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
 		android:key="location_select"
 		android:summary="@string/pref_description_location_select"
-		android:title="@string/pref_title_location_select"/>
+		android:title="@string/pref_title_location_select"
+		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
 		android:key="register_file"
 		android:summary="@string/pref_description_register_file"
-		android:title="@string/pref_title_register_file"/>
+		android:title="@string/pref_title_register_file"
+		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
 		android:key="lenient_regex"
 		android:summary="@string/pref_description_lenient_regex"
-		android:title="@string/pref_title_lenient_regex"/>
+		android:title="@string/pref_title_lenient_regex"
+		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="true"
 		android:key="follow_redirects"
 		android:summary="@string/pref_description_follow_redirects"
-		android:title="@string/pref_title_follow_redirects"/>
+		android:title="@string/pref_title_follow_redirects"
+		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
 		android:key="force_saving"
 		android:summary="@string/pref_description_force_saving"
-		android:title="@string/pref_title_force_saving"/>
+		android:title="@string/pref_title_force_saving"
+		app:iconSpaceReserved="false" />
 
 	<SwitchPreference
 		android:defaultValue="false"
 		android:key="special_imgur"
 		android:summary="@string/pref_description_special_imgur"
-		android:title="@string/pref_title_special_imgur"/>
+		android:title="@string/pref_title_special_imgur"
+		app:iconSpaceReserved="false" />
 
 	<ListPreference
 		android:defaultValue="@string/pref_default_value_log_to_user"
@@ -52,6 +60,7 @@
 		android:key="log_to_user"
 		android:negativeButtonText="@null"
 		android:positiveButtonText="@null"
-		android:title="@string/pref_title_log_to_user" />
+		android:title="@string/pref_title_log_to_user"
+		app:iconSpaceReserved="false" />
 
 </PreferenceScreen>
