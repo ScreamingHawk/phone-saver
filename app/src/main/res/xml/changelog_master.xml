@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="5.1.0" versioncode="34">
+		<change>Add ability to follow redirects</change>
+	</release>
 	<release version="5.0.0" versioncode="33">
 		<change>Add special handling for links from Imgur</change>
 	</release>
