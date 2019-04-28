@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="5.1.1" versioncode="35">
+		<change>Fix issue where folder list does not update after deletes</change>
+	</release>
 	<release version="5.1.0" versioncode="34">
 		<change>Add ability to follow redirects</change>
 	</release>
