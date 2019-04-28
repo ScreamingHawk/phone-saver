@@ -81,7 +81,9 @@ class FolderListActivity : ListActivity() {
 		adapter = DeletableLocationArrayAdapter(this, R.layout.folder_list_item, locationsWithData)
 		adapter.registerDataSetObserver(object: DataSetObserver() {
 			override fun onChanged() {
-				checkEmptyCharacterList()
+				// Reload the list
+				loadFolderList()
+				checkEmptyFolderList()
 			}
 		})
 		findViewById<ListView>(android.R.id.list).adapter = adapter
@@ -147,8 +149,8 @@ class FolderListActivity : ListActivity() {
 				if (!folderList.contains(folder)) {
 					folderList.add(folder)
 					folderList.sortBy { it.toLowerCase() }
-					adapter.notifyDataSetChanged()
 					LocationHelper.saveFolderList(this, folderList)
+					adapter.notifyDataSetChanged()
 				}
 			}
 		}
@@ -163,17 +165,19 @@ class FolderListActivity : ListActivity() {
 		LocationHelper.loadFolderList(this)?.let {
 			folderList.addAll(it)
 		}
-		checkEmptyCharacterList()
+		checkEmptyFolderList()
 	}
 
 	/**
 	 * Shows or hides the empty list layout as required.
 	 */
-	fun checkEmptyCharacterList() {
+	fun checkEmptyFolderList() {
 		if (!PreferenceHelper.locationSelectEnabled && folderList.isEmpty()) {
 			findViewById<View>(android.R.id.empty).visibility = View.VISIBLE
+			findViewById<View>(android.R.id.list).visibility = View.GONE
 		} else {
 			findViewById<View>(android.R.id.empty).visibility = View.GONE
+			findViewById<View>(android.R.id.list).visibility = View.VISIBLE
 		}
 	}
 
