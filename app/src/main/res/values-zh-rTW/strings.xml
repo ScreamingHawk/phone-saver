@@ -115,9 +115,18 @@
 		一些檔案無法儲存，或可能使不支援這些字元的應用程式無法運作。
 	</string>
 
+	<string name="pref_title_follow_redirects">跟隨重新導向</string>
+	<string name="pref_description_follow_redirects">當一個連結重新導向到另一個頁面時，&appname;
+		會跟隨重新導向到新的頁面。
+	</string>
+
 	<string name="pref_title_force_saving">強制儲存</string>
 	<string name="pref_description_force_saving">強制儲存分享的項目，即使沒有
 		明確的支援。警告：啟用此功能可能會對儲存有不良影響。
+	</string>
+
+	<string name="pref_title_special_imgur">儲存 Imgur 圖片</string>
+	<string name="pref_description_special_imgur">當分享 Imgur 連結時，儲存第一張圖片。
 	</string>
 
 	<string name="pref_title_log_to_user">顯示除錯資訊</string>
