@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="5.2.0" versioncode="36">
+		<change>So long and thanks for all the fish!</change>
+	</release>
 	<release version="5.1.1" versioncode="35">
 		<change>Fix issue where folder list does not update after deletes</change>
 	</release>
