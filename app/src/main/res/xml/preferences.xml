@@ -63,4 +63,11 @@
 		android:title="@string/pref_title_log_to_user"
 		app:iconSpaceReserved="false" />
 
+	<SwitchPreference
+		android:defaultValue="false"
+		android:key="hide_support"
+		android:summary="@string/pref_description_hide_support"
+		android:title="@string/pref_title_hide_support"
+		app:iconSpaceReserved="false" />
+
 </PreferenceScreen>

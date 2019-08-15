@@ -8,6 +8,11 @@
 		android:title="@string/action_settings"
 		app:showAsAction="never" />
 	<item
+		android:id="@+id/action_support"
+		android:orderInCategory="125"
+		android:title="@string/action_support"
+		app:showAsAction="never" />
+	<item
 		android:id="@+id/action_change_log"
 		android:orderInCategory="150"
 		android:title="@string/action_change_log"

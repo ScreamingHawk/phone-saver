@@ -9,6 +9,7 @@
 
 	<!-- Menu -->
 	<string name="action_settings">Settings</string>
+	<string name="action_support">Support the Developer</string>
 	<string name="action_change_log">Change Log</string>
 	<string name="action_credits">Credits</string>
 
@@ -156,9 +157,30 @@
 		<item>Verbose</item>
 	</array>
 
+	<string name="pref_title_hide_support">Hide support pop up</string>
+	<string name="pref_description_hide_support">Don\'t show the "support the developer" pop up.
+	</string>
+
 	<!-- Change log -->
 	<string name="changelog_full_title">Change Log</string>
 	<string name="changelog_title">What\'s New</string>
 	<string name="changelog_ok_button">OK</string>
 	<string name="changelog_show_full">Show all&#8230;</string>
+
+	<!-- Support Dialog -->
+	<string name="support_header">Thank You!</string>
+	<string name="support_body1">As &appname; has grown and evolved, I\'ve realised that I\'m only
+		interested in saving images, and so I\'ve released a new app that focuses exclusively
+		on images.
+	</string>
+	<string name="support_body2">If this is of interest to you, or you wish to support &author; and
+		future development, please consider purchasing the new app.
+	</string>
+	<string name="support_link">
+		<a href="https://play.google.com/store/apps/details?id=link.standen.michael.imagesaver">
+			Image Saver on Google Play
+		</a>
+	</string>
+	<string name="support_footer">This message can be turned off in the settings.</string>
+
 </resources>

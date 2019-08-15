@@ -18,6 +18,7 @@ class PreferenceHelper(private val context: Context) {
 		var followRedirects = false
 		var forceSaving = false
 		var specialImgur = false
+		var hideSupport = false
 		var logLevel = 0
 	}
 
@@ -32,6 +33,7 @@ class PreferenceHelper(private val context: Context) {
 		specialImgur = sharedPrefs.getBoolean("special_imgur", false)
 		registerMediaServer = sharedPrefs.getBoolean("register_file", false)
 		useLenientRegex = sharedPrefs.getBoolean("lenient_regex", false)
+		hideSupport = sharedPrefs.getBoolean("hide_support", false)
 		locationSelectEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
 				sharedPrefs.getBoolean("location_select", false)
 		saveStrategy = context.resources.getStringArray(R.array.pref_list_values_file_exists).indexOf(

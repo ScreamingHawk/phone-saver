@@ -12,6 +12,7 @@ import link.standen.michael.phonesaver.adapter.DeletableLocationArrayAdapter
 import link.standen.michael.phonesaver.util.DebugLogger
 import link.standen.michael.phonesaver.util.LocationHelper
 import link.standen.michael.phonesaver.data.LocationWithData
+import link.standen.michael.phonesaver.util.DialogHelper
 import link.standen.michael.phonesaver.util.PreferenceHelper
 
 /**
@@ -56,7 +57,13 @@ class FolderListActivity : ListActivity() {
 		// Check for permissions
 		testPermissions()
 
-		// Show the change log
+		// Show the thanks dialog
+		preferenceHelper.loadPreferences()
+		if (!PreferenceHelper.hideSupport) {
+			DialogHelper.showSupportDialog(this)
+		}
+
+		// Show the change log over top of thanks
 		showChangeLog(false)
 
 		// Call to load lists
@@ -127,6 +134,10 @@ class FolderListActivity : ListActivity() {
 			}
 			R.id.action_settings -> {
 				startActivity(Intent(this, SettingsActivity::class.java))
+				true
+			}
+			R.id.action_support -> {
+				DialogHelper.showSupportDialog(this)
 				true
 			}
 			R.id.action_change_log -> {

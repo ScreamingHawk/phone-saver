@@ -4,6 +4,9 @@
 	<dimen name="activity_horizontal_margin">16dp</dimen>
 	<dimen name="activity_vertical_margin">16dp</dimen>
 
+	<dimen name="dialog_margin">4dp</dimen>
+	<dimen name="dialog_padding">8dp</dimen>
+
 	<dimen name="empty_padding">16dp</dimen>
 
 	<dimen name="description_padding">5dp</dimen>
