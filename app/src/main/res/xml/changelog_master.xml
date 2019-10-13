@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+	<release version="5.2.1" versioncode="37">
+		<change>Update Chinese translation. Thanks Hsiu-Ming Chang!</change>
+	</release>
 	<release version="5.2.0" versioncode="36">
 		<change>So long and thanks for all the fish!</change>
 	</release>
