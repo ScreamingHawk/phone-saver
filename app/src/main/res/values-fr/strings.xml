@@ -32,7 +32,7 @@
 	<string name="toast_save_in_progress">Sauvegarde en cours…</string>
 	<string name="toast_save_failed">Sauvegarde échouée.</string>
 	<string name="toast_save_init_error">Erreur de chargement des lieus de sauvegarde.</string>
-	<string name="toast_save_init_no_locations">Veuillez ouvrir l'application pour ajouter des lieus de sauvegarde.</string>
+	<string name="toast_save_init_no_locations">Veuillez ouvrir l\'application pour ajouter des lieus de sauvegarde.</string>
 	<string name="toast_save_file_exists_overwrite">Ecrasement du fichier présent à cet endroit…</string>
 	<string name="toast_save_file_exists_fail">Impossible de sauvegarder, ce fichier existe déjà.</string>
 	<string name="toast_save_file_exists_self_abort">Abandon! Il semblerait que vous remplacez ce fichier par lui-même.</string>
@@ -42,7 +42,7 @@
 
 	<!-- Debug / Error -->
 	<string name="not_supported_content_type">Type de contenu inacceptable</string>
-	<string name="not_supported" tools:keep="@string/not_supported">Veuillez &lt;a href="%1$s">faire une demande d'ajour de fonctionnalité&lt;/a> avec ce
+	<string name="not_supported" tools:keep="@string/not_supported">Veuillez &lt;a href="%1$s">faire une demande d\'ajout de fonctionnalité&lt;/a> avec ce
 		type de contenu afin que &author; puisse ajouter un support officiel. &lt;br/>&lt;br/>Vous pouvez également activer le paramètre \"sauvegarde forcée\"
 		setting pour forcer &appname; à essayer de le sauvegarder.</string>
 
@@ -94,24 +94,24 @@
 
 	<string name="pref_title_location_select">Activer la sélection de localisation</string>
 	<string name="pref_description_location_select">Activer la sélection de localisation pendant
-		la sauvegarde avec l'interface utilisateur Android integrée. Recommandée pour sauvegarder sur une carte SD externe.
+		la sauvegarde avec l\'interface utilisateur Android integrée. Recommandée pour sauvegarder sur une carte SD externe.
 	</string>
 	<string name="pref_title_location_select_unavailable">INDISPONIBLE Activer la sélection de localisation</string>
 	<string name="pref_description_location_select_unavailable">Activer la sélection de localisation pendant
-		la sauvegarde avec l'interface utilisateur Android integrée. Recommandée pour sauvegarder sur une
+		la sauvegarde avec l\'interface utilisateur Android integrée. Recommandée pour sauvegarder sur une
 		carte SD externe. ATTENTION: Cette fonctionnalité est indisponible sur votre version d\'Android.
 	</string>
 
 	<string name="pref_title_register_file">Enregistrer avec scanneur de média</string>
-	<string name="pref_description_register_file">Notifier le scanneur média lorsqu'un fichier a été
-		téléchargé. Ceci aidera à assurer que le fichier sera reconnu par les applications d'images et de musique.
+	<string name="pref_description_register_file">Notifier le scanneur média lorsqu\'un fichier a été
+		téléchargé. Ceci aidera à assurer que le fichier sera reconnu par les applications d\'images et de musique.
 	</string>
 
 	<string name="pref_title_lenient_regex">Utiliser une validation indulgente des noms de fichier</string>
 	<string name="pref_description_lenient_regex">Quand ce paramètre est désactivé, les noms
 		de fichier sont limités aux caractères alphanumériques, tirets bas et traits
-		d'union. Activé, les noms de fichier ne sont pas restreints.
-		Ceci ajoute l'usage de caractères et langues non-latins, emoji, etc. ATTENTION: Ceci pourrait
+		d\'union. Activé, les noms de fichier ne sont pas restreints.
+		Ceci ajoute l\'usage de caractères et langues non-latins, emoji, etc. ATTENTION: Ceci pourrait
 		empêcher certains fichiers de ne pas être sauvegardés ou casser des applications ne recevant pas
 		ces caractères.
 	</string>
@@ -123,11 +123,11 @@
 
 	<string name="pref_title_force_saving">Forcer la sauvegarde</string>
 	<string name="pref_description_force_saving">Force un object partagé à être sauvegardé
-		même s'il n'est pas explicitement recevable. ATTENTION: Sauvegarder avec ce paramètre activé mais avoir des effets néfastes.
+		même s\'il n\'est pas explicitement recevable. ATTENTION: Sauvegarder avec ce paramètre activé peut avoir des effets néfastes.
 	</string>
 
 	<string name="pref_title_special_imgur">Sauvegarder les images Imgur</string>
-	<string name="pref_description_special_imgur">Sauvegarder la première image lors du partage d'un lien Imgur.
+	<string name="pref_description_special_imgur">Sauvegarder la première image lors du partage d\'un lien Imgur.
 	</string>
 
 	<string name="pref_title_log_to_user">Afficher les informations de debug</string>
@@ -169,12 +169,12 @@
 
 	<!-- Support Dialog -->
 	<string name="support_header">Merci!</string>
-	<string name="support_body1">Avec l'évolution de &appname;, je me suis rendu compte que
-		je suis seulement intéressé par la sauvegarde d'image, j'ai donc conçu et publié une application
+		<string name="support_body1">Avec l\'évolution de &appname;, je me suis rendu compte que
+		je suis seulement intéressé par la sauvegarde d\'image, j\'ai donc conçu et publié une application
 		qui fait exclusivement cela.
 	</string>
 	<string name="support_body2">Si cela vous intéresse ou si vous souhaitez soutenir &author;
-		et le futur développement, veuillez considérer l'achat de la nouvelle application.
+		et le futur développement, veuillez considérer l\'achat de la nouvelle application.
 	</string>
 	<string name="support_link">
 		<a href="https://play.google.com/store/apps/details?id=link.standen.michael.imagesaver">
