@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+	<!ENTITY appname "Phone Saver">
+	<!ENTITY author "Michael Standen">
+	]>
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<string name="app_name">&appname;</string>
+
+	<!-- Menu -->
+	<string name="action_settings">Paramètres</string>
+	<string name="action_support">Soutenir le développeur</string>
+	<string name="action_change_log">Historique des changements</string>
+	<string name="action_credits">Crédits</string>
+
+	<!-- Folder list -->
+	<string name="delete_button">Effacer</string>
+	<string name="back_folder">\u2191 Retour</string>
+
+	<string name="folder_list_empty_title">Bienvenue sur Phone Saver!</string>
+	<string name="folder_list_empty_body">Veuillez ajouter un lieu de sauvegarde avec le bouton ci-dessous.</string>
+
+	<string name="location_select_label">* Selectionner lieu *</string>
+
+	<!-- Folder select -->
+	<string name="title_activity_folder_select">Selectionner Fichier</string>
+	<string name="navigation_here">Ici</string>
+	<string name="navigation_read_only">Lecture uniquement</string>
+
+	<!-- Saving messages -->
+	<string name="toast_save_successful">Sauvegardé avec succès.</string>
+	<string name="toast_save_in_progress">Sauvegarde en cours…</string>
+	<string name="toast_save_failed">Sauvegarde échouée.</string>
+	<string name="toast_save_init_error">Erreur de chargement des lieus de sauvegarde.</string>
+	<string name="toast_save_init_no_locations">Veuillez ouvrir l'application pour ajouter des lieus de sauvegarde.</string>
+	<string name="toast_save_file_exists_overwrite">Ecrasement du fichier présent à cet endroit…</string>
+	<string name="toast_save_file_exists_fail">Impossible de sauvegarder, ce fichier existe déjà.</string>
+	<string name="toast_save_file_exists_self_abort">Abandon! Il semblerait que vous remplacez ce fichier par lui-même.</string>
+	<string name="toast_save_file_exists_self_continue">Attention! Il semblerait que vous
+		remplacez ce fichier par lui-même. Comme permi par le comportement de sauvegarde, écrasement du fichier…</string>
+	<string name="downloader_description">Sauvegarde de %1$s</string>
+
+	<!-- Debug / Error -->
+	<string name="not_supported_content_type">Type de contenu inacceptable</string>
+	<string name="not_supported" tools:keep="@string/not_supported">Veuillez &lt;a href="%1$s">faire une demande d'ajour de fonctionnalité&lt;/a> avec ce
+		type de contenu afin que &author; puisse ajouter un support officiel. &lt;br/>&lt;br/>Vous pouvez également activer le paramètre \"sauvegarde forcée\"
+		setting pour forcer &appname; à essayer de le sauvegarder.</string>
+
+	<!-- Loading -->
+	<string name="loading_title">Test du support…</string>
+	<string name="loading_body">Veuillez patienter tandis que je test le téléchargement du support…</string>
+
+	<!-- Credits -->
+	<string name="credits_version">v%1$s</string>
+	<string name="title_activity_credits">A propos de &appname;</string>
+	<string name="logo_description">Logo</string>
+	<string name="credits_creator">par <a href="https://michael.standen.link">&author;</a></string>
+	<string name="credits_content1">Phone Saver est une simple application pour sauvegarder
+		des fichiers sur votre téléphone via la fonctionnalité partager.
+	</string>
+	<string name="credits_content2">Vous pouvez accéder au code source, faire connaitre des bugs, et demander des fonctionnalités sur
+		<a href="https://github.com/ScreamingHawk/phone-saver">Github</a>.
+	</string>
+	<string name="credits_content3">Cette application est complètement open source; elle a pour license la
+		<a href="https://tldrlegal.com/license/mit-license">license MIT</a>.
+	</string>
+	<string name="credits_content_translator">Cette traduction de &appname; a été proposée par
+		<a href="https://michael.standen.link">&author;</a>.
+	</string>
+
+	<!-- Settings -->
+	<string name="title_activity_settings">Paramètres</string>
+
+	<string name="pref_title_file_exists">Comportement si le fichier existe déjà</string>
+	<array name="pref_list_title_file_exists">
+		<item>Ecraser le fichier existant</item>
+		<item>Ne pas sauvegarder</item>
+		<item>Ajouter un numéro au nom</item>
+		<!--<item>Request new name</item>-->
+	</array>
+	<array name="pref_list_description_file_exists">
+		<item>Ecraser le fichier existant avec le nouveau</item>
+		<item>Ne pas sauvegarder le nouveau fichier</item>
+		<item>Ajouter un numéro au nom afin que les deux fichiers soient sauvegardés</item>
+		<!--<item>Request new file name with a pop up</item>-->
+	</array>
+	<string name="pref_default_value_file_exists">Ecraser</string>
+	<array name="pref_list_values_file_exists">
+		<item>Ecraser</item>
+		<item>Rien</item>
+		<item>Postfix</item>
+		<!--<item>Request</item>-->
+	</array>
+
+	<string name="pref_title_location_select">Activer la sélection de localisation</string>
+	<string name="pref_description_location_select">Activer la sélection de localisation pendant
+		la sauvegarde avec l'interface utilisateur Android integrée. Recommandée pour sauvegarder sur une carte SD externe.
+	</string>
+	<string name="pref_title_location_select_unavailable">INDISPONIBLE Activer la sélection de localisation</string>
+	<string name="pref_description_location_select_unavailable">Activer la sélection de localisation pendant
+		la sauvegarde avec l'interface utilisateur Android integrée. Recommandée pour sauvegarder sur une
+		carte SD externe. ATTENTION: Cette fonctionnalité est indisponible sur votre version d\'Android.
+	</string>
+
+	<string name="pref_title_register_file">Enregistrer avec scanneur de média</string>
+	<string name="pref_description_register_file">Notifier le scanneur média lorsqu'un fichier a été
+		téléchargé. Ceci aidera à assurer que le fichier sera reconnu par les applications d'images et de musique.
+	</string>
+
+	<string name="pref_title_lenient_regex">Utiliser une validation indulgente des noms de fichier</string>
+	<string name="pref_description_lenient_regex">Quand ce paramètre est désactivé, les noms
+		de fichier sont limités aux caractères alphanumériques, tirets bas et traits
+		d'union. Activé, les noms de fichier ne sont pas restreints.
+		Ceci ajoute l'usage de caractères et langues non-latins, emoji, etc. ATTENTION: Ceci pourrait
+		empêcher certains fichiers de ne pas être sauvegardés ou casser des applications ne recevant pas
+		ces caractères.
+	</string>
+
+	<string name="pref_title_follow_redirects">Suivre les redirections.</string>
+	<string name="pref_description_follow_redirects">Quand un lien pointe vers une autre page, &appname;
+		suivra la redirection vers la nouvelle page.
+	</string>
+
+	<string name="pref_title_force_saving">Forcer la sauvegarde</string>
+	<string name="pref_description_force_saving">Force un object partagé à être sauvegardé
+		même s'il n'est pas explicitement recevable. ATTENTION: Sauvegarder avec ce paramètre activé mais avoir des effets néfastes.
+	</string>
+
+	<string name="pref_title_special_imgur">Sauvegarder les images Imgur</string>
+	<string name="pref_description_special_imgur">Sauvegarder la première image lors du partage d'un lien Imgur.
+	</string>
+
+	<string name="pref_title_log_to_user">Afficher les informations de debug</string>
+	<array name="pref_list_title_log_to_user">
+		<item>Aucun</item>
+		<item>Erreur</item>
+		<item>Warn</item>
+		<item>Info</item>
+		<item>Debug</item>
+		<item>Verbose</item>
+	</array>
+	<array name="pref_list_description_log_to_user">
+		<item>Ne pas afficher les informations de debug</item>
+		<item>Afficher les informations de debug de niveau erreur</item>
+		<item>Afficher les informations de debug de niveau warn et au-delà</item>
+		<item>Afficher les informations de debug de niveau info et au-delà</item>
+		<item>Afficher les informations de debug de niveau debug et au-delà</item>
+		<item>Afficher les informations de debug de niveau verbose et au-delà</item>
+	</array>
+	<string name="pref_default_value_log_to_user">Aucun</string>
+	<array name="pref_list_values_log_to_user">
+		<item>Aucun</item>
+		<item>Erreur</item>
+		<item>Warn</item>
+		<item>Info</item>
+		<item>Debug</item>
+		<item>Verbose</item>
+	</array>
+
+	<string name="pref_title_hide_support">Cacher le pop-up de soutien</string>
+	<string name="pref_description_hide_support">Ne pas afficher le pop-up de \"soutien au développeur\".
+	</string>
+
+	<!-- Change log -->
+	<string name="changelog_full_title">Historique des changements</string>
+	<string name="changelog_title">Quoi de neuf?</string>
+	<string name="changelog_ok_button">OK</string>
+	<string name="changelog_show_full">Tout montrer&#8230;</string>
+
+	<!-- Support Dialog -->
+	<string name="support_header">Merci!</string>
+	<string name="support_body1">Avec l'évolution de &appname;, je me suis rendu compte que
+		je suis seulement intéressé par la sauvegarde d'image, j'ai donc conçu et publié une application
+		qui fait exclusivement cela.
+	</string>
+	<string name="support_body2">Si cela vous intéresse ou si vous souhaitez soutenir &author;
+		et le futur développement, veuillez considérer l'achat de la nouvelle application.
+	</string>
+	<string name="support_link">
+		<a href="https://play.google.com/store/apps/details?id=link.standen.michael.imagesaver">
+			Image Saver sur Google Play
+		</a>
+	</string>
+	<string name="support_footer">Ce message peut être désactivé dans les paramètres.</string>
+
+</resources>
