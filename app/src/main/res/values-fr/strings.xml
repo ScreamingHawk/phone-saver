@@ -55,7 +55,7 @@
 	<string name="title_activity_credits">A propos de &appname;</string>
 	<string name="logo_description">Logo</string>
 	<string name="credits_creator">par <a href="https://michael.standen.link">&author;</a></string>
-	<string name="credits_content1">Phone Saver est une simple application pour sauvegarder
+	<string name="credits_content1">&appname; est une simple application pour sauvegarder
 		des fichiers sur votre téléphone via la fonctionnalité partager.
 	</string>
 	<string name="credits_content2">Vous pouvez accéder au code source, faire connaitre des bugs, et demander des fonctionnalités sur
