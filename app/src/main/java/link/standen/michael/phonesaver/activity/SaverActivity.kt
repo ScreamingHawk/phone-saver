@@ -406,14 +406,12 @@ class SaverActivity : ListActivity() {
 		log.d("Converting filename: $s")
 
 		var result = s
-				// Trim whitespace
-				.trim()
 				// Take last section after a slash (excluding the slash)
 				.replaceBeforeLast("/", "").replace("/", "")
-				// Take first section before a space (excluding the space)
-				.replaceAfter(" ", "").replace(" ", "")
 				// Remove non-filename characters
 				.replace(Regex(if (PreferenceHelper.useLenientRegex) FILENAME_LENIENT_REGEX else FILENAME_REGEX), "")
+				// Trim whitespace
+				.trim()
 
 		if (result.length > FILENAME_LENGTH_LIMIT) {
 			// Do not go over the filename length limit
